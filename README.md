@@ -1,73 +1,151 @@
-# React + TypeScript + Vite
+# OutOfSight Benchmark – Question Generator for VLMs
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+OutOfSight is a benchmark and question generation framework designed for evaluating vision-language models (VLMs) on tasks involving spatial reasoning and out-of-sight memory.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The project provides:
 
-## React Compiler
+- A frontend interface (React + Vite + Tailwind)
+- Tools for generating benchmark questions
+- A foundation for evaluating model performance
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Requirements
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Make sure you have the following installed:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (>= 18 recommended)
+- npm (comes with Node)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <your-repo-url>
+cd <your-repo-folder>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Install dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+---
+
+## Running the project
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Then open the local URL shown in the terminal (typically):
+
+```
+http://localhost:5173
+```
+
+---
+
+## Build for production
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+To preview the build:
+
+```bash
+npm run preview
+```
+
+---
+
+## Project Structure
+
+```
+.
+├── public/              # Static assets (logos, favicon)
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── pages/          # Page-level components
+│   ├── Layout.tsx      # App layout (header, structure)
+│   ├── App.tsx         # Router + app structure
+│   ├── main.tsx        # Entry point
+│   └── index.css       # Tailwind setup
+├── index.html
+├── vite.config.ts
+└── package.json
+```
+
+---
+
+## Dark Mode
+
+The application supports dark mode based on:
+
+- User preference stored in `localStorage`
+- System preference (`prefers-color-scheme`)
+
+The theme is applied at startup in `main.tsx`.
+
+---
+
+## Favicon Behavior
+
+The favicon automatically switches based on system theme:
+
+- Light mode → `Logo-sm-light.png`
+- Dark mode → `Logo-sm-dark.png`
+
+Configured in `index.html` using media queries.
+
+---
+
+## Technologies Used
+
+- React
+- Vite
+- Tailwind CSS
+- React Router
+
+---
+
+## License (GNU GPL v3)
+
+This project is licensed under the GNU General Public License v3.0.
+
+You are free to:
+
+- Use
+- Modify
+- Distribute
+
+Under the following conditions:
+
+- You must disclose source code
+- You must use the same license (GPL v3)
+- You must include the original license and copyright
+
+Full license text: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+---
+
+## Author
+
+Casa-del-Dev
+
+---
+
+## Notes
+
+This project is part of a research-oriented workflow for benchmarking vision-language models. Further extensions may include automated evaluation pipelines and dataset integration.
