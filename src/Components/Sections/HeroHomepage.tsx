@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../assets/Logo.png";
+
 type Stat = {
   value: string;
   label: string;
@@ -11,256 +12,172 @@ type HeroProps = {
   stats: Stat[];
 };
 
+function ArrowIcon() {
+  return (
+    <svg
+      className="transition-transform duration-300 group-hover:translate-x-1"
+      width="16"
+      height="16"
+      viewBox="0 0 14 14"
+      fill="none"
+    >
+      <path
+        d="M2 7h10M8 3l4 4-4 4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function Hero({ ref, visible, stats }: HeroProps) {
   return (
     <section
       ref={ref}
-      style={{
-        position: "relative",
-        minHeight: "100%",
-        display: "flex",
-        alignItems: "center",
-        padding: "6rem 2rem 4rem",
-        overflow: "hidden",
-      }}
+      className="
+        relative flex min-h-full items-center overflow-hidden px-8 pb-16 pt-24
+        bg-white text-slate-950
+        dark:bg-[#070b14] dark:text-[#f0f2f8]
+      "
     >
       <div className="grid-bg" />
       <div className="noise" />
 
-      {/* Blue glow */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-10%",
-          right: "-5%",
-          width: "600px",
-          height: "600px",
-          background:
-            "radial-gradient(circle, rgba(59,91,219,0.12) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div
-        className="hero-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 420px",
-          gap: "5rem",
-          maxWidth: "1100px",
-          margin: "0 auto",
-          width: "100%",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        {/* Left column */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
+      <div className="relative z-10 mx-auto grid w-full max-w-275 gap-20 lg:grid-cols-[1fr_480px]">
+        <div className="flex flex-col justify-center">
           <div className={`fade-up d1 ${visible ? "in" : ""}`}>
-            <span className="tag">
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: "#7b9cf7",
-                  display: "inline-block",
-                }}
-              />{" "}
+            <span
+              className="
+                inline-flex items-center gap-2 rounded-full border px-3 py-1
+                border-blue-200 bg-blue-50 text-blue-700
+                dark:border-white/10 dark:bg-white/5 dark:text-blue-300
+              "
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
               Vision-Language Model Benchmark
             </span>
           </div>
 
           <h1
-            className={`fade-up d2 ${visible ? "in" : ""}`}
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(52px, 6vw, 78px)",
-              fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              margin: "1.25rem 0",
-              color: "#f0f2f8",
-            }}
+            className={`fade-up d2 ${visible ? "in" : ""} my-5 font-serif text-[clamp(52px,6vw,78px)] font-bold leading-[1.05] tracking-[-0.02em] text-slate-950 dark:text-[#f0f2f8]`}
           >
             Out
-            <span style={{ fontStyle: "italic", color: "#3b5bdb" }}>Of</span>
+            <span className="italic text-blue-600 dark:text-blue-500">Of</span>
             Sight
           </h1>
 
           <p
-            className={`fade-up d3 ${visible ? "in" : ""}`}
-            style={{
-              fontSize: "18px",
-              lineHeight: 1.7,
-              color: "#8899b8",
-              maxWidth: "520px",
-              marginBottom: "1rem",
-              fontWeight: 300,
-            }}
+            className={`fade-up d3 ${visible ? "in" : ""} mb-4 max-w-130 text-lg font-light leading-8 text-slate-700 dark:text-[#8899b8]`}
           >
             Can a vision-language model remember where you put something after
             it disappears from the frame?
           </p>
 
           <p
-            className={`fade-up d4 ${visible ? "in" : ""}`}
-            style={{
-              fontSize: "15px",
-              lineHeight: 1.75,
-              color: "#5a6a88",
-              maxWidth: "500px",
-              marginBottom: "2.5rem",
-            }}
+            className={`fade-up d4 ${visible ? "in" : ""} mb-10 max-w-125 text-[15px] leading-7 text-slate-600 dark:text-[#5a6a88]`}
           >
             OutOfSight benchmarks spatial memory, object permanence, and
             hidden-state tracking in egocentric cooking video — built on
-            HD-EPIC's dense 3D object annotations.
+            HD-EPIC&apos;s dense 3D object annotations.
           </p>
 
           <div
-            className={`fade-up d5 ${visible ? "in" : ""}`}
-            style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}
+            className={`fade-up d5 ${visible ? "in" : ""} flex flex-wrap gap-3`}
           >
-            <a href="/question-generator" className="btn-primary">
+            <a
+              href="/question-generator"
+              className="
+                group inline-flex items-center gap-2 rounded-xl
+                bg-linear-to-r from-blue-500 to-blue-600
+                px-6 py-3 font-medium text-white
+                shadow-lg shadow-blue-500/20
+                transition-all duration-300
+                hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-500/40
+                active:scale-95
+              "
+            >
               Question generator
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M2 7h10M8 3l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowIcon />
             </a>
-            <a href="/benchmark" className="btn-ghost">
+
+            <a
+              href="/benchmark"
+              className="
+                group inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium
+                border border-slate-200 bg-slate-100 text-slate-800 shadow-sm
+                transition-all duration-300
+                hover:bg-white hover:border-slate-300 hover:text-slate-950 hover:shadow-md
+                active:scale-95
+                dark:border-white/10 dark:bg-white/5 dark:text-gray-200
+                dark:hover:bg-white/10 dark:hover:border-white/20 dark:hover:text-white
+              "
+            >
               Benchmark
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path
-                  d="M2 7h10M8 3l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowIcon />
             </a>
           </div>
 
-          {/* Stats */}
           <div
-            className={`fade-up d6 ${visible ? "in" : ""} stats-row`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "28px",
-              marginTop: "3.5rem",
-              paddingTop: "2rem",
-              borderTop: "0.5px solid #1e2a40",
-            }}
+            className={`fade-up d6 ${visible ? "in" : ""} mt-14 flex flex-wrap items-center gap-7 border-t pt-8 border-slate-200 dark:border-[#1e2a40]`}
           >
             {stats.map((s, i) => (
               <React.Fragment key={s.label}>
                 <div>
-                  <div
-                    style={{
-                      fontFamily: "'DM Mono', monospace",
-                      fontSize: "17px",
-                      fontWeight: 500,
-                      color: "#c5d0e8",
-                      marginBottom: "2px",
-                    }}
-                  >
+                  <div className="mb-0.5 font-mono text-[17px] font-medium text-slate-900 dark:text-[#c5d0e8]">
                     {s.value}
                   </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#4a5870",
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <div className="text-[11px] uppercase tracking-[0.06em] text-slate-500 dark:text-[#4a5870]">
                     {s.label}
                   </div>
                 </div>
-                {i < stats.length - 1 && <div className="stat-divider" />}
+
+                {i < stats.length - 1 && (
+                  <div className="h-8 w-px bg-slate-200 dark:bg-[#1e2a40]" />
+                )}
               </React.Fragment>
             ))}
           </div>
         </div>
 
-        {/* Right column — logo visual */}
         <div
-          className={`fade-up d4 ${visible ? "in" : ""}`}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          className={`fade-up d4 ${visible ? "in" : ""} flex items-center justify-center`}
         >
-          <div style={{ position: "relative", width: 340, height: 340 }}>
-            {/* Orbital rings */}
+          <div className="relative h-105 w-105">
             <div
-              className="logo-ring"
-              style={{
-                width: 320,
-                height: 320,
-                top: 10,
-                left: 10,
-                animationDuration: "28s",
-              }}
+              className="
+      pointer-events-none absolute left-1/2 top-1/2 h-150 w-150
+      -translate-x-1/2 -translate-y-1/2
+      bg-[radial-gradient(circle,rgba(59,91,219,0.18)_0%,transparent_70%)]
+      dark:bg-[radial-gradient(circle,rgba(59,91,219,0.14)_0%,transparent_70%)]
+    "
             />
+            <div className="logo-ring absolute left-5 top-5 h-95 w-95" />
             <div
-              className="logo-ring"
+              className="logo-ring absolute left-14 top-14 h-77 w-77"
               style={{
-                width: 260,
-                height: 260,
-                top: 40,
-                left: 40,
                 animationDuration: "18s",
                 animationDirection: "reverse",
-                borderColor: "rgba(59,91,219,0.1)",
               }}
             />
 
-            {/* Card */}
             <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 220,
-                height: 220,
-                background: "#0d1320",
-                border: "0.5px solid #1e2a40",
-                borderRadius: "24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "2rem",
-              }}
+              className="
+                absolute left-1/2 top-1/2 flex h-70 w-70
+                -translate-x-1/2 -translate-y-1/2 items-center justify-center
+                rounded-[28px] border p-8
+                border-slate-200 bg-white shadow-xl shadow-blue-500/10
+                dark:border-[#1e2a40] dark:bg-[#0d1320] dark:shadow-blue-500/5
+              "
             >
               <img
                 src={logo}
                 alt="OutOfSight logo"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
+                className="h-full w-full object-contain"
               />
             </div>
 
-            {/* Floating labels */}
             {[
               {
                 label: "Object permanence",
@@ -283,20 +200,17 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
             ].map((f) => (
               <div
                 key={f.label}
+                className="
+                  absolute whitespace-nowrap rounded-lg border px-3 py-1.5
+                  font-mono text-[10px]
+                  border-slate-200 bg-white text-blue-600 shadow-sm
+                  dark:border-[#1e2a40] dark:bg-[#0d1320] dark:text-blue-400
+                "
                 style={{
-                  position: "absolute",
                   top: f.top,
                   bottom: f.bottom,
                   left: f.left,
                   right: f.right,
-                  background: "#0d1320",
-                  border: "0.5px solid #1e2a40",
-                  borderRadius: "8px",
-                  padding: "6px 12px",
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: "10px",
-                  color: "#4c6ef5",
-                  whiteSpace: "nowrap",
                   animation: `fade-up 0.6s ${f.delay} both`,
                 }}
               >

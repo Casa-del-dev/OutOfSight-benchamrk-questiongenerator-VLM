@@ -1,43 +1,43 @@
-import { useEffect, useRef, useState } from "react";
 import Hero from "../Components/Sections/HeroHomepage";
 import Trajectory from "../Components/Sections/TrajectoryHomepage";
 import Pipeline from "../Components/Sections/PipelineHomework";
 import View from "../Components/Sections/ViewHomepage";
 import Footer from "../Components/Sections/Footer";
+import { useDelayedInView } from "../Lib/DelayAnimation";
 
 const capabilities = [
   {
-    code: "Q1",
+    code: "Step 1",
     title: "Current visibility check",
     desc: "At time <TIME HH:MM:SS video X>, is <Target Object> that was moved earlier visible in the current frame?",
   },
   {
-    code: "Q2",
+    code: "Step 2",
     title: "Last visible observation",
     desc: "At time <TIME HH:MM:SS video X>, <Target Object> that was moved earlier is not visible. When was it last visible, and where was it located in the image?",
   },
   {
-    code: "Q3",
+    code: "Step 3",
     title: "Last placement observation",
     desc: "At time <TIME HH:MM:SS video X>, when was the <Target Object> last placed, and where was it placed?",
   },
   {
-    code: "Q4",
+    code: "Step 4",
     title: "Scene anchor",
     desc: "At time <TIME HH:MM:SS video X>, based on the last placement of <Target Object> that was moved earlier, which nearby fixture is closest to it?",
   },
   {
-    code: "Q5.1",
+    code: "Step 5.1",
     title: "Egocentric object-camera relation inference",
     desc: "At time <TIME HH:MM:SS video X>, <Target Object> is not visible. Based on its last known position, in which direction is <Target Object> based on where you are looking at, at time <TIME HH:MM:SS video X>?",
   },
   {
-    code: "Q5.2",
+    code: "Step 5.2",
     title: "Egocentric object-object relation",
     desc: "At time <TIME HH:MM:SS video X>, <Target Object> is not visible. Based on the last known position of <Target Object> and the <Anchored Object> (marked object) in the current frame, where is <Target Object> relative to <Anchored Object>?",
   },
   {
-    code: "Q5.3",
+    code: "Step 5.3",
     title: "Object-object distance",
     desc: "At time <TIME HH:MM:SS video X>, <Target Object> is not visible. Based on the last known position of <Target Object> and the marked object soap dispenser in the current frame, how far is <Target Object> from <Anchored Object>?",
   },
@@ -51,13 +51,12 @@ const stats = [
 ];
 
 export default function Homepage() {
-  const [visible, setVisible] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 80);
-    return () => clearTimeout(t);
-  }, []);
+  const { ref: heroRef, visible: heroVisible } = useDelayedInView(500);
+  const { ref: trajectoryRef, visible: trajectoryVisible } =
+    useDelayedInView(500);
+  const { ref: pipelineRef, visible: pipelineVisible } = useDelayedInView(500);
+  const { ref: viewRef, visible: viewVisible } = useDelayedInView(500);
+  const { ref: footerRef, visible: footerVisible } = useDelayedInView(500);
 
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden bg-white text-slate-900 dark:bg-[#080c14] dark:text-[#e8eaf0]">
@@ -128,19 +127,24 @@ export default function Homepage() {
       `}</style>
 
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <Hero ref={heroRef} visible={visible} stats={stats} />
+
+      <Hero ref={heroRef} visible={heroVisible} stats={stats} />
 
       {/* ── WHAT WE TEST ─────────────────────────────────────── */}
-      <Trajectory capabilities={capabilities} />
+      <Trajectory
+        ref={trajectoryRef}
+        visible={trajectoryVisible}
+        capabilities={capabilities}
+      />
 
       {/* ── HOW IT WORKS ─────────────────────────────────────── */}
-      <Pipeline />
+      <Pipeline ref={pipelineRef} visible={pipelineVisible} />
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <View />
+      <View ref={viewRef} visible={viewVisible} />
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <Footer />
+      <Footer ref={footerRef} visible={footerVisible} />
     </div>
   );
 }

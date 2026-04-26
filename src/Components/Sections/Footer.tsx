@@ -1,6 +1,12 @@
-export default function Footer() {
+type FooterProps = {
+  ref?: React.Ref<HTMLElement>;
+  visible: boolean;
+};
+
+export default function Footer({ ref, visible }: FooterProps) {
   return (
     <footer
+      className={`fade-up ${visible ? "in" : ""}`}
       style={{
         borderTop: "0.5px solid #1e2a40",
         padding: "1.5rem 2rem",
@@ -10,6 +16,7 @@ export default function Footer() {
         flexWrap: "wrap",
         gap: "8px",
       }}
+      ref={ref}
     >
       <span
         style={{
