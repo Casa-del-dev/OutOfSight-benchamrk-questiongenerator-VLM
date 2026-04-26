@@ -1,23 +1,20 @@
+import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   const [isDark, setIsDark] = useState(() => {
-    // Get initial theme from localStorage
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       return savedTheme === "dark";
     }
-    // Default to light mode
     return false;
   });
 
-  // Update localStorage and document class whenever isDark changes
   useEffect(() => {
     const theme = isDark ? "dark" : "light";
     localStorage.setItem("theme", theme);
 
-    // Apply theme to document for global styling
     if (isDark) {
       document.documentElement.classList.add("dark");
       document.documentElement.style.colorScheme = "dark";
@@ -50,7 +47,7 @@ export default function Header() {
             title={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className="rounded-full border-2 border-gray-300 p-2 transition-all duration-300 hover:scale-110 hover:bg-gray-100 active:scale-95 dark:border-gray-600 dark:hover:bg-gray-800"
           >
-            {isDark ? "☀️" : "🌙"}
+            {isDark ? <Sun /> : <Moon />}
           </button>
         </div>
       </nav>
