@@ -65,30 +65,69 @@ export default function View() {
             flexWrap: "wrap",
           }}
         >
-          <a href="/question-generator" className="btn-primary">
-            Example Question Pairs
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M2 7h10M8 3l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-          <a href="/benchmark" className="btn-ghost">
-            Example Benchmark
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M2 7h10M8 3l4 4-4 4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
+          <div className="flex gap-4 justify-center mt-6">
+            {/* Primary Button */}
+            <a
+              href="/question-generator"
+              className="group inline-flex items-center gap-2 rounded-xl 
+    bg-linear-to-r from-blue-500 to-blue-600 
+    px-6 py-3 text-white font-medium 
+    shadow-lg shadow-blue-500/20
+    transition-all duration-300 
+    hover:from-blue-400 hover:to-blue-500 
+    hover:shadow-blue-500/40 
+    active:scale-95"
+            >
+              Example Question Pairs
+              <svg
+                className="transition-transform duration-300 group-hover:translate-x-1"
+                width="16"
+                height="16"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  d="M2 7h10M8 3l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+
+            {/* Secondary Button */}
+            <a
+              href="/benchmark"
+              className="group inline-flex items-center gap-2 rounded-xl 
+    px-6 py-3 font-medium 
+    text-gray-200 
+    bg-white/5 backdrop-blur-md 
+    border border-white/10
+    shadow-sm
+    transition-all duration-300 
+    hover:bg-white/10 hover:border-white/20 
+    hover:text-white
+    active:scale-95"
+            >
+              Example Benchmark
+              <svg
+                className="transition-transform duration-300 group-hover:translate-x-1"
+                width="16"
+                height="16"
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  d="M2 7h10M8 3l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>
