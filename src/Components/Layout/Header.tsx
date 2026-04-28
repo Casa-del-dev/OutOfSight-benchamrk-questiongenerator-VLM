@@ -41,7 +41,7 @@ export default function Header() {
           />
         </Link>
 
-        <div className="flex justify-around w-4xl text-lg font-semibold">
+        <div className="flex justify-around w-full text-lg font-semibold">
           <Link
             to="/questions"
             className="text-gray-900 transition-colors duration-300 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
