@@ -1,2 +1,27 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+@keyframes floatCircle {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(8px, -6px, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+  75% {
+    transform: translate3d(-8px, -6px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.float-circle {
+  display: inline-block;
+  animation-name: floatCircle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}

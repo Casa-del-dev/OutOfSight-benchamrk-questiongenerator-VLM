@@ -12,6 +12,40 @@ type HeroProps = {
   stats: Stat[];
 };
 
+type FloatingLabel = {
+  label: string;
+  delay: string;
+  floatDuration: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+};
+
+const floatingLabels: FloatingLabel[] = [
+  {
+    label: "Object permanence",
+    top: "-6%",
+    left: "-24%",
+    delay: "0.8s",
+    floatDuration: "14s",
+  },
+  {
+    label: "Spatial memory",
+    bottom: "-2%",
+    right: "-22%",
+    delay: "1s",
+    floatDuration: "18s",
+  },
+  {
+    label: "Hidden state",
+    top: "50%",
+    right: "-30%",
+    delay: "1.2s",
+    floatDuration: "12s",
+  },
+];
+
 function ArrowIcon() {
   return (
     <svg
@@ -120,21 +154,21 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
           </div>
 
           <div
-            className={`fade-up d6 ${visible ? "in" : ""} mt-14 flex flex-wrap items-center gap-7 border-t pt-8 border-slate-200 dark:border-[#1e2a40]`}
+            className={`fade-up d6 ${visible ? "in" : ""} mt-14 flex items-center gap-7 border-t pt-8 border-slate-200 dark:border-[#1e2a40]`}
           >
             {stats.map((s, i) => (
               <React.Fragment key={s.label}>
-                <div>
+                <div className="shrink-0">
                   <div className="mb-0.5 font-mono text-[17px] font-medium text-slate-900 dark:text-[#c5d0e8]">
                     {s.value}
                   </div>
-                  <div className="text-[11px] uppercase tracking-[0.06em] text-slate-500 dark:text-[#4a5870]">
+                  <div className="whitespace-nowrap text-[11px] uppercase tracking-[0.06em] text-slate-500 dark:text-[#4a5870]">
                     {s.label}
                   </div>
                 </div>
 
                 {i < stats.length - 1 && (
-                  <div className="h-8 w-px bg-slate-200 dark:bg-[#1e2a40]" />
+                  <div className="h-8 w-px shrink-0 bg-slate-200 dark:bg-[#1e2a40]" />
                 )}
               </React.Fragment>
             ))}
@@ -164,9 +198,9 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
 
             <div
               className="
-                absolute left-1/2 top-1/2 flex h-70 w-70
+                absolute left-1/2 top-1/2 flex h-120 w-120
                 -translate-x-1/2 -translate-y-1/2 items-center justify-center
-                rounded-[28px] border p-8
+                rounded-[28px] border p-2
                 border-slate-200 bg-white shadow-xl shadow-blue-500/10
                 dark:border-[#1e2a40] dark:bg-[#0d1320] dark:shadow-blue-500/5
               "
@@ -178,34 +212,10 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
               />
             </div>
 
-            {[
-              {
-                label: "Object permanence",
-                top: "4%",
-                left: "-12%",
-                delay: "0.8s",
-              },
-              {
-                label: "Spatial memory",
-                bottom: "8%",
-                right: "-10%",
-                delay: "1s",
-              },
-              {
-                label: "Hidden state",
-                top: "50%",
-                right: "-18%",
-                delay: "1.2s",
-              },
-            ].map((f) => (
+            {floatingLabels.map((f) => (
               <div
                 key={f.label}
-                className="
-                  absolute whitespace-nowrap rounded-lg border px-3 py-1.5
-                  font-mono text-[10px]
-                  border-slate-200 bg-white text-blue-600 shadow-sm
-                  dark:border-[#1e2a40] dark:bg-[#0d1320] dark:text-blue-400
-                "
+                className="absolute"
                 style={{
                   top: f.top,
                   bottom: f.bottom,
@@ -214,7 +224,21 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
                   animation: `fade-up 0.6s ${f.delay} both`,
                 }}
               >
-                {f.label}
+                <div
+                  className="
+      whitespace-nowrap rounded-2xl border px-6 py-3
+      font-mono text-[14px] font-semibold
+      border-slate-200 bg-white text-blue-600 shadow-md
+      dark:border-[#1e2a40] dark:bg-[#0d1320] dark:text-blue-400
+    "
+                  style={{
+                    animation: `
+        floatCircle ${f.floatDuration} ease-in-out infinite
+      `,
+                  }}
+                >
+                  {f.label}
+                </div>
               </div>
             ))}
           </div>
