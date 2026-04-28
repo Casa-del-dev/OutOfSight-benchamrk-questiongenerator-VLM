@@ -32,8 +32,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-100 border-b border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
-      <nav className="mx-auto grid max-w-6xl grid-cols-[auto_1fr_auto] items-center px-4 py-4">
-        {/* LEFT — Logo (fixed) */}
+      <nav className="mx-auto grid  grid-cols-[auto_1fr_auto] items-center px-4 py-4">
         <Link to="/" className="flex items-center">
           <img
             src={!isDark ? logoLight : logoDark}
@@ -42,19 +41,21 @@ export default function Header() {
           />
         </Link>
 
-        {/* CENTER — Navigation */}
-        <div className="flex justify-center gap-8 text-lg font-semibold">
+        <div className="flex justify-around w-4xl text-lg font-semibold">
           <Link
-            to="/benchmark"
+            to="/questions"
             className="text-gray-900 transition-colors duration-300 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
           >
             View Question
           </Link>
-
-          {/* future links go here */}
+          <Link
+            to="/results"
+            className="text-gray-900 transition-colors duration-300 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
+          >
+            Results
+          </Link>
         </div>
 
-        {/* RIGHT — Controls */}
         <div className="flex justify-end items-center gap-4">
           <button
             onClick={toggleTheme}

@@ -40,7 +40,7 @@ export default function View({ ref, visible }: ViewProps) {
 
         <div className="mt-6 flex flex-wrap justify-center gap-4">
           <a
-            href="/question-generator"
+            href="/questions"
             className="
               group inline-flex items-center gap-2 rounded-xl
               bg-linear-to-r from-blue-500 to-blue-600
@@ -51,12 +51,12 @@ export default function View({ ref, visible }: ViewProps) {
               active:scale-95
             "
           >
-            Example Question Pairs
+            Question generator
             <ArrowIcon />
           </a>
 
           <a
-            href="/benchmark"
+            href="/results"
             className="
               group inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium
               text-slate-800
@@ -71,7 +71,7 @@ export default function View({ ref, visible }: ViewProps) {
               dark:hover:bg-white/10 dark:hover:border-white/20 dark:hover:text-white
             "
           >
-            Example Benchmark
+            Results
             <ArrowIcon />
           </a>
         </div>

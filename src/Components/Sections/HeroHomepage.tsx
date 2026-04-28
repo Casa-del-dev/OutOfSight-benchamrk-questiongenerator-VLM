@@ -121,7 +121,7 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
             className={`fade-up d5 ${visible ? "in" : ""} flex flex-wrap gap-3`}
           >
             <a
-              href="/question-generator"
+              href="/questions"
               className="
                 group inline-flex items-center gap-2 rounded-xl
                 bg-linear-to-r from-blue-500 to-blue-600
@@ -137,7 +137,7 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
             </a>
 
             <a
-              href="/benchmark"
+              href="/results"
               className="
                 group inline-flex items-center gap-2 rounded-xl px-6 py-3 font-medium
                 border border-slate-200 bg-slate-100 text-slate-800 shadow-sm
@@ -148,7 +148,7 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
                 dark:hover:bg-white/10 dark:hover:border-white/20 dark:hover:text-white
               "
             >
-              Benchmark
+              Results
               <ArrowIcon />
             </a>
           </div>
