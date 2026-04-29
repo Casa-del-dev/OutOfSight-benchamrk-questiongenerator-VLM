@@ -70,7 +70,7 @@ export default function QuestionView() {
   }, []);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+    <div className="flex h-[calc(100vh-77px)] flex-col overflow-hidden bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       {/* 3-column layout */}
       <div
         className="grid min-h-0 flex-1"
