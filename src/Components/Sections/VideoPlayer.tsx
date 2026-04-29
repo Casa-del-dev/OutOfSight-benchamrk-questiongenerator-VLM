@@ -28,6 +28,60 @@ function clampTime(t: number, duration: number) {
   return Math.max(0, Math.min(duration, t));
 }
 
+function getYouTubeThumbnail(videoId: string | null) {
+  if (!videoId) return null;
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+}
+
+const SOURCE_WIDTH = 1408;
+const SOURCE_HEIGHT = 1408;
+const SOURCE_ASPECT = SOURCE_WIDTH / SOURCE_HEIGHT;
+const MARKER_OFFSET_X = 5;
+const MARKER_OFFSET_Y = 7;
+
+function getVideoRectInsideContainer(
+  containerWidth: number,
+  containerHeight: number,
+  videoAspect: number,
+) {
+  if (containerWidth <= 0 || containerHeight <= 0) {
+    return {
+      width: 0,
+      height: 0,
+      offsetX: 0,
+      offsetY: 0,
+    };
+  }
+
+  const containerAspect = containerWidth / containerHeight;
+
+  if (containerAspect > videoAspect) {
+    // Container is wider than the video.
+    // YouTube will show black bars on left/right.
+    const height = containerHeight;
+    const width = height * videoAspect;
+
+    return {
+      width,
+      height,
+      offsetX: (containerWidth - width) / 2,
+      offsetY: 0,
+    };
+  }
+
+  // Container is taller than the video.
+  // YouTube will show black bars on top/bottom.
+  const width = containerWidth;
+  const height = width / videoAspect;
+
+  return {
+    width,
+    height,
+    offsetX: 0,
+    offsetY: (containerHeight - height) / 2,
+  };
+}
+
 function getAnchors(
   trajectory: TrajectoryData | undefined,
   timeSec: number,
@@ -81,8 +135,8 @@ function getAnchors(
       });
     } else if (raw) {
       result.push({
-        xPct: (raw[0] / 1408) * 100,
-        yPct: (raw[1] / 1120) * 100,
+        xPct: (raw[0] / SOURCE_WIDTH) * 100,
+        yPct: (raw[1] / SOURCE_HEIGHT) * 100,
         label: `${trajectory.object_a_name} (step ${step.step})`,
         color: "#fbbf24",
         ring: "ring-amber-400",
@@ -93,8 +147,8 @@ function getAnchors(
 
     if (oyPx) {
       result.push({
-        xPct: (oyPx[0] / 1408) * 100,
-        yPct: (oyPx[1] / 1120) * 100,
+        xPct: (oyPx[0] / SOURCE_WIDTH) * 100,
+        yPct: (oyPx[1] / SOURCE_HEIGHT) * 100,
         label: (meta.object_y_name as string) ?? "reference",
         color: "#34d399",
         ring: "ring-emerald-400",
@@ -179,6 +233,38 @@ function VideoPane({
 }) {
   const youtubeId = getYouTubeId(src);
 
+  const [hasRenderedFrame, setHasRenderedFrame] = useState(false);
+  const thumbnailUrl = getYouTubeThumbnail(youtubeId);
+
+  useEffect(() => {
+    setHasRenderedFrame(false);
+  }, [youtubeId]);
+
+  const paneRef = useRef<HTMLDivElement | null>(null);
+  const [paneSize, setPaneSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = paneRef.current;
+    if (!el) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setPaneSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      });
+    });
+
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const videoRect = getVideoRectInsideContainer(
+    paneSize.width,
+    paneSize.height,
+    SOURCE_ASPECT,
+  );
+
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
@@ -210,6 +296,7 @@ function VideoPane({
 
   return (
     <div
+      ref={paneRef}
       className={`relative min-w-0 overflow-hidden bg-black ${
         hidden ? "hidden" : "flex-1"
       }`}
@@ -236,6 +323,7 @@ function VideoPane({
 
       {youtubeId ? (
         <YouTube
+          key={youtubeId}
           videoId={youtubeId}
           className="h-full w-full"
           iframeClassName="h-full w-full"
@@ -259,23 +347,28 @@ function VideoPane({
               player.mute();
 
               const target = getTargetTime();
-              player.seekTo(target, true);
+              player.seekTo(target > 0 ? target : 0.01, true);
 
               window.setTimeout(() => {
                 try {
-                  player.seekTo(getTargetTime(), true);
+                  player.seekTo(
+                    getTargetTime() > 0 ? getTargetTime() : 0.01,
+                    true,
+                  );
 
                   if (getIsPlaying()) {
                     player.playVideo?.();
                   } else {
                     player.pauseVideo?.();
                   }
+
+                  setHasRenderedFrame(true);
                 } catch {
-                  // Ignore transient YouTube API failures.
+                  setHasRenderedFrame(true);
                 }
               }, 500);
             } catch {
-              // Ignore transient YouTube API failures.
+              setHasRenderedFrame(true);
             }
 
             const d = player.getDuration?.();
@@ -290,46 +383,65 @@ function VideoPane({
         </div>
       )}
 
-      {anchors.map((a, i) => (
-        <div
-          key={i}
-          className="pointer-events-none absolute"
-          style={{
-            left: `${a.xPct}%`,
-            top: `${a.yPct}%`,
-            transform: "translate(-50%, -50%)",
-            zIndex: 20,
-          }}
-        >
-          <div
-            className="absolute inset-0 animate-ping rounded-full opacity-60"
-            style={{
-              width: 28,
-              height: 28,
-              background: a.color + "33",
-              border: `2px solid ${a.color}`,
-              left: -14,
-              top: -14,
-            }}
-          />
+      {thumbnailUrl && !hasRenderedFrame && (
+        <img
+          src={thumbnailUrl}
+          alt=""
+          className="pointer-events-none absolute inset-0 z-1 h-full w-full object-contain bg-black"
+        />
+      )}
 
-          <div
-            className="h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-lg"
-            style={{
-              background: a.color,
-              borderColor: "#fff",
-              boxShadow: `0 0 10px ${a.color}88`,
-            }}
-          />
+      {anchors.map((a, i) => {
+        const left =
+          videoRect.offsetX +
+          (a.xPct / 100) * videoRect.width +
+          MARKER_OFFSET_X;
+        const top =
+          videoRect.offsetY +
+          (a.yPct / 100) * videoRect.height +
+          MARKER_OFFSET_Y;
 
+        return (
           <div
-            className="absolute left-1/2 -top-7 -translate-x-1/2 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-semibold text-white"
-            style={{ background: a.color }}
+            key={i}
+            className="pointer-events-none absolute"
+            style={{
+              left,
+              top,
+              transform: "translate(-50%, -50%)",
+              zIndex: 20,
+            }}
           >
-            {a.label}
+            <div
+              className="absolute inset-0 animate-ping rounded-full opacity-60"
+              style={{
+                width: 28,
+                height: 28,
+                background: a.color + "33",
+                border: `2px solid ${a.color}`,
+                left: -14,
+                top: -14,
+              }}
+            />
+
+            <div
+              className="h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-lg"
+              style={{
+                background: a.color,
+                borderColor: "#fff",
+                boxShadow: `0 0 10px ${a.color}88`,
+              }}
+            />
+
+            <div
+              className="absolute left-1/2 -top-7 -translate-x-1/2 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-semibold text-white"
+              style={{ background: a.color }}
+            >
+              {a.label}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -548,7 +660,7 @@ export function VideoPlayer({
       const pct = getPctFromPointer(clientX);
       const rawTime = pct * duration;
 
-      const SNAP_SEC = 1.0;
+      const SNAP_SEC = 1.5;
 
       const nearestMarker = markers.reduce<Marker | null>((nearest, marker) => {
         const currentDistance = Math.abs(marker.time - rawTime);
@@ -567,14 +679,6 @@ export function VideoPlayer({
       setHoverTime(displayTime);
     },
     [duration, getPctFromPointer, markers],
-  );
-
-  const seekToPct = useCallback(
-    (pct: number) => {
-      const safePct = Math.max(0, Math.min(1, pct));
-      seekAllPlayers(safePct * duration);
-    },
-    [duration, seekAllPlayers],
   );
 
   const getSnappedTimeFromPointer = useCallback(
@@ -791,8 +895,8 @@ export function VideoPlayer({
             seekAllPlayers(time);
           }}
           onPointerUp={(e) => {
-            const pct = getPctFromPointer(e.clientX);
-            seekToPct(pct);
+            const time = getSnappedTimeFromPointer(e.clientX);
+            seekAllPlayers(time);
 
             setIsDragging(false);
 
