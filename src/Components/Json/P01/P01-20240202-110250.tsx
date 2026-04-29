@@ -192,6 +192,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [372.52356859415124, 741.870487730254],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
         {
@@ -221,6 +224,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
       ],
@@ -417,6 +423,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [372.52356859415124, 741.870487730254],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
         {
@@ -446,6 +455,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
       ],
@@ -642,6 +654,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [372.52356859415124, 741.870487730254],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
         {
@@ -671,6 +686,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.26457639814925515, 0.52689665321751,
+            ],
           },
         },
       ],
@@ -867,6 +885,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [1016.0580917832992, 620.4072598219511],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.7216321674597296, 0.44063015612354484,
+            ],
           },
         },
         {
@@ -896,6 +917,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.7216321674597296, 0.44063015612354484,
+            ],
           },
         },
       ],
@@ -1092,6 +1116,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [872.9408844687689, 983.2401278546449],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.619986423628387, 0.6983239544422194,
+            ],
           },
         },
         {
@@ -1121,6 +1148,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.619986423628387, 0.6983239544422194,
+            ],
           },
         },
       ],
@@ -1317,6 +1347,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [872.9408844687689, 983.2401278546449],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.619986423628387, 0.6983239544422194,
+            ],
           },
         },
         {
@@ -1346,6 +1379,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.619986423628387, 0.6983239544422194,
+            ],
           },
         },
       ],
@@ -1542,6 +1578,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [990.7908130752027, 700.3296211981559],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.7036866570136383, 0.49739319687369027,
+            ],
           },
         },
         {
@@ -1571,6 +1610,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.7036866570136383, 0.49739319687369027,
+            ],
           },
         },
       ],
@@ -1767,6 +1809,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [940.4549497809325, 810.2729140380559],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6679367541057759, 0.5754779219020283,
+            ],
           },
         },
         {
@@ -1796,6 +1841,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6679367541057759, 0.5754779219020283,
+            ],
           },
         },
       ],
@@ -1992,6 +2040,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [939.203800692719, 788.5173052697551],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
         {
@@ -2021,6 +2072,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
       ],
@@ -2217,6 +2271,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [939.203800692719, 788.5173052697551],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
         {
@@ -2246,6 +2303,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
       ],
@@ -2442,6 +2502,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [939.203800692719, 788.5173052697551],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
         {
@@ -2471,6 +2534,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
       ],
@@ -2667,6 +2733,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [939.203800692719, 788.5173052697551],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
         {
@@ -2696,6 +2765,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6670481539010789, 0.5600264952199965,
+            ],
           },
         },
       ],
@@ -2892,6 +2964,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [821.708387754765, 998.2455597750156],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.583599707212191, 0.7089812214311191,
+            ],
           },
         },
         {
@@ -2921,6 +2996,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.583599707212191, 0.7089812214311191,
+            ],
           },
         },
       ],
@@ -3117,6 +3195,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [670.5992535022874, 864.2543910284928],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.4762778789078746, 0.6138170390827363,
+            ],
           },
         },
         {
@@ -3146,6 +3227,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.4762778789078746, 0.6138170390827363,
+            ],
           },
         },
       ],
@@ -3342,6 +3426,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [670.5992535022874, 864.2543910284928],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.4762778789078746, 0.6138170390827363,
+            ],
           },
         },
         {
@@ -3371,6 +3458,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.4762778789078746, 0.6138170390827363,
+            ],
           },
         },
       ],
@@ -3567,6 +3657,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [564.0755829530472, 596.9630525778609],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.40062186289278917, 0.4239794407513217,
+            ],
           },
         },
         {
@@ -3596,6 +3689,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.40062186289278917, 0.4239794407513217,
+            ],
           },
         },
       ],
@@ -3794,6 +3890,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [381.1347518416107, 510.24228729942695],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.270692295342053, 0.3623879881387975,
+            ],
           },
         },
         {
@@ -3823,6 +3922,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.270692295342053, 0.3623879881387975,
+            ],
           },
         },
       ],
@@ -4021,6 +4123,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [932.7410084051845, 779.2522977861395],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
         {
@@ -4050,6 +4155,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
       ],
@@ -4246,6 +4354,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [932.7410084051845, 779.2522977861395],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
         {
@@ -4275,6 +4386,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
       ],
@@ -4473,6 +4587,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_projected_pixel: [932.7410084051845, 779.2522977861395],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
         {
@@ -4502,12 +4619,16 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
+            object_y_normalized_projected_pixel: [
+              0.6624581025605004, 0.5534462342231105,
+            ],
           },
         },
       ],
     },
   },
 };
+
 export const VIDEO: VideoEntry = {
   id: "P01-20240202-110250",
   label: "P01 — 2024-02-02 11:02",
