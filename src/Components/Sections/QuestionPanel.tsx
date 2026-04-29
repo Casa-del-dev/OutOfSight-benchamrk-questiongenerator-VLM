@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type {
-  TrajectoryData,
-  Step,
-  BranchStep,
-} from "../../pages/QuestionView";
+import type { TrajectoryData, Step, BranchStep } from "../Json/Types";
 
 interface QuestionPanelProps {
   trajectory: TrajectoryData | null | undefined;

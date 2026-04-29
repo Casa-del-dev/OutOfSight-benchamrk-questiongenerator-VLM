@@ -1,7 +1,13 @@
-"use client";
-
+import { getYouTubeId } from "../../Lib/YoutubeVideoPlayer";
+import YouTube, { type YouTubePlayer } from "react-youtube";
 import { useRef, useEffect, useState, useCallback } from "react";
-import type { VideoEntry, Step, BranchStep } from "../../pages/QuestionView";
+import type {
+  VideoEntry,
+  Step,
+  BranchStep,
+  TrajectoryData,
+} from "../Json/Types";
+import { Play, Pause } from "lucide-react";
 
 interface VideoPlayerProps {
   video: VideoEntry;
@@ -18,7 +24,7 @@ function formatTime(sec: number) {
 // ─── Derive anchor markers from trajectory at a given timestamp ───────────────
 
 function getAnchors(
-  trajectory: VideoEntry["trajectory"],
+  trajectory: TrajectoryData | undefined,
   timeSec: number,
 ): {
   xPct: number;
@@ -98,46 +104,66 @@ function VideoPane({
   anchors,
   currentTimeSec,
   onDurationReady,
-  videoRef,
+  playerRef,
 }: {
   src: string | null;
   label: string;
   anchors: ReturnType<typeof getAnchors>;
   currentTimeSec: number;
   onDurationReady?: (d: number) => void;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
+  playerRef: React.MutableRefObject<YouTubePlayer | null>;
 }) {
+  const youtubeId = getYouTubeId(src);
+
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (Math.abs(v.currentTime - currentTimeSec) > 0.3) {
-      v.currentTime = currentTimeSec;
+    const player = playerRef.current;
+    if (!player) return;
+
+    const t = player.getCurrentTime();
+
+    if (Math.abs(t - currentTimeSec) > 0.3) {
+      player.seekTo(currentTimeSec, true);
     }
-  }, [currentTimeSec, videoRef]);
+  }, [currentTimeSec, playerRef]);
 
   return (
     <div className="relative flex-1 bg-black overflow-hidden min-w-0">
-      {/* Label */}
       <div className="absolute top-2.5 left-2.5 z-10 bg-black/60 backdrop-blur-sm rounded-md px-2.5 py-1 text-[10px] font-bold text-slate-300 uppercase tracking-widest border border-white/10">
         {label}
       </div>
 
-      {src ? (
-        <video
-          ref={videoRef}
-          src={src}
-          className="w-full h-full object-contain"
-          onLoadedMetadata={(e) => onDurationReady?.(e.currentTarget.duration)}
-          muted
-          preload="metadata"
+      {youtubeId ? (
+        <YouTube
+          videoId={youtubeId}
+          className="w-full h-full"
+          iframeClassName="w-full h-full"
+          opts={{
+            width: "100%",
+            height: "100%",
+            playerVars: {
+              controls: 0,
+              modestbranding: 1,
+              rel: 0,
+              disablekb: 1,
+              fs: 0,
+              playsinline: 1,
+            },
+          }}
+          onReady={(e) => {
+            const player = e.target;
+            playerRef.current = player;
+            player.mute();
+
+            const duration = e.target.getDuration?.();
+            if (duration) onDurationReady?.(duration);
+          }}
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center text-slate-600 text-sm">
-          No source
+          No YouTube source
         </div>
       )}
 
-      {/* Anchor overlays */}
       {anchors.map((a, i) => (
         <div
           key={i}
@@ -149,7 +175,6 @@ function VideoPane({
             zIndex: 20,
           }}
         >
-          {/* Outer pulsing ring */}
           <div
             className="absolute inset-0 rounded-full animate-ping opacity-60"
             style={{
@@ -161,7 +186,7 @@ function VideoPane({
               top: -14,
             }}
           />
-          {/* Inner dot */}
+
           <div
             className="w-3.5 h-3.5 rounded-full border-2 shadow-lg -translate-x-1/2 -translate-y-1/2"
             style={{
@@ -170,7 +195,7 @@ function VideoPane({
               boxShadow: `0 0 10px ${a.color}88`,
             }}
           />
-          {/* Label tooltip */}
+
           <div
             className="absolute left-1/2 -translate-x-1/2 -top-7 whitespace-nowrap text-[10px] font-semibold rounded px-1.5 py-0.5 text-white"
             style={{ background: a.color }}
@@ -193,19 +218,38 @@ export function VideoPlayer({
   const [duration, setDuration] = useState(video.duration ?? 220);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const sampledRef = useRef<HTMLVideoElement>(null);
-  const fullRef = useRef<HTMLVideoElement>(null);
-  const scrubberRef = useRef<HTMLDivElement>(null);
+  const sampledRef = useRef<YouTubePlayer | null>(null);
+  const fullRef = useRef<YouTubePlayer | null>(null);
+  const scrubberRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number>(0);
 
-  const anchors = getAnchors(video.trajectory ?? undefined, currentTimeSec);
+  const selectedTrajectoryForAnchors = video.trajectory
+    ? Object.values(video.trajectory)[0]
+    : undefined;
+  const anchors = getAnchors(selectedTrajectoryForAnchors, currentTimeSec);
+  const seekToTime = useCallback(
+    (timeSec: number) => {
+      const t = Math.max(0, Math.min(duration, timeSec));
 
+      onTimeChange(t);
+
+      [sampledRef, fullRef].forEach((ref) => {
+        ref.current?.seekTo(t, true);
+      });
+    },
+    [duration, onTimeChange],
+  );
   // Sync play/pause across both videos
   useEffect(() => {
     [sampledRef, fullRef].forEach((ref) => {
-      if (!ref.current) return;
-      if (isPlaying) ref.current.play().catch(() => {});
-      else ref.current.pause();
+      const player = ref.current;
+      if (!player) return;
+
+      if (isPlaying) {
+        player.playVideo?.();
+      } else {
+        player.pauseVideo?.();
+      }
     });
   }, [isPlaying]);
 
@@ -215,39 +259,70 @@ export function VideoPlayer({
       cancelAnimationFrame(rafRef.current);
       return;
     }
+
     const tick = () => {
-      if (fullRef.current) onTimeChange(fullRef.current.currentTime);
+      const player = fullRef.current;
+
+      if (player) {
+        const t = player.getCurrentTime();
+        onTimeChange(t);
+      }
+
       rafRef.current = requestAnimationFrame(tick);
     };
+
     rafRef.current = requestAnimationFrame(tick);
+
     return () => cancelAnimationFrame(rafRef.current);
   }, [isPlaying, onTimeChange]);
 
   const seekTo = useCallback(
     (pct: number) => {
-      const t = Math.max(0, Math.min(1, pct)) * duration;
-      onTimeChange(t);
-      [sampledRef, fullRef].forEach((ref) => {
-        if (ref.current) ref.current.currentTime = t;
-      });
+      seekToTime(Math.max(0, Math.min(1, pct)) * duration);
     },
-    [duration, onTimeChange],
+    [duration, seekToTime],
   );
 
-  const handleMouseEvent = useCallback(
-    (e: React.MouseEvent, active: boolean) => {
-      if (!active || !scrubberRef.current) return;
-      const rect = scrubberRef.current.getBoundingClientRect();
-      seekTo((e.clientX - rect.left) / rect.width);
-    },
-    [seekTo],
-  );
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+
+      if (
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        setIsPlaying((p) => !p);
+      }
+
+      if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        seekToTime(currentTimeSec - 5);
+      }
+
+      if (e.code === "ArrowRight") {
+        e.preventDefault();
+        seekToTime(currentTimeSec + 5);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentTimeSec, seekToTime]);
 
   // Timeline markers derived from trajectory
   type Marker = { pct: number; color: string; label: string; bg: string };
   const markers: Marker[] = [];
-  if (video.trajectory && duration > 0) {
-    const traj = video.trajectory;
+  const selectedTrajectory = video.trajectory
+    ? Object.values(video.trajectory)[0]
+    : null;
+  if (selectedTrajectory && duration > 0) {
+    const traj = selectedTrajectory;
     markers.push({
       pct: (traj.clip_start_time_sec / duration) * 100,
       color: "#60a5fa",
@@ -272,46 +347,58 @@ export function VideoPlayer({
   const progress = duration > 0 ? (currentTimeSec / duration) * 100 : 0;
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex h-full min-h-0 flex-col bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       {/* Dual video panes */}
-      <div className="flex flex-1 min-h-0 gap-px bg-slate-800/40">
+      <div className="flex min-h-0 flex-1 gap-px bg-slate-200 dark:bg-slate-800/40">
         <VideoPane
           src={video.sampledUrl}
           label="1 FPS · sampled"
           anchors={anchors}
           currentTimeSec={currentTimeSec}
           onDurationReady={setDuration}
-          videoRef={sampledRef}
+          playerRef={sampledRef}
         />
+
         <VideoPane
           src={video.fullUrl}
           label="Full FPS"
           anchors={anchors}
           currentTimeSec={currentTimeSec}
-          videoRef={fullRef}
+          playerRef={fullRef}
         />
       </div>
 
       {/* Controls */}
-      <div className="shrink-0 bg-slate-900 border-t border-white/[0.07] px-4 pt-3 pb-4">
+      <div className="shrink-0 border-t border-slate-200 bg-white px-4 pb-4 pt-3 dark:border-white/[0.07] dark:bg-slate-900">
         {/* Scrubber */}
         <div
           ref={scrubberRef}
-          className="relative h-9 flex items-center cursor-pointer select-none"
-          onMouseDown={(e) => {
+          className="relative flex h-9 cursor-pointer select-none items-center"
+          onPointerDown={(e) => {
             setIsDragging(true);
-            handleMouseEvent(e, true);
+            e.currentTarget.setPointerCapture(e.pointerId);
+
+            const rect = e.currentTarget.getBoundingClientRect();
+            seekTo((e.clientX - rect.left) / rect.width);
           }}
-          onMouseMove={(e) => handleMouseEvent(e, isDragging)}
-          onMouseUp={() => setIsDragging(false)}
-          onMouseLeave={() => setIsDragging(false)}
+          onPointerMove={(e) => {
+            if (!isDragging || !scrubberRef.current) return;
+
+            const rect = scrubberRef.current.getBoundingClientRect();
+            seekTo((e.clientX - rect.left) / rect.width);
+          }}
+          onPointerUp={(e) => {
+            setIsDragging(false);
+            e.currentTarget.releasePointerCapture(e.pointerId);
+          }}
+          onPointerCancel={() => setIsDragging(false)}
         >
           {/* Track */}
-          <div className="absolute inset-x-0 top-3.75 h-1.5 rounded-full bg-slate-700/80" />
+          <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-slate-300 dark:bg-slate-700/80" />
 
-          {/* Filled portion */}
+          {/* Filled progress */}
           <div
-            className="absolute top-3.75 left-0 h-1.5 rounded-full bg-linear-to-r from-blue-500 to-violet-500"
+            className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-linear-to-r from-blue-500 to-violet-500"
             style={{
               width: `${progress}%`,
               transition: isDragging ? "none" : "width 0.08s linear",
@@ -320,8 +407,11 @@ export function VideoPlayer({
 
           {/* Thumb */}
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-blue-500 shadow-md shadow-blue-500/30 z-10"
-            style={{ left: `${progress}%`, transform: "translate(-50%, -50%)" }}
+            className="pointer-events-none absolute top-1/2 z-10 h-4 w-4 rounded-full border-2 border-blue-500 bg-white shadow-md shadow-blue-500/30"
+            style={{
+              left: `${progress}%`,
+              transform: "translate(-50%, -50%)",
+            }}
           />
 
           {/* Event markers */}
@@ -329,61 +419,43 @@ export function VideoPlayer({
             <div
               key={i}
               title={m.label}
-              className="absolute top-3.25 h-2.5 w-0.5 rounded-sm opacity-80 z-5"
+              className="pointer-events-none absolute top-1/2 z-5 h-2.5 w-0.5 -translate-y-1/2 rounded-sm opacity-80"
               style={{ left: `${m.pct}%`, background: m.color }}
             />
           ))}
         </div>
 
         {/* Bottom row */}
-        <div className="flex items-center gap-3 mt-2">
-          {/* Play/pause */}
+        <div className="mt-2 flex items-center gap-3">
           <button
             onClick={() => setIsPlaying((p) => !p)}
-            className="w-9 h-9 rounded-lg bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-white text-sm shrink-0 transition-all shadow-lg shadow-blue-600/30 hover:scale-105"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm text-white shadow-lg shadow-blue-600/30 transition-all hover:scale-105 hover:bg-blue-500"
           >
-            {isPlaying ? "⏸" : "▶"}
+            {isPlaying ? (
+              <Pause className="h-4 w-4" strokeWidth={2.5} />
+            ) : (
+              <Play className="ml-0.5 h-4 w-4" strokeWidth={2.5} />
+            )}
           </button>
 
-          {/* Timecode */}
-          <span className="font-mono text-[12px] text-slate-400 tabular-nums">
+          <span className="font-mono text-[12px] tabular-nums text-slate-600 dark:text-slate-400">
             {formatTime(currentTimeSec)} / {formatTime(duration)}
           </span>
 
-          {/* Marker legend */}
-          <div className="flex items-center gap-3 ml-auto flex-wrap">
+          <div className="ml-auto flex flex-wrap items-center gap-3">
             {markers.map((m, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1.5 text-[11px] text-slate-500"
+                className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-500"
               >
                 <span
-                  className="inline-block w-2 h-2 rounded-sm"
+                  className="inline-block h-2 w-2 rounded-sm"
                   style={{ background: m.color }}
                 />
                 {m.label}
               </span>
             ))}
           </div>
-        </div>
-
-        {/* Video metadata */}
-        <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-          <span className="text-[11px] text-slate-600 font-mono">
-            {video.id}
-          </span>
-          {video.trajectory && (
-            <>
-              <span className="text-slate-700 text-[11px]">·</span>
-              <span className="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-400 font-medium">
-                {video.trajectory.object_a_name}
-              </span>
-              <span className="text-slate-700 text-[11px]">·</span>
-              <span className="text-[11px] text-slate-600 font-mono">
-                {video.trajectory.trajectory_id}
-              </span>
-            </>
-          )}
         </div>
       </div>
     </div>
