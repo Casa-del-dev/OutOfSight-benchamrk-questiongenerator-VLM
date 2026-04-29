@@ -77,7 +77,7 @@ export default function QuestionView() {
         style={{ gridTemplateColumns: "260px 1fr 420px" }}
       >
         {/* Sidebar */}
-        <aside className="overflow-y-auto border-r border-slate-200 bg-slate-50 dark:border-white/[0.07] dark:bg-slate-950/60">
+        <aside className="overflow-y-auto border-r border-slate-200 bg-white dark:border-white/[0.07] dark:bg-slate-950/60">
           <UserVideoSelector
             users={USERS}
             selectedUserId={selectedUserId}
