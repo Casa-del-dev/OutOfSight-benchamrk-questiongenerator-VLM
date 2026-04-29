@@ -95,6 +95,7 @@ export default function QuestionView() {
           {selectedVideo ? (
             <VideoPlayer
               video={selectedVideo}
+              trajectory={selectedTrajectory}
               currentTimeSec={currentTimeSec}
               onTimeChange={setCurrentTimeSec}
             />

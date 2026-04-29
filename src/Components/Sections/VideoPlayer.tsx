@@ -11,6 +11,7 @@ import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface VideoPlayerProps {
   video: VideoEntry;
+  trajectory: TrajectoryData | null | undefined;
   currentTimeSec: number;
   onTimeChange: (t: number) => void;
 }
@@ -475,6 +476,7 @@ function RestorePaneButton({
 
 export function VideoPlayer({
   video,
+  trajectory,
   currentTimeSec,
   onTimeChange,
 }: VideoPlayerProps) {
@@ -603,11 +605,7 @@ export function VideoPlayer({
     restoringUntilRef.current = 0;
   }, [video.id]);
 
-  const selectedTrajectoryForAnchors = video.trajectory
-    ? Object.values(video.trajectory)[0]
-    : undefined;
-
-  const anchors = getAnchors(selectedTrajectoryForAnchors, currentTimeSec);
+  const anchors = getAnchors(trajectory ?? undefined, currentTimeSec);
 
   type Marker = {
     time: number;
@@ -618,9 +616,7 @@ export function VideoPlayer({
   };
 
   const markers: Marker[] = [];
-  const selectedTrajectory = video.trajectory
-    ? Object.values(video.trajectory)[0]
-    : null;
+  const selectedTrajectory = trajectory ?? null;
 
   if (selectedTrajectory && duration > 0) {
     const traj = selectedTrajectory;
