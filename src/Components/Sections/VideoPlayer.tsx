@@ -497,7 +497,13 @@ export function VideoPlayer({
 
   const anchors = getAnchors(selectedTrajectoryForAnchors, currentTimeSec);
 
-  type Marker = { pct: number; color: string; label: string; bg: string };
+  type Marker = {
+    time: number;
+    pct: number;
+    color: string;
+    label: string;
+    bg: string;
+  };
 
   const markers: Marker[] = [];
   const selectedTrajectory = video.trajectory
@@ -508,27 +514,21 @@ export function VideoPlayer({
     const traj = selectedTrajectory;
 
     markers.push({
-      pct: (traj.clip_start_time_sec / duration) * 100,
-      color: "#60a5fa",
-      label: "clip start",
-      bg: "bg-blue-400",
-    });
-
-    markers.push({
+      time: traj.query_time_sec,
       pct: (traj.query_time_sec / duration) * 100,
       color: "#fbbf24",
       label: "query",
       bg: "bg-amber-400",
     });
 
-    if (traj.generation_info.oos_span_start_sec) {
+    /*     if (traj.generation_info.oos_span_start_sec) {
       markers.push({
         pct: (traj.generation_info.oos_span_start_sec / duration) * 100,
         color: "#f87171",
         label: "OoS start",
         bg: "bg-red-400",
       });
-    }
+    } */
   }
 
   const progress = duration > 0 ? (currentTimeSec / duration) * 100 : 0;
@@ -546,10 +546,27 @@ export function VideoPlayer({
   const updateHoverFromPointer = useCallback(
     (clientX: number) => {
       const pct = getPctFromPointer(clientX);
-      setHoverPct(pct * 100);
-      setHoverTime(pct * duration);
+      const rawTime = pct * duration;
+
+      const SNAP_SEC = 1.0;
+
+      const nearestMarker = markers.reduce<Marker | null>((nearest, marker) => {
+        const currentDistance = Math.abs(marker.time - rawTime);
+
+        if (currentDistance > SNAP_SEC) return nearest;
+        if (!nearest) return marker;
+
+        const nearestDistance = Math.abs(nearest.time - rawTime);
+        return currentDistance < nearestDistance ? marker : nearest;
+      }, null);
+
+      const displayTime = nearestMarker ? nearestMarker.time : rawTime;
+      const displayPct = nearestMarker ? nearestMarker.pct : pct * 100;
+
+      setHoverPct(displayPct);
+      setHoverTime(displayTime);
     },
-    [duration, getPctFromPointer],
+    [duration, getPctFromPointer, markers],
   );
 
   const seekToPct = useCallback(
@@ -558,6 +575,30 @@ export function VideoPlayer({
       seekAllPlayers(safePct * duration);
     },
     [duration, seekAllPlayers],
+  );
+
+  const getSnappedTimeFromPointer = useCallback(
+    (clientX: number) => {
+      const pct = getPctFromPointer(clientX);
+      const rawTime = pct * duration;
+
+      const SNAP_SEC = 1.0;
+
+      const nearestMarker = markers.reduce<Marker | null>((nearest, marker) => {
+        const markerTime = marker.time;
+        const currentDistance = Math.abs(markerTime - rawTime);
+
+        if (currentDistance > SNAP_SEC) return nearest;
+
+        if (!nearest) return marker;
+
+        const nearestDistance = Math.abs(nearest.time - rawTime);
+        return currentDistance < nearestDistance ? marker : nearest;
+      }, null);
+
+      return nearestMarker ? nearestMarker.time : rawTime;
+    },
+    [duration, getPctFromPointer, markers],
   );
 
   const restoreBothPanes = useCallback(() => {
@@ -732,8 +773,8 @@ export function VideoPlayer({
 
             if (!isDragging) return;
 
-            const pct = getPctFromPointer(e.clientX);
-            seekToPct(pct);
+            const time = getSnappedTimeFromPointer(e.clientX);
+            seekAllPlayers(time);
           }}
           onPointerLeave={() => {
             if (!isDragging) {
@@ -745,9 +786,9 @@ export function VideoPlayer({
             setIsDragging(true);
             e.currentTarget.setPointerCapture(e.pointerId);
 
-            const pct = getPctFromPointer(e.clientX);
+            const time = getSnappedTimeFromPointer(e.clientX);
             updateHoverFromPointer(e.clientX);
-            seekToPct(pct);
+            seekAllPlayers(time);
           }}
           onPointerUp={(e) => {
             const pct = getPctFromPointer(e.clientX);
