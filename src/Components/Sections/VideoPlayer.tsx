@@ -7,7 +7,7 @@ import type {
   BranchStep,
   TrajectoryData,
 } from "../Json/Types";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface VideoPlayerProps {
   video: VideoEntry;
@@ -15,13 +15,18 @@ interface VideoPlayerProps {
   onTimeChange: (t: number) => void;
 }
 
+type VisiblePane = "both" | "sampled" | "full";
+
 function formatTime(sec: number) {
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
+  const safeSec = Number.isFinite(sec) ? Math.max(0, sec) : 0;
+  const m = Math.floor(safeSec / 60);
+  const s = Math.floor(safeSec % 60);
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// ─── Derive anchor markers from trajectory at a given timestamp ───────────────
+function clampTime(t: number, duration: number) {
+  return Math.max(0, Math.min(duration, t));
+}
 
 function getAnchors(
   trajectory: TrajectoryData | undefined,
@@ -34,6 +39,7 @@ function getAnchors(
   ring: string;
 }[] {
   if (!trajectory) return [];
+
   const result: {
     xPct: number;
     yPct: number;
@@ -41,6 +47,7 @@ function getAnchors(
     color: string;
     ring: string;
   }[] = [];
+
   const TOL = 1.5;
 
   const allSteps: (Step | BranchStep)[] = [
@@ -61,6 +68,7 @@ function getAnchors(
       | [number, number]
       | null
       | undefined;
+
     const raw = meta.projected_pixel as [number, number] | null | undefined;
 
     if (norm) {
@@ -82,6 +90,7 @@ function getAnchors(
     }
 
     const oyPx = meta.object_y_projected_pixel as [number, number] | undefined;
+
     if (oyPx) {
       result.push({
         xPct: (oyPx[0] / 1408) * 100,
@@ -96,22 +105,77 @@ function getAnchors(
   return result;
 }
 
-// ─── Single video pane ────────────────────────────────────────────────────────
+function safeSeek(
+  ref: React.MutableRefObject<YouTubePlayer | null>,
+  timeSec: number,
+) {
+  const player = ref.current;
+  if (!player) return;
+
+  try {
+    player.seekTo(timeSec, true);
+  } catch {
+    // Do not clear the ref aggressively.
+    // YouTube sometimes throws transient API errors.
+  }
+}
+
+function safePlayPause(
+  ref: React.MutableRefObject<YouTubePlayer | null>,
+  isPlaying: boolean,
+) {
+  const player = ref.current;
+  if (!player) return;
+
+  try {
+    if (isPlaying) {
+      player.playVideo?.();
+    } else {
+      player.pauseVideo?.();
+    }
+  } catch {
+    // Ignore transient YouTube API failures.
+  }
+}
+
+function safeGetTime(ref: React.MutableRefObject<YouTubePlayer | null>) {
+  const player = ref.current;
+  if (!player) return null;
+
+  try {
+    const t = player.getCurrentTime?.();
+    return typeof t === "number" && Number.isFinite(t) ? t : null;
+  } catch {
+    return null;
+  }
+}
 
 function VideoPane({
   src,
   label,
   anchors,
+  hidden,
   currentTimeSec,
+  isPlaying,
+  getTargetTime,
+  getIsPlaying,
   onDurationReady,
   playerRef,
+  onClose,
+  canClose,
 }: {
   src: string | null;
   label: string;
   anchors: ReturnType<typeof getAnchors>;
+  hidden: boolean;
   currentTimeSec: number;
+  isPlaying: boolean;
+  getTargetTime: () => number;
+  getIsPlaying: () => boolean;
   onDurationReady?: (d: number) => void;
   playerRef: React.MutableRefObject<YouTubePlayer | null>;
+  onClose?: () => void;
+  canClose?: boolean;
 }) {
   const youtubeId = getYouTubeId(src);
 
@@ -119,24 +183,62 @@ function VideoPane({
     const player = playerRef.current;
     if (!player) return;
 
-    const t = player.getCurrentTime();
+    try {
+      if (isPlaying) {
+        player.playVideo?.();
+      } else {
+        player.pauseVideo?.();
+      }
+    } catch {
+      // Ignore transient YouTube API failures.
+    }
+  }, [isPlaying, playerRef]);
 
-    if (Math.abs(t - currentTimeSec) > 0.3) {
-      player.seekTo(currentTimeSec, true);
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    try {
+      const now = player.getCurrentTime?.() ?? 0;
+      if (Math.abs(now - currentTimeSec) > 1.25) {
+        player.seekTo(currentTimeSec, true);
+      }
+    } catch {
+      // Ignore transient YouTube API failures.
     }
   }, [currentTimeSec, playerRef]);
 
   return (
-    <div className="relative flex-1 bg-black overflow-hidden min-w-0">
-      <div className="absolute top-2.5 left-2.5 z-10 bg-black/60 backdrop-blur-sm rounded-md px-2.5 py-1 text-[10px] font-bold text-slate-300 uppercase tracking-widest border border-white/10">
+    <div
+      className={`relative min-w-0 overflow-hidden bg-black ${
+        hidden ? "hidden" : "flex-1"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={() => {
+          if (canClose) onClose?.();
+        }}
+        disabled={!canClose}
+        title={
+          canClose
+            ? `Hide ${label}`
+            : "Only one video is visible. Use the side arrow to restore both videos."
+        }
+        className={`absolute left-2.5 top-2.5 z-10 rounded-md border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 backdrop-blur-sm transition-all ${
+          canClose
+            ? "cursor-pointer hover:bg-red-500/80 hover:text-white"
+            : "cursor-default opacity-90"
+        }`}
+      >
         {label}
-      </div>
+      </button>
 
       {youtubeId ? (
         <YouTube
           videoId={youtubeId}
-          className="w-full h-full"
-          iframeClassName="w-full h-full"
+          className="h-full w-full"
+          iframeClassName="h-full w-full"
           opts={{
             width: "100%",
             height: "100%",
@@ -152,14 +254,38 @@ function VideoPane({
           onReady={(e) => {
             const player = e.target;
             playerRef.current = player;
-            player.mute();
 
-            const duration = e.target.getDuration?.();
-            if (duration) onDurationReady?.(duration);
+            try {
+              player.mute();
+
+              const target = getTargetTime();
+              player.seekTo(target, true);
+
+              window.setTimeout(() => {
+                try {
+                  player.seekTo(getTargetTime(), true);
+
+                  if (getIsPlaying()) {
+                    player.playVideo?.();
+                  } else {
+                    player.pauseVideo?.();
+                  }
+                } catch {
+                  // Ignore transient YouTube API failures.
+                }
+              }, 500);
+            } catch {
+              // Ignore transient YouTube API failures.
+            }
+
+            const d = player.getDuration?.();
+            if (typeof d === "number" && d > 0) {
+              onDurationReady?.(d);
+            }
           }}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-slate-600 text-sm">
+        <div className="flex h-full w-full items-center justify-center text-sm text-slate-600">
           No YouTube source
         </div>
       )}
@@ -167,7 +293,7 @@ function VideoPane({
       {anchors.map((a, i) => (
         <div
           key={i}
-          className="absolute pointer-events-none"
+          className="pointer-events-none absolute"
           style={{
             left: `${a.xPct}%`,
             top: `${a.yPct}%`,
@@ -176,7 +302,7 @@ function VideoPane({
           }}
         >
           <div
-            className="absolute inset-0 rounded-full animate-ping opacity-60"
+            className="absolute inset-0 animate-ping rounded-full opacity-60"
             style={{
               width: 28,
               height: 28,
@@ -188,7 +314,7 @@ function VideoPane({
           />
 
           <div
-            className="w-3.5 h-3.5 rounded-full border-2 shadow-lg -translate-x-1/2 -translate-y-1/2"
+            className="h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-lg"
             style={{
               background: a.color,
               borderColor: "#fff",
@@ -197,7 +323,7 @@ function VideoPane({
           />
 
           <div
-            className="absolute left-1/2 -translate-x-1/2 -top-7 whitespace-nowrap text-[10px] font-semibold rounded px-1.5 py-0.5 text-white"
+            className="absolute left-1/2 -top-7 -translate-x-1/2 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-semibold text-white"
             style={{ background: a.color }}
           >
             {a.label}
@@ -208,7 +334,32 @@ function VideoPane({
   );
 }
 
-// ─── Main VideoPlayer ─────────────────────────────────────────────────────────
+function RestorePaneButton({
+  side,
+  label,
+  onClick,
+}: {
+  side: "left" | "right";
+  label: string;
+  onClick: () => void;
+}) {
+  const Icon = side === "left" ? ChevronRight : ChevronLeft;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      className={`absolute top-1/2 z-30 flex h-12 w-8 -translate-y-1/2 items-center justify-center border border-white/10 bg-black/70 text-white shadow-lg backdrop-blur-sm transition-all hover:w-10 hover:bg-blue-600 ${
+        side === "left"
+          ? "left-0 rounded-r-xl border-l-0"
+          : "right-0 rounded-l-xl border-r-0"
+      }`}
+    >
+      <Icon className="h-5 w-5" strokeWidth={2.5} />
+    </button>
+  );
+}
 
 export function VideoPlayer({
   video,
@@ -218,42 +369,246 @@ export function VideoPlayer({
   const [duration, setDuration] = useState(video.duration ?? 220);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [visiblePane, setVisiblePane] = useState<VisiblePane>("both");
+
+  const [hoverTime, setHoverTime] = useState<number | null>(null);
+  const [hoverPct, setHoverPct] = useState<number | null>(null);
+
   const sampledRef = useRef<YouTubePlayer | null>(null);
   const fullRef = useRef<YouTubePlayer | null>(null);
   const scrubberRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number>(0);
 
+  const targetTimeRef = useRef(currentTimeSec);
+  const isPlayingRef = useRef(isPlaying);
+  const seekingUntilRef = useRef(0);
+  const restoringUntilRef = useRef(0);
+
+  const showSampled = visiblePane === "both" || visiblePane === "sampled";
+  const showFull = visiblePane === "both" || visiblePane === "full";
+  const canCloseVideo = visiblePane === "both";
+
+  const seekVersionRef = useRef(0);
+  const seekVerifyTimeoutRef = useRef<number | null>(null);
+
+  const getAllRefs = useCallback(() => {
+    return [sampledRef, fullRef];
+  }, []);
+
+  const getPrimaryRef = useCallback(() => {
+    if (visiblePane === "sampled") return sampledRef;
+    if (visiblePane === "full") return fullRef;
+    return fullRef.current ? fullRef : sampledRef;
+  }, [visiblePane]);
+
+  const seekAllPlayers = useCallback(
+    (timeSec: number) => {
+      const t = clampTime(timeSec, duration);
+
+      // Every seek gets a version. Older delayed seeks will be ignored.
+      seekVersionRef.current += 1;
+      const seekVersion = seekVersionRef.current;
+
+      targetTimeRef.current = t;
+      seekingUntilRef.current = performance.now() + 800;
+      onTimeChange(t);
+
+      // Cancel previous delayed verification.
+      if (seekVerifyTimeoutRef.current !== null) {
+        window.clearTimeout(seekVerifyTimeoutRef.current);
+        seekVerifyTimeoutRef.current = null;
+      }
+
+      // Immediate seek to latest requested time.
+      getAllRefs().forEach((ref) => {
+        safeSeek(ref, t);
+      });
+
+      // Only verify the most recent seek.
+      seekVerifyTimeoutRef.current = window.setTimeout(() => {
+        if (seekVersion !== seekVersionRef.current) return;
+
+        getAllRefs().forEach((ref) => {
+          const now = safeGetTime(ref);
+
+          if (now !== null && Math.abs(now - t) > 0.8) {
+            safeSeek(ref, t);
+          }
+
+          safePlayPause(ref, isPlayingRef.current);
+        });
+
+        if (seekVersion === seekVersionRef.current) {
+          seekingUntilRef.current = 0;
+        }
+
+        seekVerifyTimeoutRef.current = null;
+      }, 350);
+    },
+    [duration, getAllRefs, onTimeChange],
+  );
+
+  const playPauseAllPlayers = useCallback(
+    (nextPlaying: boolean) => {
+      isPlayingRef.current = nextPlaying;
+      setIsPlaying(nextPlaying);
+
+      getAllRefs().forEach((ref) => {
+        safePlayPause(ref, nextPlaying);
+      });
+
+      window.setTimeout(() => {
+        getAllRefs().forEach((ref) => {
+          safePlayPause(ref, nextPlaying);
+        });
+      }, 250);
+    },
+    [getAllRefs],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (seekVerifyTimeoutRef.current !== null) {
+        window.clearTimeout(seekVerifyTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  useEffect(() => {
+    targetTimeRef.current = currentTimeSec;
+  }, [currentTimeSec]);
+
+  useEffect(() => {
+    setDuration(video.duration ?? 220);
+    setVisiblePane("both");
+    playPauseAllPlayers(false);
+    targetTimeRef.current = currentTimeSec;
+    seekingUntilRef.current = 0;
+    restoringUntilRef.current = 0;
+  }, [video.id]);
+
   const selectedTrajectoryForAnchors = video.trajectory
     ? Object.values(video.trajectory)[0]
     : undefined;
+
   const anchors = getAnchors(selectedTrajectoryForAnchors, currentTimeSec);
-  const seekToTime = useCallback(
-    (timeSec: number) => {
-      const t = Math.max(0, Math.min(duration, timeSec));
 
-      onTimeChange(t);
+  type Marker = { pct: number; color: string; label: string; bg: string };
 
-      [sampledRef, fullRef].forEach((ref) => {
-        ref.current?.seekTo(t, true);
-      });
-    },
-    [duration, onTimeChange],
-  );
-  // Sync play/pause across both videos
-  useEffect(() => {
-    [sampledRef, fullRef].forEach((ref) => {
-      const player = ref.current;
-      if (!player) return;
+  const markers: Marker[] = [];
+  const selectedTrajectory = video.trajectory
+    ? Object.values(video.trajectory)[0]
+    : null;
 
-      if (isPlaying) {
-        player.playVideo?.();
-      } else {
-        player.pauseVideo?.();
-      }
+  if (selectedTrajectory && duration > 0) {
+    const traj = selectedTrajectory;
+
+    markers.push({
+      pct: (traj.clip_start_time_sec / duration) * 100,
+      color: "#60a5fa",
+      label: "clip start",
+      bg: "bg-blue-400",
     });
-  }, [isPlaying]);
 
-  // RAF ticker while playing
+    markers.push({
+      pct: (traj.query_time_sec / duration) * 100,
+      color: "#fbbf24",
+      label: "query",
+      bg: "bg-amber-400",
+    });
+
+    if (traj.generation_info.oos_span_start_sec) {
+      markers.push({
+        pct: (traj.generation_info.oos_span_start_sec / duration) * 100,
+        color: "#f87171",
+        label: "OoS start",
+        bg: "bg-red-400",
+      });
+    }
+  }
+
+  const progress = duration > 0 ? (currentTimeSec / duration) * 100 : 0;
+
+  const getPctFromPointer = useCallback((clientX: number) => {
+    const el = scrubberRef.current;
+    if (!el) return 0;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0) return 0;
+
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }, []);
+
+  const updateHoverFromPointer = useCallback(
+    (clientX: number) => {
+      const pct = getPctFromPointer(clientX);
+      setHoverPct(pct * 100);
+      setHoverTime(pct * duration);
+    },
+    [duration, getPctFromPointer],
+  );
+
+  const seekToPct = useCallback(
+    (pct: number) => {
+      const safePct = Math.max(0, Math.min(1, pct));
+      seekAllPlayers(safePct * duration);
+    },
+    [duration, seekAllPlayers],
+  );
+
+  const restoreBothPanes = useCallback(() => {
+    restoringUntilRef.current = performance.now() + 1200;
+    setVisiblePane("both");
+
+    window.setTimeout(() => {
+      const t = targetTimeRef.current;
+
+      getAllRefs().forEach((ref) => safeSeek(ref, t));
+
+      window.setTimeout(() => {
+        getAllRefs().forEach((ref) => {
+          safeSeek(ref, t);
+          safePlayPause(ref, isPlayingRef.current);
+        });
+      }, 400);
+    }, 0);
+  }, [getAllRefs]);
+
+  useEffect(() => {
+    const syncInterval = window.setInterval(() => {
+      if (!isPlayingRef.current) return;
+
+      const nowMs = performance.now();
+      if (nowMs < seekingUntilRef.current) return;
+      if (nowMs < restoringUntilRef.current) return;
+
+      const primaryRef = getPrimaryRef();
+      const primaryTime = safeGetTime(primaryRef);
+
+      if (primaryTime === null) return;
+
+      targetTimeRef.current = primaryTime;
+      onTimeChange(primaryTime);
+
+      getAllRefs().forEach((ref) => {
+        if (ref === primaryRef) return;
+
+        const otherTime = safeGetTime(ref);
+        if (otherTime === null) return;
+
+        if (Math.abs(otherTime - primaryTime) > 0.8) {
+          safeSeek(ref, primaryTime);
+        }
+      });
+    }, 500);
+
+    return () => window.clearInterval(syncInterval);
+  }, [getAllRefs, getPrimaryRef, onTimeChange]);
+
   useEffect(() => {
     if (!isPlaying) {
       cancelAnimationFrame(rafRef.current);
@@ -261,27 +616,27 @@ export function VideoPlayer({
     }
 
     const tick = () => {
-      const player = fullRef.current;
+      const nowMs = performance.now();
 
-      if (player) {
-        const t = player.getCurrentTime();
-        onTimeChange(t);
+      if (
+        nowMs >= seekingUntilRef.current &&
+        nowMs >= restoringUntilRef.current
+      ) {
+        const primaryRef = getPrimaryRef();
+        const t = safeGetTime(primaryRef);
+
+        if (t !== null && (t > 0 || targetTimeRef.current < 0.5)) {
+          targetTimeRef.current = t;
+          onTimeChange(t);
+        }
       }
 
       rafRef.current = requestAnimationFrame(tick);
     };
 
     rafRef.current = requestAnimationFrame(tick);
-
     return () => cancelAnimationFrame(rafRef.current);
-  }, [isPlaying, onTimeChange]);
-
-  const seekTo = useCallback(
-    (pct: number) => {
-      seekToTime(Math.max(0, Math.min(1, pct)) * duration);
-    },
-    [duration, seekToTime],
-  );
+  }, [isPlaying, getPrimaryRef, onTimeChange]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -297,106 +652,123 @@ export function VideoPlayer({
 
       if (e.code === "Space") {
         e.preventDefault();
-        setIsPlaying((p) => !p);
+        playPauseAllPlayers(!isPlayingRef.current);
       }
 
       if (e.code === "ArrowLeft") {
         e.preventDefault();
-        seekToTime(currentTimeSec - 5);
+        seekAllPlayers(targetTimeRef.current - 5);
       }
 
       if (e.code === "ArrowRight") {
         e.preventDefault();
-        seekToTime(currentTimeSec + 5);
+        seekAllPlayers(targetTimeRef.current + 5);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentTimeSec, seekToTime]);
-
-  // Timeline markers derived from trajectory
-  type Marker = { pct: number; color: string; label: string; bg: string };
-  const markers: Marker[] = [];
-  const selectedTrajectory = video.trajectory
-    ? Object.values(video.trajectory)[0]
-    : null;
-  if (selectedTrajectory && duration > 0) {
-    const traj = selectedTrajectory;
-    markers.push({
-      pct: (traj.clip_start_time_sec / duration) * 100,
-      color: "#60a5fa",
-      label: "clip start",
-      bg: "bg-blue-400",
-    });
-    markers.push({
-      pct: (traj.query_time_sec / duration) * 100,
-      color: "#fbbf24",
-      label: "query",
-      bg: "bg-amber-400",
-    });
-    if (traj.generation_info.oos_span_start_sec)
-      markers.push({
-        pct: (traj.generation_info.oos_span_start_sec / duration) * 100,
-        color: "#f87171",
-        label: "OoS start",
-        bg: "bg-red-400",
-      });
-  }
-
-  const progress = duration > 0 ? (currentTimeSec / duration) * 100 : 0;
+  }, [playPauseAllPlayers, seekAllPlayers]);
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
-      {/* Dual video panes */}
-      <div className="flex min-h-0 flex-1 gap-px bg-slate-200 dark:bg-slate-800/40">
+      <div className="relative flex min-h-0 flex-1 gap-px bg-slate-200 dark:bg-slate-800/40">
+        {visiblePane === "full" && (
+          <RestorePaneButton
+            side="left"
+            label="Show 1 FPS sampled video"
+            onClick={restoreBothPanes}
+          />
+        )}
+
         <VideoPane
           src={video.sampledUrl}
           label="1 FPS · sampled"
           anchors={anchors}
+          hidden={!showSampled}
           currentTimeSec={currentTimeSec}
+          isPlaying={isPlaying}
+          getTargetTime={() => targetTimeRef.current}
+          getIsPlaying={() => isPlayingRef.current}
           onDurationReady={setDuration}
           playerRef={sampledRef}
+          canClose={canCloseVideo}
+          onClose={() => setVisiblePane("full")}
         />
 
         <VideoPane
           src={video.fullUrl}
           label="Full FPS"
           anchors={anchors}
+          hidden={!showFull}
           currentTimeSec={currentTimeSec}
+          isPlaying={isPlaying}
+          getTargetTime={() => targetTimeRef.current}
+          getIsPlaying={() => isPlayingRef.current}
+          onDurationReady={setDuration}
           playerRef={fullRef}
+          canClose={canCloseVideo}
+          onClose={() => setVisiblePane("sampled")}
         />
+
+        {visiblePane === "sampled" && (
+          <RestorePaneButton
+            side="right"
+            label="Show full FPS video"
+            onClick={restoreBothPanes}
+          />
+        )}
       </div>
 
-      {/* Controls */}
       <div className="shrink-0 border-t border-slate-200 bg-white px-4 pb-4 pt-3 dark:border-white/[0.07] dark:bg-slate-900">
-        {/* Scrubber */}
         <div
           ref={scrubberRef}
           className="relative flex h-9 cursor-pointer select-none items-center"
+          onPointerEnter={(e) => {
+            updateHoverFromPointer(e.clientX);
+          }}
+          onPointerMove={(e) => {
+            updateHoverFromPointer(e.clientX);
+
+            if (!isDragging) return;
+
+            const pct = getPctFromPointer(e.clientX);
+            seekToPct(pct);
+          }}
+          onPointerLeave={() => {
+            if (!isDragging) {
+              setHoverTime(null);
+              setHoverPct(null);
+            }
+          }}
           onPointerDown={(e) => {
             setIsDragging(true);
             e.currentTarget.setPointerCapture(e.pointerId);
 
-            const rect = e.currentTarget.getBoundingClientRect();
-            seekTo((e.clientX - rect.left) / rect.width);
-          }}
-          onPointerMove={(e) => {
-            if (!isDragging || !scrubberRef.current) return;
-
-            const rect = scrubberRef.current.getBoundingClientRect();
-            seekTo((e.clientX - rect.left) / rect.width);
+            const pct = getPctFromPointer(e.clientX);
+            updateHoverFromPointer(e.clientX);
+            seekToPct(pct);
           }}
           onPointerUp={(e) => {
+            const pct = getPctFromPointer(e.clientX);
+            seekToPct(pct);
+
             setIsDragging(false);
-            e.currentTarget.releasePointerCapture(e.pointerId);
+
+            try {
+              e.currentTarget.releasePointerCapture(e.pointerId);
+            } catch {
+              // Ignore release errors.
+            }
           }}
-          onPointerCancel={() => setIsDragging(false)}
+          onPointerCancel={() => {
+            setIsDragging(false);
+            setHoverTime(null);
+            setHoverPct(null);
+          }}
         >
-          {/* Track */}
           <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-slate-300 dark:bg-slate-700/80" />
 
-          {/* Filled progress */}
           <div
             className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-linear-to-r from-blue-500 to-violet-500"
             style={{
@@ -405,7 +777,22 @@ export function VideoPlayer({
             }}
           />
 
-          {/* Thumb */}
+          {hoverTime !== null && hoverPct !== null && (
+            <>
+              <div
+                className="pointer-events-none absolute top-1/2 z-20 h-3.5 w-0.5 -translate-y-1/2 rounded-full bg-white shadow dark:bg-slate-200"
+                style={{ left: `${hoverPct}%` }}
+              />
+
+              <div
+                className="pointer-events-none absolute bottom-8 z-30 -translate-x-1/2 rounded-md border border-slate-200 bg-white px-2 py-1 font-mono text-[11px] font-semibold tabular-nums text-slate-700 shadow-lg dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                style={{ left: `${hoverPct}%` }}
+              >
+                {formatTime(hoverTime)}
+              </div>
+            </>
+          )}
+
           <div
             className="pointer-events-none absolute top-1/2 z-10 h-4 w-4 rounded-full border-2 border-blue-500 bg-white shadow-md shadow-blue-500/30"
             style={{
@@ -414,7 +801,6 @@ export function VideoPlayer({
             }}
           />
 
-          {/* Event markers */}
           {markers.map((m, i) => (
             <div
               key={i}
@@ -425,10 +811,11 @@ export function VideoPlayer({
           ))}
         </div>
 
-        {/* Bottom row */}
         <div className="mt-2 flex items-center gap-3">
           <button
-            onClick={() => setIsPlaying((p) => !p)}
+            onClick={() => {
+              playPauseAllPlayers(!isPlayingRef.current);
+            }}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm text-white shadow-lg shadow-blue-600/30 transition-all hover:scale-105 hover:bg-blue-500"
           >
             {isPlaying ? (
