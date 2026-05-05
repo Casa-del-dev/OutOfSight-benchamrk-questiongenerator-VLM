@@ -313,7 +313,8 @@ export default function QuestionView() {
           </div>
 
           {/* Trajectory selector */}
-          {selectedVideo?.trajectory &&
+          {activePanel === "questions" &&
+            selectedVideo?.trajectory &&
             Object.keys(selectedVideo.trajectory).length > 1 && (
               <div className="shrink-0 border-b border-slate-200 px-4 py-3 dark:border-white/[0.07]">
                 <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
