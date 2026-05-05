@@ -3,27 +3,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logoDark from "../../assets/Logo-sm-dark.png";
 import logoLight from "../../assets/Logo-sm-light.png";
+import { applyTheme, getResolvedIsDark } from "../../Lib/Theme";
 
 export default function Header() {
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      return savedTheme === "dark";
-    }
-    return false;
-  });
+  const [isDark, setIsDark] = useState(() => getResolvedIsDark());
 
   useEffect(() => {
-    const theme = isDark ? "dark" : "light";
-    localStorage.setItem("theme", theme);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    applyTheme();
 
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-      document.documentElement.style.colorScheme = "dark";
-    } else {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.style.colorScheme = "light";
-    }
+    window.dispatchEvent(new Event("theme-change"));
   }, [isDark]);
 
   const toggleTheme = () => {

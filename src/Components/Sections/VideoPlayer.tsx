@@ -218,7 +218,6 @@ function VideoPane({
   label,
   anchors,
   hidden,
-  currentTimeSec,
   isPlaying,
   getTargetTime,
   getIsPlaying,
@@ -229,7 +228,6 @@ function VideoPane({
   label: string;
   anchors: ReturnType<typeof getAnchors>;
   hidden: boolean;
-  currentTimeSec: number;
   isPlaying: boolean;
   getTargetTime: () => number;
   getIsPlaying: () => boolean;
@@ -285,20 +283,6 @@ function VideoPane({
     }
   }, [isPlaying, playerRef]);
 
-  useEffect(() => {
-    const player = playerRef.current;
-    if (!player) return;
-
-    try {
-      const now = player.getCurrentTime?.() ?? 0;
-      if (Math.abs(now - currentTimeSec) > 1.25) {
-        player.seekTo(currentTimeSec, true);
-      }
-    } catch {
-      // Ignore transient YouTube API failures.
-    }
-  }, [currentTimeSec, playerRef]);
-
   return (
     <div
       ref={paneRef}
@@ -326,6 +310,7 @@ function VideoPane({
               disablekb: 1,
               fs: 0,
               playsinline: 1,
+              origin: window.location.origin,
             },
           }}
           onReady={(e) => {
@@ -825,7 +810,6 @@ export function VideoPlayer({
           label="1 FPS · sampled"
           anchors={anchors}
           hidden={!showSampled}
-          currentTimeSec={currentTimeSec}
           isPlaying={isPlaying}
           getTargetTime={() => targetTimeRef.current}
           getIsPlaying={() => isPlayingRef.current}
@@ -838,7 +822,6 @@ export function VideoPlayer({
           label="Full FPS"
           anchors={anchors}
           hidden={!showFull}
-          currentTimeSec={currentTimeSec}
           isPlaying={isPlaying}
           getTargetTime={() => targetTimeRef.current}
           getIsPlaying={() => isPlayingRef.current}

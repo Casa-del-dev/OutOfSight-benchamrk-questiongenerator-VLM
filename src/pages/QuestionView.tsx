@@ -8,11 +8,50 @@ import {
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
 
-// ─── Root page ────────────────────────────────────────────────────────────────
+const STORAGE_KEYS = {
+  selectedVideoId: "questionView.selectedVideoId",
+} as const;
+
+function getInitialVideoSelection() {
+  if (typeof window === "undefined") {
+    const user = USERS[0];
+    const video = user.videos[0];
+
+    return {
+      userId: user.userId,
+      videoId: video.id,
+    };
+  }
+
+  const savedVideoId = localStorage.getItem(STORAGE_KEYS.selectedVideoId);
+
+  for (const user of USERS) {
+    const video = user.videos.find((v) => v.id === savedVideoId);
+
+    if (video) {
+      return {
+        userId: user.userId,
+        videoId: video.id,
+      };
+    }
+  }
+
+  const user = USERS[0];
+  const video = user.videos[0];
+
+  return {
+    userId: user.userId,
+    videoId: video.id,
+  };
+}
 
 export default function QuestionView() {
-  const [selectedUserId, setSelectedUserId] = useState(USERS[0].userId);
-  const [selectedVideoId, setSelectedVideoId] = useState(USERS[0].videos[0].id);
+  const [initialSelection] = useState(() => getInitialVideoSelection());
+
+  const [selectedUserId, setSelectedUserId] = useState(initialSelection.userId);
+  const [selectedVideoId, setSelectedVideoId] = useState(
+    initialSelection.videoId,
+  );
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
   const [activePanel, setActivePanel] = useState<"questions" | "json">(
     "questions",
@@ -43,31 +82,16 @@ export default function QuestionView() {
     }
   }, [selectedVideo?.trajectory]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.selectedVideoId, selectedVideoId);
+  }, [selectedVideoId]);
+
   const handleUserChange = (uid: string) => {
     setSelectedUserId(uid);
     const user = USERS.find((u) => u.userId === uid);
     if (user?.videos[0]) setSelectedVideoId(user.videos[0].id);
     setCurrentTimeSec(0);
   };
-
-  useEffect(() => {
-    const applyTheme = () => {
-      const theme = localStorage.getItem("theme");
-      const isDark = theme === "dark";
-
-      document.documentElement.classList.toggle("dark", isDark);
-    };
-
-    applyTheme();
-
-    window.addEventListener("storage", applyTheme);
-    window.addEventListener("theme-change", applyTheme);
-
-    return () => {
-      window.removeEventListener("storage", applyTheme);
-      window.removeEventListener("theme-change", applyTheme);
-    };
-  }, []);
 
   return (
     <div className="flex h-[calc(100vh-77px)] flex-col overflow-hidden bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
