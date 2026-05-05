@@ -128,7 +128,7 @@ function TrajectoryDropdown({
         type="button"
         ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between rounded-md border bg-white px-2 py-1.5 text-left text-[12px] text-slate-700 transition-all dark:bg-slate-900 dark:text-slate-300 ${
+        className={`flex w-full items-center justify-between rounded-md border bg-white px-2 py-1.5 text-left text-[12px] text-slate-700 transition-box-shadow dark:bg-slate-900 dark:text-slate-300 ${
           open
             ? "border-blue-400 ring-2 ring-blue-500/20 dark:border-blue-500/50"
             : "border-slate-300 hover:border-slate-400 dark:border-white/[0.07] dark:hover:border-white/20"
