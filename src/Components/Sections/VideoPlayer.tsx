@@ -286,10 +286,12 @@ function VideoPane({
   return (
     <div
       ref={paneRef}
-      className={`relative min-w-0 overflow-hidden bg-black ${
+      className={`relative min-w-0 overflow-hidden bg-slate-950 dark:bg-black ${
         hidden ? "hidden" : "flex-1"
       }`}
     >
+      <div className="pointer-events-none absolute inset-0 z-10 bg-white/10 dark:bg-transparent" />
+
       <div className="absolute left-2.5 top-2.5 z-10 rounded-md border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 backdrop-blur-sm">
         {label}
       </div>
@@ -305,7 +307,6 @@ function VideoPane({
             height: "100%",
             playerVars: {
               controls: 0,
-              modestbranding: 1,
               rel: 0,
               disablekb: 1,
               fs: 0,

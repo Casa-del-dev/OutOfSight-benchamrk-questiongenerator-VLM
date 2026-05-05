@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { QuestionPanel } from "../Components/Sections/QuestionPanel";
 import { VideoPlayer } from "../Components/Sections/VideoPlayer";
 import {
@@ -7,10 +7,41 @@ import {
 } from "../Components/Sections/JsonViewer";
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
+import { Check, ChevronDown, FileQuestionMark } from "lucide-react";
 
 const STORAGE_KEYS = {
   selectedVideoId: "questionView.selectedVideoId",
+  selectedTrajectoryByVideo: "questionView.selectedTrajectoryByVideo",
 } as const;
+
+function getSavedTrajectoryByVideo(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.selectedTrajectoryByVideo);
+    if (!raw) return {};
+
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "object" && parsed !== null ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function getInitialTrajectoryKeyForVideo(
+  videoId: string,
+  trajectory: Record<string, TrajectoryData> | undefined,
+) {
+  if (!trajectory) return null;
+
+  const keys = Object.keys(trajectory);
+  if (keys.length === 0) return null;
+
+  const savedByVideo = getSavedTrajectoryByVideo();
+  const savedKey = savedByVideo[videoId];
+
+  return savedKey && savedKey in trajectory ? savedKey : keys[0];
+}
 
 function getInitialVideoSelection() {
   if (typeof window === "undefined") {
@@ -45,6 +76,111 @@ function getInitialVideoSelection() {
   };
 }
 
+function TrajectoryDropdown({
+  value,
+  options,
+  onChange,
+}: {
+  value: string | null;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+
+      if (target && dropdownRef.current?.contains(target)) {
+        return;
+      }
+
+      setOpen(false);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.blur();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  if (options.length === 0) return null;
+
+  const selectedLabel = value ?? options[0];
+
+  return (
+    <div ref={dropdownRef} className="relative mt-1">
+      <button
+        type="button"
+        ref={buttonRef}
+        onClick={() => setOpen((v) => !v)}
+        className={`flex w-full items-center justify-between rounded-md border bg-white px-2 py-1.5 text-left text-[12px] text-slate-700 transition-all dark:bg-slate-900 dark:text-slate-300 ${
+          open
+            ? "border-blue-400 ring-2 ring-blue-500/20 dark:border-blue-500/50"
+            : "border-slate-300 hover:border-slate-400 dark:border-white/[0.07] dark:hover:border-white/20"
+        }`}
+      >
+        <span className="truncate">{selectedLabel}</span>
+
+        <ChevronDown
+          className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      <div
+        className={`absolute left-0 right-0 top-full z-40 mt-1 origin-top overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl shadow-slate-900/10 transition-all duration-200 ease-out dark:border-white/[0.07] dark:bg-slate-900 dark:shadow-black/30 ${
+          open
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none -translate-y-1 scale-95 opacity-0"
+        }`}
+      >
+        <div className="max-h-56 overflow-y-auto p-1">
+          {options.map((key) => {
+            const selected = key === value;
+
+            return (
+              <button
+                key={key}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(key);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-[12px] transition-colors ${
+                  selected
+                    ? "bg-blue-500/10 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-white/6 dark:hover:text-slate-100"
+                }`}
+              >
+                <span className="truncate">{key}</span>
+
+                {selected && <Check className="h-3.5 w-3.5 shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function QuestionView() {
   const [initialSelection] = useState(() => getInitialVideoSelection());
 
@@ -74,13 +210,34 @@ export default function QuestionView() {
 
   // Auto-set trajectory key when video changes
   useEffect(() => {
-    if (selectedVideo?.trajectory) {
-      const keys = Object.keys(selectedVideo.trajectory);
-      setSelectedTrajectoryKey(keys[0] ?? null);
-    } else {
+    if (!selectedVideo) {
       setSelectedTrajectoryKey(null);
+      return;
     }
-  }, [selectedVideo?.trajectory]);
+
+    setSelectedTrajectoryKey(
+      getInitialTrajectoryKeyForVideo(
+        selectedVideo.id,
+        selectedVideo.trajectory,
+      ),
+    );
+  }, [selectedVideo?.id]);
+
+  useEffect(() => {
+    if (!selectedVideoId || !selectedTrajectoryKey) return;
+
+    const savedByVideo = getSavedTrajectoryByVideo();
+
+    const next = {
+      ...savedByVideo,
+      [selectedVideoId]: selectedTrajectoryKey,
+    };
+
+    localStorage.setItem(
+      STORAGE_KEYS.selectedTrajectoryByVideo,
+      JSON.stringify(next),
+    );
+  }, [selectedVideoId, selectedTrajectoryKey]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.selectedVideoId, selectedVideoId);
@@ -144,7 +301,13 @@ export default function QuestionView() {
                     : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300"
                 }`}
               >
-                {tab === "questions" ? "🧠 Questions" : "{ } JSON"}
+                {tab === "questions" ? (
+                  <div className="flex flex-row items-center text-center gap-1">
+                    <FileQuestionMark className="h-4 w-4" /> Questions
+                  </div>
+                ) : (
+                  "{ } JSON"
+                )}
               </button>
             ))}
           </div>
@@ -156,17 +319,11 @@ export default function QuestionView() {
                 <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                   Trajectory
                 </label>
-                <select
-                  value={selectedTrajectoryKey || ""}
-                  onChange={(e) => setSelectedTrajectoryKey(e.target.value)}
-                  className="mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-[12px] text-slate-700 dark:border-white/[0.07] dark:bg-slate-900 dark:text-slate-300"
-                >
-                  {Object.keys(selectedVideo.trajectory).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
+                <TrajectoryDropdown
+                  value={selectedTrajectoryKey}
+                  options={Object.keys(selectedVideo.trajectory)}
+                  onChange={setSelectedTrajectoryKey}
+                />
               </div>
             )}
 

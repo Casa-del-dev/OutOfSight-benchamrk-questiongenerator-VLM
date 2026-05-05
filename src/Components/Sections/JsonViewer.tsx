@@ -132,27 +132,32 @@ export function JsonViewer({ data }: JsonViewerProps) {
   };
 
   return (
-    <div className="flex h-full flex-col bg-white text-slate-900 dark:bg-slate-950/80 dark:text-slate-100">
+    <div className="relative flex h-full flex-col bg-white py-2.5 text-slate-900 dark:bg-slate-950/80 dark:text-slate-100">
       {/* Toolbar */}
-      <div className="flex shrink-0 items-center border-b border-slate-200 px-4 py-2.5 dark:border-white/5">
-        <span className="flex-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-600">
-          Raw JSON
-        </span>
+      <div className="absolute left-0 right-0 top-0 z-20 px-4 pb-8 pt-2.5">
+        {/* fading background */}
+        <div className="pointer-events-none absolute inset-0 bg-white mask-[linear-gradient(to_bottom,black_0%,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_70%,transparent_100%)] dark:bg-slate-950" />{" "}
+        {/* toolbar content */}
+        <div className="relative flex w-full items-center justify-between gap-3">
+          <span className="flex-1 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-600">
+            Raw JSON
+          </span>
 
-        <button
-          onClick={handleCopy}
-          className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all ${
-            copied
-              ? "border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-              : "border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 dark:border-white/[0.07] dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
-          }`}
-        >
-          {copied ? "✓ Copied!" : "Copy JSON"}
-        </button>
+          <button
+            onClick={handleCopy}
+            className={`rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all ${
+              copied
+                ? "border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                : "border-slate-200 bg-slate-100 text-slate-600 hover:bg-slate-200 dark:border-white/[0.07] dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+            }`}
+          >
+            {copied ? "Copied!" : "Copy JSON"}
+          </button>
+        </div>
       </div>
 
       {/* Tree */}
-      <div className="flex-1 overflow-auto p-4 font-mono text-[12px] leading-relaxed text-slate-700 dark:text-slate-300">
+      <div className="flex-1 overflow-auto px-4 pb-4 pt-14 font-mono text-[12px] leading-relaxed text-slate-700 dark:text-slate-300">
         <JsonNode value={data} depth={0} />
       </div>
     </div>
