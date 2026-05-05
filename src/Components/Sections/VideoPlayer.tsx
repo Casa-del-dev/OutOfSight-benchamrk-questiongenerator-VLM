@@ -623,8 +623,33 @@ export function VideoPlayer({
   }, [isPlaying]);
 
   useEffect(() => {
-    targetTimeRef.current = currentTimeSec;
-  }, [currentTimeSec]);
+    const t = clampTime(currentTimeSec, duration);
+    const diff = Math.abs(t - targetTimeRef.current);
+
+    // This is probably just the video reporting its own playback time.
+    // No need to seek.
+    if (diff < 0.35) {
+      targetTimeRef.current = t;
+      return;
+    }
+
+    // This is an external jump, e.g. QuestionPanel onSeek.
+    targetTimeRef.current = t;
+    seekingUntilRef.current = performance.now() + 800;
+
+    getAllRefs().forEach((ref) => {
+      safeSeek(ref, t);
+    });
+
+    window.setTimeout(() => {
+      getAllRefs().forEach((ref) => {
+        safeSeek(ref, t);
+        safePlayPause(ref, isPlayingRef.current);
+      });
+
+      seekingUntilRef.current = 0;
+    }, 350);
+  }, [currentTimeSec, duration, getAllRefs]);
 
   useEffect(() => {
     setDuration(video.duration ?? 220);
@@ -641,8 +666,8 @@ export function VideoPlayer({
     time: number;
     pct: number;
     color: string;
+    darkColor: string;
     label: string;
-    bg: string;
   };
 
   const markers: Marker[] = [];
@@ -654,9 +679,9 @@ export function VideoPlayer({
     markers.push({
       time: traj.query_time_sec,
       pct: (traj.query_time_sec / duration) * 100,
-      color: "#fbbf24",
+      color: "#d97706",
+      darkColor: "#fbbf24",
       label: "query",
-      bg: "bg-amber-400",
     });
 
     /*     if (traj.generation_info.oos_span_start_sec) {
@@ -918,7 +943,7 @@ export function VideoPlayer({
           {hoverTime !== null && hoverPct !== null && (
             <>
               <div
-                className="pointer-events-none absolute top-1/2 z-20 h-3.5 w-0.5 -translate-y-1/2 rounded-full bg-white shadow dark:bg-slate-200"
+                className="pointer-events-none absolute top-1/2 z-20 h-3.5 w-0.5 -translate-y-1/2 rounded-full bg-slate-700 shadow dark:bg-slate-200"
                 style={{ left: `${hoverPct}%` }}
               />
 
