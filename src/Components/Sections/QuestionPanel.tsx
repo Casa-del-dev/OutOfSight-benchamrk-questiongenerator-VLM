@@ -356,7 +356,7 @@ export function QuestionPanel({
         <div className="flex flex-wrap items-end justify-between">
           <div>
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              Anchor
+              Target
             </p>
 
             <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/15 dark:text-blue-400">
