@@ -103,7 +103,7 @@ function getAnchors(
     ring: string;
   }[] = [];
 
-  const TOL = 1.5;
+  const TOL = 3;
 
   const allSteps: (Step | BranchStep)[] = [
     ...trajectory.incremental_steps,
@@ -193,12 +193,20 @@ function safePlayPause(
   }
 }
 
-function safeGetTime(ref: React.MutableRefObject<YouTubePlayer | null>) {
+async function safeGetTime(
+  ref: React.MutableRefObject<YouTubePlayer | null>,
+): Promise<number | null> {
   const player = ref.current;
   if (!player) return null;
 
   try {
-    const t = player.getCurrentTime?.();
+    const value = player.getCurrentTime?.();
+
+    const t =
+      value && typeof (value as Promise<number>).then === "function"
+        ? await value
+        : value;
+
     return typeof t === "number" && Number.isFinite(t) ? t : null;
   } catch {
     return null;
@@ -216,8 +224,6 @@ function VideoPane({
   getIsPlaying,
   onDurationReady,
   playerRef,
-  onClose,
-  canClose,
 }: {
   src: string | null;
   label: string;
@@ -229,8 +235,6 @@ function VideoPane({
   getIsPlaying: () => boolean;
   onDurationReady?: (d: number) => void;
   playerRef: React.MutableRefObject<YouTubePlayer | null>;
-  onClose?: () => void;
-  canClose?: boolean;
 }) {
   const youtubeId = getYouTubeId(src);
 
@@ -302,25 +306,9 @@ function VideoPane({
         hidden ? "hidden" : "flex-1"
       }`}
     >
-      <button
-        type="button"
-        onClick={() => {
-          if (canClose) onClose?.();
-        }}
-        disabled={!canClose}
-        title={
-          canClose
-            ? `Hide ${label}`
-            : "Only one video is visible. Use the side arrow to restore both videos."
-        }
-        className={`absolute left-2.5 top-2.5 z-10 rounded-md border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 backdrop-blur-sm transition-all ${
-          canClose
-            ? "cursor-pointer hover:bg-red-500/80 hover:text-white"
-            : "cursor-default opacity-90"
-        }`}
-      >
+      <div className="absolute left-2.5 top-2.5 z-10 rounded-md border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 backdrop-blur-sm">
         {label}
-      </button>
+      </div>
 
       {youtubeId ? (
         <YouTube
@@ -447,16 +435,25 @@ function VideoPane({
   );
 }
 
-function RestorePaneButton({
+function PaneToggleButton({
   side,
+  direction,
   label,
   onClick,
 }: {
   side: "left" | "right";
+  direction: "inward" | "outward";
   label: string;
   onClick: () => void;
 }) {
-  const Icon = side === "left" ? ChevronRight : ChevronLeft;
+  const Icon =
+    side === "left"
+      ? direction === "inward"
+        ? ChevronRight
+        : ChevronLeft
+      : direction === "inward"
+        ? ChevronLeft
+        : ChevronRight;
 
   return (
     <button
@@ -483,7 +480,7 @@ export function VideoPlayer({
   const [duration, setDuration] = useState(video.duration ?? 220);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [visiblePane, setVisiblePane] = useState<VisiblePane>("both");
+  const [visiblePane, setVisiblePane] = useState<VisiblePane>("full");
 
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [hoverPct, setHoverPct] = useState<number | null>(null);
@@ -491,7 +488,6 @@ export function VideoPlayer({
   const sampledRef = useRef<YouTubePlayer | null>(null);
   const fullRef = useRef<YouTubePlayer | null>(null);
   const scrubberRef = useRef<HTMLDivElement | null>(null);
-  const rafRef = useRef<number>(0);
 
   const targetTimeRef = useRef(currentTimeSec);
   const isPlayingRef = useRef(isPlaying);
@@ -500,7 +496,6 @@ export function VideoPlayer({
 
   const showSampled = visiblePane === "both" || visiblePane === "sampled";
   const showFull = visiblePane === "both" || visiblePane === "full";
-  const canCloseVideo = visiblePane === "both";
 
   const seekVersionRef = useRef(0);
   const seekVerifyTimeoutRef = useRef<number | null>(null);
@@ -543,11 +538,13 @@ export function VideoPlayer({
         if (seekVersion !== seekVersionRef.current) return;
 
         getAllRefs().forEach((ref) => {
-          const now = safeGetTime(ref);
+          safeGetTime(ref).then((now) => {
+            if (now !== null && Math.abs(now - t) > 0.8) {
+              safeSeek(ref, t);
+            }
 
-          if (now !== null && Math.abs(now - t) > 0.8) {
-            safeSeek(ref, t);
-          }
+            safePlayPause(ref, isPlayingRef.current);
+          });
 
           safePlayPause(ref, isPlayingRef.current);
         });
@@ -561,6 +558,32 @@ export function VideoPlayer({
     },
     [duration, getAllRefs, onTimeChange],
   );
+
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    let cancelled = false;
+
+    const intervalId = window.setInterval(async () => {
+      const nowMs = performance.now();
+
+      if (nowMs < seekingUntilRef.current) return;
+      if (nowMs < restoringUntilRef.current) return;
+
+      const primaryRef = getPrimaryRef();
+      const t = await safeGetTime(primaryRef);
+
+      if (cancelled || t === null) return;
+
+      targetTimeRef.current = t;
+      onTimeChange(t);
+    }, 100);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [isPlaying, getPrimaryRef, onTimeChange]);
 
   const playPauseAllPlayers = useCallback(
     (nextPlaying: boolean) => {
@@ -576,6 +599,27 @@ export function VideoPlayer({
           safePlayPause(ref, nextPlaying);
         });
       }, 250);
+    },
+    [getAllRefs],
+  );
+
+  const switchVisiblePane = useCallback(
+    (nextPane: VisiblePane) => {
+      restoringUntilRef.current = performance.now() + 1200;
+      setVisiblePane(nextPane);
+
+      window.setTimeout(() => {
+        const t = targetTimeRef.current;
+
+        getAllRefs().forEach((ref) => safeSeek(ref, t));
+
+        window.setTimeout(() => {
+          getAllRefs().forEach((ref) => {
+            safeSeek(ref, t);
+            safePlayPause(ref, isPlayingRef.current);
+          });
+        }, 400);
+      }, 0);
     },
     [getAllRefs],
   );
@@ -598,7 +642,7 @@ export function VideoPlayer({
 
   useEffect(() => {
     setDuration(video.duration ?? 220);
-    setVisiblePane("both");
+    setVisiblePane("full");
     playPauseAllPlayers(false);
     targetTimeRef.current = currentTimeSec;
     seekingUntilRef.current = 0;
@@ -701,26 +745,8 @@ export function VideoPlayer({
     [duration, getPctFromPointer, markers],
   );
 
-  const restoreBothPanes = useCallback(() => {
-    restoringUntilRef.current = performance.now() + 1200;
-    setVisiblePane("both");
-
-    window.setTimeout(() => {
-      const t = targetTimeRef.current;
-
-      getAllRefs().forEach((ref) => safeSeek(ref, t));
-
-      window.setTimeout(() => {
-        getAllRefs().forEach((ref) => {
-          safeSeek(ref, t);
-          safePlayPause(ref, isPlayingRef.current);
-        });
-      }, 400);
-    }, 0);
-  }, [getAllRefs]);
-
   useEffect(() => {
-    const syncInterval = window.setInterval(() => {
+    const syncInterval = window.setInterval(async () => {
       if (!isPlayingRef.current) return;
 
       const nowMs = performance.now();
@@ -728,17 +754,17 @@ export function VideoPlayer({
       if (nowMs < restoringUntilRef.current) return;
 
       const primaryRef = getPrimaryRef();
-      const primaryTime = safeGetTime(primaryRef);
+      const primaryTime = await safeGetTime(primaryRef);
 
       if (primaryTime === null) return;
 
       targetTimeRef.current = primaryTime;
       onTimeChange(primaryTime);
 
-      getAllRefs().forEach((ref) => {
+      getAllRefs().forEach(async (ref) => {
         if (ref === primaryRef) return;
 
-        const otherTime = safeGetTime(ref);
+        const otherTime = await safeGetTime(ref);
         if (otherTime === null) return;
 
         if (Math.abs(otherTime - primaryTime) > 0.8) {
@@ -749,35 +775,6 @@ export function VideoPlayer({
 
     return () => window.clearInterval(syncInterval);
   }, [getAllRefs, getPrimaryRef, onTimeChange]);
-
-  useEffect(() => {
-    if (!isPlaying) {
-      cancelAnimationFrame(rafRef.current);
-      return;
-    }
-
-    const tick = () => {
-      const nowMs = performance.now();
-
-      if (
-        nowMs >= seekingUntilRef.current &&
-        nowMs >= restoringUntilRef.current
-      ) {
-        const primaryRef = getPrimaryRef();
-        const t = safeGetTime(primaryRef);
-
-        if (t !== null && (t > 0 || targetTimeRef.current < 0.5)) {
-          targetTimeRef.current = t;
-          onTimeChange(t);
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [isPlaying, getPrimaryRef, onTimeChange]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -815,10 +812,11 @@ export function VideoPlayer({
     <div className="flex h-full min-h-0 flex-col bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       <div className="relative flex min-h-0 flex-1 gap-px bg-slate-200 dark:bg-slate-800/40">
         {visiblePane === "full" && (
-          <RestorePaneButton
+          <PaneToggleButton
             side="left"
+            direction="inward"
             label="Show 1 FPS sampled video"
-            onClick={restoreBothPanes}
+            onClick={() => switchVisiblePane("both")}
           />
         )}
 
@@ -833,8 +831,6 @@ export function VideoPlayer({
           getIsPlaying={() => isPlayingRef.current}
           onDurationReady={setDuration}
           playerRef={sampledRef}
-          canClose={canCloseVideo}
-          onClose={() => setVisiblePane("full")}
         />
 
         <VideoPane
@@ -848,16 +844,33 @@ export function VideoPlayer({
           getIsPlaying={() => isPlayingRef.current}
           onDurationReady={setDuration}
           playerRef={fullRef}
-          canClose={canCloseVideo}
-          onClose={() => setVisiblePane("sampled")}
         />
 
         {visiblePane === "sampled" && (
-          <RestorePaneButton
+          <PaneToggleButton
             side="right"
+            direction="inward"
             label="Show full FPS video"
-            onClick={restoreBothPanes}
+            onClick={() => switchVisiblePane("both")}
           />
+        )}
+
+        {visiblePane === "both" && (
+          <>
+            <PaneToggleButton
+              side="left"
+              direction="outward"
+              label="Hide 1 FPS sampled video"
+              onClick={() => switchVisiblePane("full")}
+            />
+
+            <PaneToggleButton
+              side="right"
+              direction="outward"
+              label="Hide full FPS video"
+              onClick={() => switchVisiblePane("sampled")}
+            />
+          </>
         )}
       </div>
 

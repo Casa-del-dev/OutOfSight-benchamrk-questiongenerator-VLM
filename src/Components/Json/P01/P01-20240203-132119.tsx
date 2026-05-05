@@ -6939,10 +6939,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
 export const VIDEO: VideoEntry = {
   id: "P01-20240203-132119",
   label: "P01-20240203-132119",
-  sampledUrl:
-    "https://www.youtube.com/watch?v=dX1WtAax4zY&list=PLN5Krxli5ta_d_Q5sTa1HjuDrF1ATvciV&index=19",
-  fullUrl:
-    "https://www.youtube.com/watch?v=dX1WtAax4zY&list=PLN5Krxli5ta_d_Q5sTa1HjuDrF1ATvciV&index=19",
+  sampledUrl: "https://www.youtube.com/watch?v=J6F6VP6-qZw",
+  fullUrl: "https://www.youtube.com/watch?v=dX1WtAax4zY",
   duration: 220,
   trajectory: TRAJECTORY,
   rawJson: { TRAJECTORY },
