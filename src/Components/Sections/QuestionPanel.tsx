@@ -111,13 +111,15 @@ function QuestionCard({
   step,
   isBranch,
   queryTimeSec,
-  branchSeekTimeSec,
+  lastSeenTimeSec,
+  lastPlacedTimeSec,
   onSeek,
 }: {
   step: Step | BranchStep;
   isBranch?: boolean;
   queryTimeSec: number;
-  branchSeekTimeSec?: number | null;
+  lastSeenTimeSec: number | null;
+  lastPlacedTimeSec: number | null;
   onSeek: (t: number) => void;
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -129,25 +131,37 @@ function QuestionCard({
   const meta = step.answer_metadata;
   const cfg = CLASS_CONFIG[step.question_class] ?? DEFAULT_CONFIG;
 
-  const extendedMeta = meta as typeof meta & {
-    last_visible_time_sec?: number;
-    reference_time_sec?: number;
-  };
+  const stepId = String(step.step);
 
-  const isStep1 = !isBranch && step.step === 1;
+  const isStep1 = !isBranch && stepId === "1";
+  const isStep2 = !isBranch && stepId === "2";
+  const isStep3 = !isBranch && stepId === "3";
 
-  const ownSeekTime =
-    extendedMeta.sampled_last_visible_time_sec ??
-    extendedMeta.last_visible_time_sec ??
-    extendedMeta.reference_time_sec ??
-    extendedMeta.last_placement_time_sec ??
-    null;
+  const timeButtons = (() => {
+    if (isStep1) return [];
 
-  const seekTime = isStep1
-    ? null
-    : isBranch
-      ? (branchSeekTimeSec ?? ownSeekTime)
-      : ownSeekTime;
+    if (isStep2) {
+      return lastSeenTimeSec !== null
+        ? [{ label: "Last seen", time: lastSeenTimeSec }]
+        : [];
+    }
+
+    if (isStep3) {
+      return lastPlacedTimeSec !== null
+        ? [{ label: "Last placed", time: lastPlacedTimeSec }]
+        : [];
+    }
+
+    return [
+      ...(lastSeenTimeSec !== null
+        ? [{ label: "Last seen", time: lastSeenTimeSec }]
+        : []),
+      ...(lastPlacedTimeSec !== null &&
+      Math.abs(lastPlacedTimeSec - (lastSeenTimeSec ?? -999999)) > 0.75
+        ? [{ label: "Last placed", time: lastPlacedTimeSec }]
+        : []),
+    ];
+  })();
 
   const answerSummaryLines: string[] = [];
 
@@ -201,19 +215,25 @@ function QuestionCard({
           </span>
         </div>
 
-        {seekTime !== null && (
+        {timeButtons.length > 0 && (
           <div className="flex shrink-0 items-center gap-1.5">
             <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-600 sm:inline">
               Reference
             </span>
 
-            <button
-              type="button"
-              onClick={() => onSeek(seekTime)}
-              className="flex items-center gap-1 rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[11px] font-semibold text-blue-700 transition-colors hover:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/20"
-            >
-              <span>{seekTime}s</span>
-            </button>
+            <div className="flex items-center gap-1">
+              {timeButtons.map((item) => (
+                <button
+                  key={`${item.label}-${item.time}`}
+                  type="button"
+                  onClick={() => onSeek(item.time)}
+                  title={item.label}
+                  className="rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[11px] font-semibold text-blue-700 transition-colors hover:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/20"
+                >
+                  {Number(item.time.toFixed(2))}s
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -234,18 +254,19 @@ function QuestionCard({
               return (
                 <div
                   key={ci}
-                  className={`inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1 text-[12px] font-medium transition-colors duration-200 ${
+                  className={`relative inline-flex items-center justify-center rounded-lg border px-2.5 py-1 text-center text-[12px] font-medium transition-colors duration-200 ${
                     isHighlighted
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300"
+                      ? "border-emerald-300 bg-emerald-50 pl-6 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300"
                       : "border-slate-200 bg-slate-100 text-slate-600 dark:border-white/8 dark:bg-slate-800/60 dark:text-slate-400"
                   }`}
                 >
                   {isHighlighted && (
-                    <span className="text-[10px] text-emerald-700 dark:text-emerald-400">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] leading-none text-emerald-700 dark:text-emerald-400">
                       ✓
                     </span>
                   )}
-                  {choice}
+
+                  <span className="leading-snug">{choice}</span>
                 </div>
               );
             })}
@@ -308,12 +329,25 @@ export function QuestionPanel({
       })
     | undefined;
 
-  const groupedQuestionSeekTimeSec =
+  const lastSeenTimeSec =
     step2Meta?.sampled_last_visible_time_sec ??
     step2Meta?.last_visible_time_sec ??
     step2Meta?.reference_time_sec ??
-    step2Meta?.last_placement_time_sec ??
     null;
+
+  const step3 = trajectory.incremental_steps.find(
+    (step) =>
+      step.step === 3 || step.question_class === "oos_step3_last_placement",
+  );
+
+  const step3Meta = step3?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const lastPlacedTimeSec =
+    step3Meta?.last_placement_time_sec ?? step3Meta?.reference_time_sec ?? null;
 
   return (
     <div className="p-4">
@@ -357,6 +391,8 @@ export function QuestionPanel({
           key={`step-${step.step}`}
           step={step}
           queryTimeSec={trajectory.query_time_sec}
+          lastSeenTimeSec={lastSeenTimeSec}
+          lastPlacedTimeSec={lastPlacedTimeSec}
           onSeek={onSeek}
         />
       ))}
@@ -374,7 +410,8 @@ export function QuestionPanel({
               step={step}
               isBranch
               queryTimeSec={trajectory.query_time_sec}
-              branchSeekTimeSec={groupedQuestionSeekTimeSec}
+              lastSeenTimeSec={lastSeenTimeSec}
+              lastPlacedTimeSec={lastPlacedTimeSec}
               onSeek={onSeek}
             />
           ))}

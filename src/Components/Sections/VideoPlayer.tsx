@@ -83,6 +83,97 @@ function getVideoRectInsideContainer(
   };
 }
 
+function isFinitePoint(p: unknown): p is [number, number] {
+  return (
+    Array.isArray(p) &&
+    p.length >= 2 &&
+    typeof p[0] === "number" &&
+    typeof p[1] === "number" &&
+    Number.isFinite(p[0]) &&
+    Number.isFinite(p[1])
+  );
+}
+
+function isRawPixelInFrame(p: [number, number]) {
+  return (
+    p[0] >= 0 && p[0] <= SOURCE_WIDTH && p[1] >= 0 && p[1] <= SOURCE_HEIGHT
+  );
+}
+
+function isNormPixelInFrame(p: [number, number]) {
+  return p[0] >= 0 && p[0] <= 1 && p[1] >= 0 && p[1] <= 1;
+}
+
+function toTimeNumber(value: unknown) {
+  if (typeof value === "number") return value;
+
+  if (typeof value === "string") {
+    const match = value.match(/[\d.]+/);
+    return match ? Number(match[0]) : NaN;
+  }
+
+  return NaN;
+}
+
+function isSameTime(a: unknown, b: unknown, tol = 0.75) {
+  const aa = toTimeNumber(a);
+  const bb = toTimeNumber(b);
+
+  return Number.isFinite(aa) && Number.isFinite(bb) && Math.abs(aa - bb) <= tol;
+}
+
+function getObjectALabelByTime(refTime: number, trajectory: TrajectoryData) {
+  const step2 = trajectory.incremental_steps.find(
+    (s) => s.step === 2 || s.question_class === "oos_step2_last_visible",
+  );
+
+  const step3 = trajectory.incremental_steps.find(
+    (s) => s.step === 3 || s.question_class === "oos_step3_last_placement",
+  );
+
+  const step2Meta = step2?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        last_visible_time_sec?: number;
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const step3Meta = step3?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const lastSeenTime =
+    step2Meta?.sampled_last_visible_time_sec ??
+    step2Meta?.last_visible_time_sec ??
+    step2Meta?.reference_time_sec ??
+    null;
+
+  const placedTime =
+    step3Meta?.last_placement_time_sec ?? step3Meta?.reference_time_sec ?? null;
+
+  if (isSameTime(refTime, placedTime)) {
+    return `${trajectory.object_a_name} · last placed`;
+  }
+
+  if (isSameTime(refTime, lastSeenTime)) {
+    return `${trajectory.object_a_name} · last seen`;
+  }
+
+  return trajectory.object_a_name;
+}
+
+function getReferenceLabelByTime(refTime: number, trajectory: TrajectoryData) {
+  const anchorName = trajectory.generation_info?.anchor_name ?? "anchor";
+
+  if (isSameTime(refTime, trajectory.query_time_sec)) {
+    return `${anchorName} · anchor`;
+  }
+
+  return `${anchorName} · reference`;
+}
+
 function getAnchors(
   trajectory: TrajectoryData | undefined,
   timeSec: number,
@@ -111,10 +202,18 @@ function getAnchors(
   ];
 
   for (const step of allSteps) {
-    const meta = step.answer_metadata;
+    const meta = step.answer_metadata as Step["answer_metadata"] & {
+      status?: string;
+      reference_time_sec?: number;
+      object_y_name?: string;
+      object_y_projected_pixel?: [number, number];
+      object_y_normalized_projected_pixel?: [number, number];
+    };
+
     const refTime =
       meta.sampled_last_visible_time_sec ??
       meta.last_placement_time_sec ??
+      meta.reference_time_sec ??
       trajectory.query_time_sec;
 
     if (Math.abs(refTime - timeSec) > TOL) continue;
@@ -126,79 +225,49 @@ function getAnchors(
 
     const raw = meta.projected_pixel as [number, number] | null | undefined;
 
-    function getAnchorLabelByTime(refTime: number, trajectory: TrajectoryData) {
-      function toTimeNumber(value: unknown) {
-        if (typeof value === "number") return value;
+    const objectAIsVisible = meta.status !== "out_of_view";
 
-        if (typeof value === "string") {
-          const match = value.match(/[\d.]+/);
-          return match ? Number(match[0]) : NaN;
-        }
+    // Object A marker: last seen / last placed.
+    // Important: do not draw out-of-view query-time projected pixels.
+    if (objectAIsVisible) {
+      const objectALabel = getObjectALabelByTime(refTime, trajectory);
 
-        return NaN;
+      if (isFinitePoint(norm) && isNormPixelInFrame(norm)) {
+        result.push({
+          xPct: norm[0] * 100,
+          yPct: norm[1] * 100,
+          label: objectALabel,
+          color: "#60a5fa",
+          ring: "ring-blue-400",
+        });
+      } else if (isFinitePoint(raw) && isRawPixelInFrame(raw)) {
+        result.push({
+          xPct: (raw[0] / SOURCE_WIDTH) * 100,
+          yPct: (raw[1] / SOURCE_HEIGHT) * 100,
+          label: objectALabel,
+          color: "#fbbf24",
+          ring: "ring-amber-400",
+        });
       }
-
-      function isSameTime(a: unknown, b: unknown, tol = 0.75) {
-        const aa = toTimeNumber(a);
-        const bb = toTimeNumber(b);
-
-        return (
-          Number.isFinite(aa) && Number.isFinite(bb) && Math.abs(aa - bb) <= tol
-        );
-      }
-
-      const step3 = trajectory.incremental_steps.find(
-        (s) => s.step === 3 || s.question_class === "oos_step3_last_placement",
-      );
-
-      const step3Meta = step3?.answer_metadata as
-        | (Step["answer_metadata"] & {
-            reference_time_sec?: number;
-          })
-        | undefined;
-
-      const placedTime =
-        step3Meta?.last_placement_time_sec ??
-        step3Meta?.reference_time_sec ??
-        null;
-
-      if (isSameTime(trajectory.query_time_sec, refTime)) {
-        return `${trajectory.object_a_name} · anchor`;
-      }
-
-      if (isSameTime(placedTime, refTime)) {
-        return `${trajectory.object_a_name} · last placed`;
-      }
-
-      return `${trajectory.object_a_name} · last seen`;
-    }
-    const label = getAnchorLabelByTime(refTime, trajectory);
-
-    if (norm) {
-      result.push({
-        xPct: norm[0] * 100,
-        yPct: norm[1] * 100,
-        label: label,
-        color: "#60a5fa",
-        ring: "ring-blue-400",
-      });
-    } else if (raw) {
-      result.push({
-        xPct: (raw[0] / SOURCE_WIDTH) * 100,
-        yPct: (raw[1] / SOURCE_HEIGHT) * 100,
-        label: label,
-        color: "#fbbf24",
-        ring: "ring-amber-400",
-      });
     }
 
-    const oyPx = meta.object_y_projected_pixel as [number, number] | undefined;
+    // Object Y marker: visible anchor/reference object at query time.
+    const oyNorm = meta.object_y_normalized_projected_pixel;
+    const oyRaw = meta.object_y_projected_pixel;
 
-    if (oyPx) {
+    if (isFinitePoint(oyNorm) && isNormPixelInFrame(oyNorm)) {
       result.push({
-        xPct: (oyPx[0] / SOURCE_WIDTH) * 100,
-        yPct: (oyPx[1] / SOURCE_HEIGHT) * 100,
-        label: label,
+        xPct: oyNorm[0] * 100,
+        yPct: oyNorm[1] * 100,
+        label: getReferenceLabelByTime(refTime, trajectory),
+        color: "#34d399",
+        ring: "ring-emerald-400",
+      });
+    } else if (isFinitePoint(oyRaw) && isRawPixelInFrame(oyRaw)) {
+      result.push({
+        xPct: (oyRaw[0] / SOURCE_WIDTH) * 100,
+        yPct: (oyRaw[1] / SOURCE_HEIGHT) * 100,
+        label: getReferenceLabelByTime(refTime, trajectory),
         color: "#34d399",
         ring: "ring-emerald-400",
       });
