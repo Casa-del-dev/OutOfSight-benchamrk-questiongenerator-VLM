@@ -126,11 +126,59 @@ function getAnchors(
 
     const raw = meta.projected_pixel as [number, number] | null | undefined;
 
+    function getAnchorLabelByTime(refTime: number, trajectory: TrajectoryData) {
+      function toTimeNumber(value: unknown) {
+        if (typeof value === "number") return value;
+
+        if (typeof value === "string") {
+          const match = value.match(/[\d.]+/);
+          return match ? Number(match[0]) : NaN;
+        }
+
+        return NaN;
+      }
+
+      function isSameTime(a: unknown, b: unknown, tol = 0.75) {
+        const aa = toTimeNumber(a);
+        const bb = toTimeNumber(b);
+
+        return (
+          Number.isFinite(aa) && Number.isFinite(bb) && Math.abs(aa - bb) <= tol
+        );
+      }
+
+      const step3 = trajectory.incremental_steps.find(
+        (s) => s.step === 3 || s.question_class === "oos_step3_last_placement",
+      );
+
+      const step3Meta = step3?.answer_metadata as
+        | (Step["answer_metadata"] & {
+            reference_time_sec?: number;
+          })
+        | undefined;
+
+      const placedTime =
+        step3Meta?.last_placement_time_sec ??
+        step3Meta?.reference_time_sec ??
+        null;
+
+      if (isSameTime(trajectory.query_time_sec, refTime)) {
+        return `${trajectory.object_a_name} · anchor`;
+      }
+
+      if (isSameTime(placedTime, refTime)) {
+        return `${trajectory.object_a_name} · last placed`;
+      }
+
+      return `${trajectory.object_a_name} · last seen`;
+    }
+    const label = getAnchorLabelByTime(refTime, trajectory);
+
     if (norm) {
       result.push({
         xPct: norm[0] * 100,
         yPct: norm[1] * 100,
-        label: `${trajectory.object_a_name} (step ${step.step})`,
+        label: label,
         color: "#60a5fa",
         ring: "ring-blue-400",
       });
@@ -138,7 +186,7 @@ function getAnchors(
       result.push({
         xPct: (raw[0] / SOURCE_WIDTH) * 100,
         yPct: (raw[1] / SOURCE_HEIGHT) * 100,
-        label: `${trajectory.object_a_name} (step ${step.step})`,
+        label: label,
         color: "#fbbf24",
         ring: "ring-amber-400",
       });
@@ -150,7 +198,7 @@ function getAnchors(
       result.push({
         xPct: (oyPx[0] / SOURCE_WIDTH) * 100,
         yPct: (oyPx[1] / SOURCE_HEIGHT) * 100,
-        label: (meta.object_y_name as string) ?? "reference",
+        label: label,
         color: "#34d399",
         ring: "ring-emerald-400",
       });
@@ -676,22 +724,81 @@ export function VideoPlayer({
   if (selectedTrajectory && duration > 0) {
     const traj = selectedTrajectory;
 
-    markers.push({
+    const addMarker = ({
+      time,
+      color,
+      darkColor,
+      label,
+    }: {
+      time: number | null | undefined;
+      color: string;
+      darkColor: string;
+      label: string;
+    }) => {
+      if (typeof time !== "number" || !Number.isFinite(time)) return;
+
+      markers.push({
+        time,
+        pct: (time / duration) * 100,
+        color,
+        darkColor,
+        label,
+      });
+    };
+
+    const step2 = traj.incremental_steps.find(
+      (step) =>
+        step.step === 2 || step.question_class === "oos_step2_last_visible",
+    );
+
+    const step3 = traj.incremental_steps.find(
+      (step) =>
+        step.step === 3 || step.question_class === "oos_step3_last_placement",
+    );
+
+    const step2Meta = step2?.answer_metadata as
+      | (Step["answer_metadata"] & {
+          last_visible_time_sec?: number;
+          reference_time_sec?: number;
+        })
+      | undefined;
+
+    const step3Meta = step3?.answer_metadata as
+      | (Step["answer_metadata"] & {
+          reference_time_sec?: number;
+        })
+      | undefined;
+
+    const lastSeenTime =
+      step2Meta?.sampled_last_visible_time_sec ??
+      step2Meta?.last_visible_time_sec ??
+      step2Meta?.reference_time_sec ??
+      null;
+
+    const lastPlacedTime =
+      step3Meta?.last_placement_time_sec ??
+      step3Meta?.reference_time_sec ??
+      null;
+
+    addMarker({
+      time: lastPlacedTime,
+      color: "#059669",
+      darkColor: "#34d399",
+      label: "placed",
+    });
+
+    addMarker({
+      time: lastSeenTime,
+      color: "#7c3aed",
+      darkColor: "#a78bfa",
+      label: "last seen",
+    });
+    addMarker({
       time: traj.query_time_sec,
-      pct: (traj.query_time_sec / duration) * 100,
       color: "#d97706",
       darkColor: "#fbbf24",
       label: "query",
     });
-
-    /*     if (traj.generation_info.oos_span_start_sec) {
-      markers.push({
-        pct: (traj.generation_info.oos_span_start_sec / duration) * 100,
-        color: "#f87171",
-        label: "OoS start",
-        bg: "bg-red-400",
-      });
-    } */
   }
 
   const progress = duration > 0 ? (currentTimeSec / duration) * 100 : 0;
@@ -957,7 +1064,7 @@ export function VideoPlayer({
           )}
 
           <div
-            className="pointer-events-none absolute top-1/2 z-10 h-4 w-4 rounded-full border-2 border-blue-500 bg-white shadow-md shadow-blue-500/30"
+            className="pointer-events-none absolute top-1/2 z-40 h-4 w-4 rounded-full border-2 border-blue-500 bg-white shadow-md shadow-blue-500/30"
             style={{
               left: `${progress}%`,
               transform: "translate(-50%, -50%)",

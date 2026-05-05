@@ -76,19 +76,29 @@ const DEFAULT_CONFIG = {
   border: "border-slate-200 dark:border-slate-500/20",
 };
 
-function QuestionText({ text }: { text: string }) {
+function QuestionText({
+  text,
+  queryTimeSec,
+  onSeek,
+}: {
+  text: string;
+  queryTimeSec: number;
+  onSeek: (t: number) => void;
+}) {
   const parts = text.split(/(<TIME[^>]*>)/g);
 
   return (
     <p className="m-0 text-[13px] leading-relaxed text-slate-800 dark:text-slate-200">
       {parts.map((part, i) =>
         part.startsWith("<TIME") ? (
-          <code
+          <button
             key={i}
-            className="mx-0.5 rounded bg-blue-500/10 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-blue-700 dark:bg-blue-500/15 dark:text-blue-300"
+            type="button"
+            onClick={() => onSeek(queryTimeSec)}
+            className="mx-0.5 rounded bg-blue-500/10 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-blue-700 transition-colors hover:bg-blue-500/20 dark:bg-blue-500/15 dark:text-blue-300 dark:hover:bg-blue-500/25"
           >
             {part}
-          </code>
+          </button>
         ) : (
           <span key={i}>{part}</span>
         ),
@@ -100,10 +110,14 @@ function QuestionText({ text }: { text: string }) {
 function QuestionCard({
   step,
   isBranch,
+  queryTimeSec,
+  branchSeekTimeSec,
   onSeek,
 }: {
   step: Step | BranchStep;
   isBranch?: boolean;
+  queryTimeSec: number;
+  branchSeekTimeSec?: number | null;
   onSeek: (t: number) => void;
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -115,8 +129,25 @@ function QuestionCard({
   const meta = step.answer_metadata;
   const cfg = CLASS_CONFIG[step.question_class] ?? DEFAULT_CONFIG;
 
-  const seekTime =
-    meta.sampled_last_visible_time_sec ?? meta.last_placement_time_sec ?? null;
+  const extendedMeta = meta as typeof meta & {
+    last_visible_time_sec?: number;
+    reference_time_sec?: number;
+  };
+
+  const isStep1 = !isBranch && step.step === 1;
+
+  const ownSeekTime =
+    extendedMeta.sampled_last_visible_time_sec ??
+    extendedMeta.last_visible_time_sec ??
+    extendedMeta.reference_time_sec ??
+    extendedMeta.last_placement_time_sec ??
+    null;
+
+  const seekTime = isStep1
+    ? null
+    : isBranch
+      ? (branchSeekTimeSec ?? ownSeekTime)
+      : ownSeekTime;
 
   const answerSummaryLines: string[] = [];
 
@@ -155,8 +186,6 @@ function QuestionCard({
 
   return (
     <div className="mb-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm shadow-slate-900/3 dark:border-white/[0.07] dark:bg-slate-900/60 dark:shadow-none">
-      {" "}
-      {/* Header */}
       <div className="flex items-center gap-2.5 border-b border-slate-200 px-3.5 py-2.5 dark:border-white/5">
         <div
           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-[11px] font-bold ${cfg.bg} ${cfg.text} ${cfg.border}`}
@@ -173,18 +202,28 @@ function QuestionCard({
         </div>
 
         {seekTime !== null && (
-          <button
-            onClick={() => onSeek(seekTime)}
-            className="flex items-center gap-1 rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[11px] font-semibold text-blue-700 transition-colors hover:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/20"
-          >
-            <span>{seekTime}s</span>
-          </button>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <span className="hidden text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-600 sm:inline">
+              Reference
+            </span>
+
+            <button
+              type="button"
+              onClick={() => onSeek(seekTime)}
+              className="flex items-center gap-1 rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[11px] font-semibold text-blue-700 transition-colors hover:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/20"
+            >
+              <span>{seekTime}s</span>
+            </button>
+          </div>
         )}
       </div>
       {/* Body */}
       <div className="px-3.5 py-3">
-        <QuestionText text={question} />
-
+        <QuestionText
+          text={question}
+          queryTimeSec={queryTimeSec}
+          onSeek={onSeek}
+        />
         {step.choices.length > 0 && (
           <div className="mt-3 flex justify-center flex-wrap gap-1.5">
             {step.choices.map((choice, ci) => {
@@ -257,6 +296,25 @@ export function QuestionPanel({
 
   const allBranch = Object.values(trajectory.branch_groups).flat();
 
+  const step2 = trajectory.incremental_steps.find(
+    (step) =>
+      step.step === 2 || step.question_class === "oos_step2_last_visible",
+  );
+
+  const step2Meta = step2?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        last_visible_time_sec?: number;
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const groupedQuestionSeekTimeSec =
+    step2Meta?.sampled_last_visible_time_sec ??
+    step2Meta?.last_visible_time_sec ??
+    step2Meta?.reference_time_sec ??
+    step2Meta?.last_placement_time_sec ??
+    null;
+
   return (
     <div className="p-4">
       {/* Trajectory header */}
@@ -295,7 +353,12 @@ export function QuestionPanel({
       {/* Button to give option of stop or let video go when question can be answered */}
 
       {trajectory.incremental_steps.map((step) => (
-        <QuestionCard key={`step-${step.step}`} step={step} onSeek={onSeek} />
+        <QuestionCard
+          key={`step-${step.step}`}
+          step={step}
+          queryTimeSec={trajectory.query_time_sec}
+          onSeek={onSeek}
+        />
       ))}
 
       {/* Branch questions */}
@@ -310,6 +373,8 @@ export function QuestionPanel({
               key={`branch-${step.step}`}
               step={step}
               isBranch
+              queryTimeSec={trajectory.query_time_sec}
+              branchSeekTimeSec={groupedQuestionSeekTimeSec}
               onSeek={onSeek}
             />
           ))}
