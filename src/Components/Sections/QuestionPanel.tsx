@@ -153,12 +153,12 @@ function QuestionCard({
     }
 
     return [
-      ...(lastSeenTimeSec !== null
-        ? [{ label: "Last seen", time: lastSeenTimeSec }]
-        : []),
       ...(lastPlacedTimeSec !== null &&
       Math.abs(lastPlacedTimeSec - (lastSeenTimeSec ?? -999999)) > 0.75
         ? [{ label: "Last placed", time: lastPlacedTimeSec }]
+        : []),
+      ...(lastSeenTimeSec !== null
+        ? [{ label: "Last seen", time: lastSeenTimeSec }]
         : []),
     ];
   })();
