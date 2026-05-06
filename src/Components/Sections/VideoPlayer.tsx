@@ -18,6 +18,21 @@ interface VideoPlayerProps {
 
 type VisiblePane = "both" | "sampled" | "full";
 
+const ANCHOR_COLORS = {
+  query: {
+    color: "#d97706",
+    darkColor: "#fbbf24",
+  },
+  lastSeen: {
+    color: "#7c3aed",
+    darkColor: "#a78bfa",
+  },
+  lastPlaced: {
+    color: "#059669",
+    darkColor: "#34d399",
+  },
+};
+
 function formatTime(sec: number) {
   const safeSec = Number.isFinite(sec) ? Math.max(0, sec) : 0;
   const m = Math.floor(safeSec / 60);
@@ -174,6 +189,52 @@ function getReferenceLabelByTime(refTime: number, trajectory: TrajectoryData) {
   return `${anchorName} · reference`;
 }
 
+function getAnchorColorByTime(refTime: number, trajectory: TrajectoryData) {
+  const step2 = trajectory.incremental_steps.find(
+    (s) => s.step === 2 || s.question_class === "oos_step2_last_visible",
+  );
+
+  const step3 = trajectory.incremental_steps.find(
+    (s) => s.step === 3 || s.question_class === "oos_step3_last_placement",
+  );
+
+  const step2Meta = step2?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        last_visible_time_sec?: number;
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const step3Meta = step3?.answer_metadata as
+    | (Step["answer_metadata"] & {
+        reference_time_sec?: number;
+      })
+    | undefined;
+
+  const lastSeenTime =
+    step2Meta?.sampled_last_visible_time_sec ??
+    step2Meta?.last_visible_time_sec ??
+    step2Meta?.reference_time_sec ??
+    null;
+
+  const placedTime =
+    step3Meta?.last_placement_time_sec ?? step3Meta?.reference_time_sec ?? null;
+
+  if (isSameTime(refTime, trajectory.query_time_sec)) {
+    return ANCHOR_COLORS.query;
+  }
+
+  if (isSameTime(refTime, placedTime)) {
+    return ANCHOR_COLORS.lastPlaced;
+  }
+
+  if (isSameTime(refTime, lastSeenTime)) {
+    return ANCHOR_COLORS.lastSeen;
+  }
+
+  return ANCHOR_COLORS.lastSeen;
+}
+
 function getAnchors(
   trajectory: TrajectoryData | undefined,
   timeSec: number,
@@ -231,13 +292,14 @@ function getAnchors(
     // Important: do not draw out-of-view query-time projected pixels.
     if (objectAIsVisible) {
       const objectALabel = getObjectALabelByTime(refTime, trajectory);
+      const objectAColor = getAnchorColorByTime(refTime, trajectory);
 
       if (isFinitePoint(norm) && isNormPixelInFrame(norm)) {
         result.push({
           xPct: norm[0] * 100,
           yPct: norm[1] * 100,
           label: objectALabel,
-          color: "#60a5fa",
+          color: objectAColor.color,
           ring: "ring-blue-400",
         });
       } else if (isFinitePoint(raw) && isRawPixelInFrame(raw)) {
@@ -245,8 +307,8 @@ function getAnchors(
           xPct: (raw[0] / SOURCE_WIDTH) * 100,
           yPct: (raw[1] / SOURCE_HEIGHT) * 100,
           label: objectALabel,
-          color: "#fbbf24",
-          ring: "ring-amber-400",
+          color: objectAColor.color,
+          ring: "ring-blue-400",
         });
       }
     }
@@ -260,16 +322,16 @@ function getAnchors(
         xPct: oyNorm[0] * 100,
         yPct: oyNorm[1] * 100,
         label: getReferenceLabelByTime(refTime, trajectory),
-        color: "#34d399",
-        ring: "ring-emerald-400",
+        color: ANCHOR_COLORS.query.color,
+        ring: "ring-amber-400",
       });
     } else if (isFinitePoint(oyRaw) && isRawPixelInFrame(oyRaw)) {
       result.push({
         xPct: (oyRaw[0] / SOURCE_WIDTH) * 100,
         yPct: (oyRaw[1] / SOURCE_HEIGHT) * 100,
         label: getReferenceLabelByTime(refTime, trajectory),
-        color: "#34d399",
-        ring: "ring-emerald-400",
+        color: ANCHOR_COLORS.query.color,
+        ring: "ring-amber-400",
       });
     }
   }
@@ -851,21 +913,22 @@ export function VideoPlayer({
 
     addMarker({
       time: lastPlacedTime,
-      color: "#059669",
-      darkColor: "#34d399",
+      color: ANCHOR_COLORS.lastPlaced.color,
+      darkColor: ANCHOR_COLORS.lastPlaced.darkColor,
       label: "placed",
     });
 
     addMarker({
       time: lastSeenTime,
-      color: "#7c3aed",
-      darkColor: "#a78bfa",
+      color: ANCHOR_COLORS.lastSeen.color,
+      darkColor: ANCHOR_COLORS.lastSeen.darkColor,
       label: "last seen",
     });
+
     addMarker({
       time: traj.query_time_sec,
-      color: "#d97706",
-      darkColor: "#fbbf24",
+      color: ANCHOR_COLORS.query.color,
+      darkColor: ANCHOR_COLORS.query.darkColor,
       label: "query",
     });
   }
