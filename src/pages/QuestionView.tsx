@@ -15,6 +15,8 @@ import { KitchenScene } from "../Components/Sections/KitchenScene";
 const STORAGE_KEYS = {
   selectedVideoId: "questionView.selectedVideoId",
   selectedTrajectoryByVideo: "questionView.selectedTrajectoryByVideo",
+  activePanel: "questionView.activePanel",
+  trackingEnabled3d: "questionView.trackingEnabled3d",
 } as const;
 
 function getSavedTrajectoryByVideo(): Record<string, string> {
@@ -184,6 +186,24 @@ function TrajectoryDropdown({
   );
 }
 
+type ActivePanel = "questions" | "json" | "3d";
+
+function getInitialActivePanel(): ActivePanel {
+  if (typeof window === "undefined") return "questions";
+
+  const saved = localStorage.getItem(STORAGE_KEYS.activePanel);
+
+  return saved === "questions" || saved === "json" || saved === "3d"
+    ? saved
+    : "questions";
+}
+
+function getInitialTrackingEnabled3d(): boolean {
+  if (typeof window === "undefined") return false;
+
+  return localStorage.getItem(STORAGE_KEYS.trackingEnabled3d) === "true";
+}
+
 export default function QuestionView() {
   const [initialSelection] = useState(() => getInitialVideoSelection());
   const [tracking, setTracking] = useState<TrackingEntry | null>(null);
@@ -193,8 +213,12 @@ export default function QuestionView() {
     initialSelection.videoId,
   );
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
-  const [activePanel, setActivePanel] = useState<"questions" | "json" | "3d">(
-    "questions",
+
+  const [activePanel, setActivePanel] = useState<ActivePanel>(() =>
+    getInitialActivePanel(),
+  );
+  const [trackingEnabled3d, setTrackingEnabled3d] = useState(() =>
+    getInitialTrackingEnabled3d(),
   );
   const [selectedTrajectoryKey, setSelectedTrajectoryKey] = useState<
     string | null
@@ -251,6 +275,17 @@ export default function QuestionView() {
   }, [selectedVideo?.id]);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.activePanel, activePanel);
+  }, [activePanel]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEYS.trackingEnabled3d,
+      String(trackingEnabled3d),
+    );
+  }, [trackingEnabled3d]);
+
+  useEffect(() => {
     if (!selectedVideoId || !selectedTrajectoryKey) return;
 
     const savedByVideo = getSavedTrajectoryByVideo();
@@ -302,6 +337,7 @@ export default function QuestionView() {
         <main className="flex min-h-0 flex-col overflow-hidden border-r border-slate-200 bg-slate-100 dark:border-white/[0.07] dark:bg-black">
           {selectedVideo ? (
             <VideoPlayer
+              key={selectedVideo.id}
               video={selectedVideo}
               trajectory={selectedTrajectory}
               currentTimeSec={currentTimeSec}
@@ -384,6 +420,8 @@ export default function QuestionView() {
                 tracking={tracking}
                 trajectory={selectedTrajectory}
                 currentTimeSec={currentTimeSec}
+                trackingEnabled={trackingEnabled3d}
+                onTrackingEnabledChange={setTrackingEnabled3d}
               />
             )}
           </div>

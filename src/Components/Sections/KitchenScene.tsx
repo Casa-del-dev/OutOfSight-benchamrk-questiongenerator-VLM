@@ -2,7 +2,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { TrajectoryData, VideoEntry } from "../Json/Types";
 import type { TrackingEntry, FramewiseInfo, Matrix3x4 } from "../Camera/Types";
-import { OrbitControls, useGLTF, Line } from "@react-three/drei";
+import { OrbitControls, useGLTF, Line, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 
 type KitchenSceneProps = {
@@ -10,6 +10,8 @@ type KitchenSceneProps = {
   tracking?: TrackingEntry | null;
   trajectory?: TrajectoryData | null;
   currentTimeSec: number;
+  trackingEnabled: boolean;
+  onTrackingEnabledChange: (value: boolean) => void;
 };
 
 const VIDEO_FPS = 30;
@@ -284,14 +286,185 @@ function ViewingSurfaceIndicator({
   );
 }
 
+function findNamedHoverObject(
+  hitObject: THREE.Object3D,
+  root: THREE.Object3D,
+): THREE.Object3D {
+  let current: THREE.Object3D | null = hitObject;
+
+  while (current && current !== root) {
+    if (current.name && current.name.trim() !== "") {
+      return current;
+    }
+
+    current = current.parent;
+  }
+
+  return hitObject;
+}
+
+function HoveredObjectLabel({ object }: { object: THREE.Object3D | null }) {
+  if (!object) return null;
+
+  const box = new THREE.Box3().setFromObject(object);
+
+  if (box.isEmpty()) return null;
+
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+
+  const size = new THREE.Vector3();
+  box.getSize(size);
+
+  const labelPosition = center.clone();
+  labelPosition.y += size.y / 2 + 0.08;
+
+  const name =
+    object.name && object.name.trim() !== "" ? object.name : "Unnamed object";
+
+  return (
+    <Html position={labelPosition} center distanceFactor={6}>
+      <div
+        style={{
+          padding: "3px 7px",
+          borderRadius: "6px",
+          background: "rgba(15, 23, 42, 0.85)",
+          color: "#e0f2fe",
+          fontSize: "11px",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          border: "1px solid rgba(125, 211, 252, 0.55)",
+          pointerEvents: "none",
+        }}
+      >
+        {name}
+      </div>
+    </Html>
+  );
+}
+
+function HoveredObjectEdges({ object }: { object: THREE.Object3D | null }) {
+  const helperRef = useRef<THREE.Box3Helper | null>(null);
+  const boxRef = useRef(new THREE.Box3());
+
+  useFrame(() => {
+    const helper = helperRef.current;
+
+    if (!helper) return;
+
+    if (!object) {
+      helper.visible = false;
+      return;
+    }
+
+    object.updateWorldMatrix(true, true);
+
+    const box = boxRef.current.setFromObject(object);
+
+    if (box.isEmpty()) {
+      helper.visible = false;
+      return;
+    }
+
+    helper.box.copy(box);
+    helper.visible = true;
+    helper.updateMatrixWorld(true);
+  });
+
+  return (
+    <primitive
+      ref={helperRef}
+      object={new THREE.Box3Helper(boxRef.current, new THREE.Color("#67e8f9"))}
+      renderOrder={100}
+    />
+  );
+}
+
+function HoverObjectHighlighter({
+  targetRoot,
+  hoveredObject,
+  setHoveredObject,
+}: {
+  targetRoot: React.RefObject<THREE.Object3D | null>;
+  hoveredObject: THREE.Object3D | null;
+  setHoveredObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
+}) {
+  const { camera, gl, pointer } = useThree();
+  const raycasterRef = useRef(new THREE.Raycaster());
+  const pointerInsideRef = useRef(false);
+  const lastHoveredUuidRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const domElement = gl.domElement;
+
+    const handlePointerEnter = () => {
+      pointerInsideRef.current = true;
+    };
+
+    const handlePointerLeave = () => {
+      pointerInsideRef.current = false;
+      lastHoveredUuidRef.current = null;
+      setHoveredObject(null);
+    };
+
+    domElement.addEventListener("pointerenter", handlePointerEnter);
+    domElement.addEventListener("pointerleave", handlePointerLeave);
+
+    return () => {
+      domElement.removeEventListener("pointerenter", handlePointerEnter);
+      domElement.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, [gl, setHoveredObject]);
+
+  useFrame(() => {
+    const root = targetRoot.current;
+
+    if (!root || !pointerInsideRef.current) {
+      if (lastHoveredUuidRef.current !== null) {
+        lastHoveredUuidRef.current = null;
+        setHoveredObject(null);
+      }
+      return;
+    }
+
+    const raycaster = raycasterRef.current;
+    raycaster.setFromCamera(pointer, camera);
+
+    const hits = raycaster.intersectObject(root, true);
+
+    if (hits.length === 0) {
+      if (lastHoveredUuidRef.current !== null) {
+        lastHoveredUuidRef.current = null;
+        setHoveredObject(null);
+      }
+      return;
+    }
+
+    const objectToHighlight = findNamedHoverObject(hits[0].object, root);
+
+    if (lastHoveredUuidRef.current === objectToHighlight.uuid) {
+      return;
+    }
+
+    lastHoveredUuidRef.current = objectToHighlight.uuid;
+    setHoveredObject(objectToHighlight);
+  });
+
+  return <HoveredObjectEdges object={hoveredObject} />;
+}
+
 function SceneContent({
   video,
   tracking,
-  /*   trajectory,
-   */ currentTimeSec,
+  currentTimeSec,
   trackingEnabled,
-}: KitchenSceneProps & { trackingEnabled: boolean }) {
+}: KitchenSceneProps) {
   const kitchenRef = useRef<THREE.Object3D | null>(null);
+
+  const [hoveredObject, setHoveredObject] = useState<THREE.Object3D | null>(
+    null,
+  );
+
   if (!tracking) return null;
 
   const fps = VIDEO_FPS;
@@ -361,6 +534,13 @@ function SceneContent({
       <directionalLight position={[3, 5, 3]} intensity={1.5} />
 
       <KitchenModel videoId={video?.id} modelRef={kitchenRef} />
+
+      <HoverObjectHighlighter
+        targetRoot={kitchenRef}
+        hoveredObject={hoveredObject}
+        setHoveredObject={setHoveredObject}
+      />
+      <HoveredObjectLabel object={hoveredObject} />
 
       <gridHelper args={[10, 10]} />
       <axesHelper args={[1]} />
@@ -533,7 +713,8 @@ function TrackingOrbitControls({
 }
 
 export function KitchenScene(props: KitchenSceneProps) {
-  const [trackingEnabled, setTrackingEnabled] = useState(false);
+  const trackingEnabled = props.trackingEnabled;
+  const setTrackingEnabled = props.onTrackingEnabledChange;
 
   if (!props.tracking) {
     return (
@@ -547,7 +728,7 @@ export function KitchenScene(props: KitchenSceneProps) {
     <div className="relative h-full min-h-100 w-full bg-slate-100 dark:bg-black">
       <button
         type="button"
-        onClick={() => setTrackingEnabled((v) => !v)}
+        onClick={() => setTrackingEnabled(!trackingEnabled)}
         className={`absolute left-3 top-3 z-10 rounded-md px-3 py-1.5 text-xs font-medium shadow ${
           trackingEnabled
             ? "bg-blue-600 text-white"
@@ -558,7 +739,7 @@ export function KitchenScene(props: KitchenSceneProps) {
       </button>
 
       <Canvas camera={{ position: [2, 2, 4], fov: 50 }}>
-        <SceneContent {...props} trackingEnabled={trackingEnabled} />
+        <SceneContent {...props} />
       </Canvas>
     </div>
   );
