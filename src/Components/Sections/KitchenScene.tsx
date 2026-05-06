@@ -100,7 +100,7 @@ function CameraMarker({ matrix }: { matrix: THREE.Matrix4 }) {
 
       {/* cone-only camera direction marker */}
       <group rotation={[0, yawCorrection, 0]}>
-        <mesh position={[0, 0, -0.12]} rotation={[-Math.PI / 4, 0, 0]}>
+        <mesh position={[0, 0, 0]} rotation={[-Math.PI / 4, 0, 0]}>
           <coneGeometry args={[0.055, 0.16, 24]} />
           <meshStandardMaterial
             color="#dbeafe"
