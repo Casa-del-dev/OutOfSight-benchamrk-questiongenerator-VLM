@@ -422,6 +422,8 @@ export default function QuestionView() {
                 currentTimeSec={currentTimeSec}
                 trackingEnabled={trackingEnabled3d}
                 onTrackingEnabledChange={setTrackingEnabled3d}
+                queryTimeSec={selectedTrajectory?.query_time_sec ?? 0}
+                onSeek={(t: number) => setCurrentTimeSec(t)}
               />
             )}
           </div>

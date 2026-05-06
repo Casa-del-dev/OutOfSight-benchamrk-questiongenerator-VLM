@@ -12,6 +12,8 @@ type KitchenSceneProps = {
   currentTimeSec: number;
   trackingEnabled: boolean;
   onTrackingEnabledChange: (value: boolean) => void;
+  queryTimeSec?: number;
+  onSeek?: (timeSec: number) => void;
 };
 
 const VIDEO_FPS = 30;
@@ -727,17 +729,36 @@ export function KitchenScene(props: KitchenSceneProps) {
 
   return (
     <div className="relative h-full min-h-100 w-full bg-slate-100 dark:bg-black">
-      <button
-        type="button"
-        onClick={() => setTrackingEnabled(!trackingEnabled)}
-        className={`absolute left-3 top-3 z-10 rounded-md px-3 py-1.5 text-xs font-medium shadow ${
-          trackingEnabled
-            ? "bg-blue-600 text-white"
-            : "bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-200"
-        }`}
-      >
-        {trackingEnabled ? "Tracking: On" : "Tracking: Off"}
-      </button>
+      <div className="absolute left-3 top-3 z-10 flex w-[calc(100%-1.5rem)] justify-between">
+        {/* Tracking Button */}
+        <button
+          type="button"
+          onClick={() => setTrackingEnabled(!trackingEnabled)}
+          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+            trackingEnabled
+              ? // ACTIVE — vibrant blue glow, brighter text
+                "bg-[#0f1e3d] text-[#6ab0ff] border border-[#3a6abf]/80 shadow-[0_0_14px_rgba(59,130,246,0.35)] hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:bg-[#132347] hover:text-[#89c2ff]"
+              : // INACTIVE — dimmed, desaturated, no glow
+                "bg-[#0d1520] text-[#3d5270] border border-[#1e2f45]/60 shadow-none hover:bg-[#101a28] hover:text-[#4e6585] hover:border-[#253a56]/60"
+          }`}
+        >
+          {trackingEnabled ? "Tracking: On" : "Tracking: Off"}
+        </button>
+
+        {/* Query Time Button */}
+        {props.queryTimeSec !== undefined && props.onSeek && (
+          <button
+            type="button"
+            onClick={() => props.onSeek!(props.queryTimeSec!)}
+            className="rounded-full px-4 py-1.5 text-xs font-semibold transition-all
+        bg-[#0f1e3d] text-[#6ab0ff] border border-[#2a4a8a]/60
+        shadow-[0_0_12px_rgba(59,130,246,0.15)] hover:shadow-[0_0_16px_rgba(59,130,246,0.25)]
+        hover:bg-[#132347] hover:text-[#89c2ff] hover:border-[#3a5fa0]/70"
+          >
+            {props.queryTimeSec}s
+          </button>
+        )}
+      </div>
 
       <Canvas camera={{ position: [2, 2, 4], fov: 50 }}>
         <SceneContent {...props} />
