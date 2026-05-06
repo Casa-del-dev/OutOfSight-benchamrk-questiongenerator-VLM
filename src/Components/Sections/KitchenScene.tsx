@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import type { TrajectoryData, VideoEntry } from "../Json/Types";
+import type { AnswerMetadata, TrajectoryData, VideoEntry } from "../Json/Types";
 import type { TrackingEntry, FramewiseInfo, Matrix3x4 } from "../Camera/Types";
 import { OrbitControls, useGLTF, Line, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
@@ -77,23 +77,6 @@ function KitchenModel({
 
   return <primitive ref={modelRef} object={gltf.scene} />;
 }
-
-/* function Dot({
-  position,
-  color,
-  size = 0.05,
-}: {
-  position: THREE.Vector3;
-  color: string;
-  size?: number;
-}) {
-  return (
-    <mesh position={position}>
-      <sphereGeometry args={[size, 24, 24]} />
-      <meshStandardMaterial color={color} />
-    </mesh>
-  );
-} */
 
 function CameraMarker({ matrix }: { matrix: THREE.Matrix4 }) {
   const yawCorrection = 0.0;
@@ -467,6 +450,7 @@ function SceneContent({
   tracking,
   currentTimeSec,
   trackingEnabled,
+  trajectory,
 }: KitchenSceneProps) {
   const kitchenRef = useRef<THREE.Object3D | null>(null);
 
@@ -524,18 +508,119 @@ function SceneContent({
     M_world_camera,
   );
 
-  // Example object points in camera coordinates.
-  // Replace later with real object coordinates.
-  /*   const objectPointsCamera: [number, number, number][] = [
-    [0, 0, -1],
-    [0.2, 0.1, -1.4],
-    [-0.2, 0.05, -1.8],
-  ];
+  type WorldPoint = {
+    worldCoord: THREE.Vector3;
+    fixture?: unknown;
+  };
 
-  // IMPORTANT: use M_world_camera, not M_world_camera_raw.
-  const objectPointsWorld = objectPointsCamera.map((p) =>
-    new THREE.Vector3(p[0], p[1], p[2]).applyMatrix4(M_world_camera),
-  ); */
+  function makeWorldPointFromMeta(
+    meta: AnswerMetadata | undefined | null,
+  ): WorldPoint | null {
+    if (!meta) return null;
+
+    if (
+      Array.isArray(meta.world_coordinates) &&
+      meta.world_coordinates.length === 3
+    ) {
+      const worldCoord = new THREE.Vector3(
+        meta.world_coordinates[0],
+        meta.world_coordinates[1],
+        meta.world_coordinates[2],
+      ).applyMatrix4(coordinateCorrection);
+
+      return {
+        worldCoord,
+        fixture: meta.fixture ?? meta.correct_fixture ?? meta.correct_label,
+      };
+    }
+
+    if (meta.normalized_projected_pixel || meta.projected_pixel) {
+      const pixel = meta.normalized_projected_pixel
+        ? meta.normalized_projected_pixel
+        : meta.projected_pixel
+          ? [meta.projected_pixel[0], meta.projected_pixel[1]]
+          : null;
+
+      if (!pixel) return null;
+
+      const camX = (pixel[0] - 0.5) * 2;
+      const camY = (0.5 - pixel[1]) * 2;
+      const camZ = 0;
+
+      const worldCoord = new THREE.Vector3(camX, camY, camZ)
+        .applyMatrix4(M_device_camera)
+        .applyMatrix4(M_world_device)
+        .applyMatrix4(coordinateCorrection);
+
+      return {
+        worldCoord,
+        fixture: meta.fixture ?? meta.correct_fixture ?? meta.correct_label,
+      };
+    }
+
+    return null;
+  }
+
+  function getIncrementalStepWorldPoint(stepNumber: number): WorldPoint | null {
+    if (!trajectory) return null;
+
+    const step = trajectory.incremental_steps.find(
+      (s) => s.step === stepNumber,
+    );
+
+    if (!step) return null;
+
+    return makeWorldPointFromMeta(step.answer_metadata as AnswerMetadata);
+  }
+
+  function getPostStep4AnchorWorldPoint(): WorldPoint | null {
+    if (!trajectory) return null;
+
+    const branchGroups = trajectory.branch_groups as Record<string, any[]>;
+    const postStep4 = branchGroups["post_step4"];
+
+    if (!Array.isArray(postStep4) || postStep4.length === 0) {
+      return null;
+    }
+
+    const anchorStep = postStep4[0];
+
+    if (!anchorStep?.answer_metadata) {
+      return null;
+    }
+
+    return makeWorldPointFromMeta(anchorStep.answer_metadata as AnswerMetadata);
+  }
+
+  const lastSeen = getIncrementalStepWorldPoint(2);
+  const lastPlaced = getIncrementalStepWorldPoint(3);
+  const fixture = getIncrementalStepWorldPoint(4);
+  const anchor = getPostStep4AnchorWorldPoint();
+
+  /* console.groupCollapsed("[KitchenScene] world points");
+  console.log("lastSeen:", {
+    coord: lastSeen?.worldCoord.toArray(),
+    fixture: lastSeen?.fixture,
+  });
+  console.log("lastPlaced:", {
+    coord: lastPlaced?.worldCoord.toArray(),
+    fixture: lastPlaced?.fixture,
+  });
+  console.log("fixture:", {
+    coord: fixture?.worldCoord.toArray(),
+    fixture: fixture?.fixture,
+  });
+  console.log("anchor post_step4:", {
+    coord: anchor?.worldCoord.toArray(),
+    fixture: anchor?.fixture,
+  });
+  console.log(
+    "raw post_step4:",
+    (trajectory?.branch_groups as Record<string, any[]> | undefined)?.[
+      "post_step4"
+    ],
+  );
+  console.groupEnd(); */
 
   return (
     <>
@@ -543,6 +628,51 @@ function SceneContent({
       <directionalLight position={[3, 5, 3]} intensity={1.5} />
 
       <KitchenModel videoId={video?.id} modelRef={kitchenRef} />
+
+      {lastSeen && (
+        <mesh position={lastSeen.worldCoord}>
+          <sphereGeometry args={[0.045, 16, 16]} />
+          <meshStandardMaterial
+            color="#7c3aed"
+            emissive="#7c3aed"
+            emissiveIntensity={1.2}
+          />
+        </mesh>
+      )}
+
+      {lastPlaced && (
+        <mesh position={lastPlaced.worldCoord}>
+          <sphereGeometry args={[0.045, 16, 16]} />
+          <meshStandardMaterial
+            color="#22c55e"
+            emissive="#22c55e"
+            emissiveIntensity={1.2}
+          />
+        </mesh>
+      )}
+
+      {anchor && (
+        <mesh position={anchor.worldCoord}>
+          <sphereGeometry args={[0.05, 16, 16]} />
+          <meshStandardMaterial
+            color="#f59e0b"
+            emissive="#f59e0b"
+            emissiveIntensity={1.2}
+          />
+        </mesh>
+      )}
+
+      {fixture && (
+        <mesh position={fixture.worldCoord}>
+          {/*           <boxGeometry args={[0.075, 0.075, 0.075]} />
+           */}{" "}
+          <meshStandardMaterial
+            color="#e879f9"
+            emissive="#e879f9"
+            emissiveIntensity={1.2}
+          />
+        </mesh>
+      )}
 
       <HoverObjectHighlighter
         targetRoot={kitchenRef}

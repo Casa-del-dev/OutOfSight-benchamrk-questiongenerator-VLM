@@ -9,6 +9,7 @@ export interface AnswerMetadata {
   correct_label?: string;
   distance_bucket?: string;
   distance_m?: number;
+  world_coordinates?: [number, number, number];
   object_y_projected_pixel?: [number, number];
   object_y_name?: string;
   [key: string]: unknown;

@@ -950,7 +950,7 @@ export function VideoPlayer({
       const pct = getPctFromPointer(clientX);
       const rawTime = pct * duration;
 
-      const SNAP_SEC = 1.5;
+      const SNAP_SEC = 5;
 
       const nearestMarker = markers.reduce<Marker | null>((nearest, marker) => {
         const currentDistance = Math.abs(marker.time - rawTime);
@@ -976,7 +976,7 @@ export function VideoPlayer({
       const pct = getPctFromPointer(clientX);
       const rawTime = pct * duration;
 
-      const SNAP_SEC = 1.0;
+      const SNAP_SEC = 5.0;
 
       const nearestMarker = markers.reduce<Marker | null>((nearest, marker) => {
         const markerTime = marker.time;
