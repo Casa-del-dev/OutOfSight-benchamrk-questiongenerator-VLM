@@ -7,7 +7,9 @@ import {
 } from "../Components/Sections/JsonViewer";
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
-import { Check, ChevronDown, FileQuestionMark } from "lucide-react";
+import { Box, Check, ChevronDown, FileQuestionMark } from "lucide-react";
+import { TRACKING_BY_VIDEO_ID } from "../Components/Camera/TrackingCamera";
+import { KitchenScene } from "../Components/Sections/KitchenScene";
 
 const STORAGE_KEYS = {
   selectedVideoId: "questionView.selectedVideoId",
@@ -189,7 +191,7 @@ export default function QuestionView() {
     initialSelection.videoId,
   );
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
-  const [activePanel, setActivePanel] = useState<"questions" | "json">(
+  const [activePanel, setActivePanel] = useState<"questions" | "json" | "3d">(
     "questions",
   );
   const [selectedTrajectoryKey, setSelectedTrajectoryKey] = useState<
@@ -201,6 +203,9 @@ export default function QuestionView() {
     selectedUser?.videos.find((v) => v.id === selectedVideoId) ??
     selectedUser?.videos[0];
 
+  const tracking = selectedVideo
+    ? TRACKING_BY_VIDEO_ID[selectedVideo.id]
+    : null;
   // Get selected trajectory from the trajectory map
   const selectedTrajectory: TrajectoryData | null = selectedVideo?.trajectory
     ? selectedTrajectoryKey && selectedTrajectoryKey in selectedVideo.trajectory
@@ -291,7 +296,7 @@ export default function QuestionView() {
         <aside className="flex min-h-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80">
           {/* Tabs */}
           <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">
-            {(["questions", "json"] as const).map((tab) => (
+            {(["questions", "3d", "json"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActivePanel(tab)}
@@ -304,6 +309,11 @@ export default function QuestionView() {
                 {tab === "questions" ? (
                   <div className="flex flex-row items-center text-center gap-1">
                     <FileQuestionMark className="h-4 w-4" /> Questions
+                  </div>
+                ) : tab === "3d" ? (
+                  <div className="flex items-center gap-1">
+                    <Box className="h-4 w-4" />
+                    3D Scene
                   </div>
                 ) : (
                   "{ } JSON"
@@ -330,17 +340,28 @@ export default function QuestionView() {
 
           <div className="flex-1 overflow-y-auto">
             {activePanel === "questions" ? (
-              <QuestionPanel
+              <div className="h-full overflow-y-auto">
+                <QuestionPanel
+                  trajectory={selectedTrajectory}
+                  currentTimeSec={currentTimeSec}
+                  onSeek={setCurrentTimeSec}
+                />
+              </div>
+            ) : activePanel === "json" ? (
+              <div className="h-full overflow-y-auto">
+                <JsonViewer
+                  data={
+                    selectedVideo?.rawJson ??
+                    (selectedTrajectory ? selectedTrajectory : null)
+                  }
+                />
+              </div>
+            ) : (
+              <KitchenScene
+                video={selectedVideo}
+                tracking={tracking}
                 trajectory={selectedTrajectory}
                 currentTimeSec={currentTimeSec}
-                onSeek={setCurrentTimeSec}
-              />
-            ) : (
-              <JsonViewer
-                data={
-                  selectedVideo?.rawJson ??
-                  (selectedTrajectory ? selectedTrajectory : null)
-                }
               />
             )}
           </div>
