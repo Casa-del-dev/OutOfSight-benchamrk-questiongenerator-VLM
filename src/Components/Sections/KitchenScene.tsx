@@ -1,8 +1,9 @@
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { TrajectoryData, VideoEntry } from "../Json/Types";
 import type { TrackingEntry, FramewiseInfo, Matrix3x4 } from "../Camera/Types";
+import { OrbitControls, useGLTF, Line } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
 
 type KitchenSceneProps = {
   video?: VideoEntry | null;
@@ -12,6 +13,7 @@ type KitchenSceneProps = {
 };
 
 const VIDEO_FPS = 30;
+const VIEW_FORWARD_LOCAL = new THREE.Vector3(0, -Math.SQRT1_2, Math.SQRT1_2);
 
 function matrix3x4ToMatrix4(m: Matrix3x4): THREE.Matrix4 {
   const mat = new THREE.Matrix4();
@@ -57,16 +59,22 @@ function getClosestValidPose(
   });
 }
 
-function KitchenModel({ videoId }: { videoId?: string }) {
+function KitchenModel({
+  videoId,
+  modelRef,
+}: {
+  videoId?: string;
+  modelRef: React.RefObject<THREE.Object3D | null>;
+}) {
   const userPrefix = videoId?.slice(0, 3) ?? "P01";
   const modelUrl = `/models/${userPrefix}_final.glb`;
 
   const gltf = useGLTF(modelUrl);
 
-  return <primitive object={gltf.scene} />;
+  return <primitive ref={modelRef} object={gltf.scene} />;
 }
 
-function Dot({
+/* function Dot({
   position,
   color,
   size = 0.05,
@@ -81,30 +89,209 @@ function Dot({
       <meshStandardMaterial color={color} />
     </mesh>
   );
-}
+} */
 
 function CameraMarker({ matrix }: { matrix: THREE.Matrix4 }) {
+  const yawCorrection = 0.0;
+
   return (
     <group matrix={matrix} matrixAutoUpdate={false}>
-      <mesh>
-        <sphereGeometry args={[0.06, 24, 24]} />
-        <meshStandardMaterial color="blue" />
-      </mesh>
+      <pointLight color="#60a5fa" intensity={0.6} distance={1.0} />
 
-      <mesh position={[0, 0, -0.25]}>
-        <coneGeometry args={[0.05, 0.14, 16]} />
-        <meshStandardMaterial color="blue" />
-      </mesh>
+      {/* cone-only camera direction marker */}
+      <group rotation={[0, yawCorrection, 0]}>
+        <mesh position={[0, 0, -0.12]} rotation={[-Math.PI / 4, 0, 0]}>
+          <coneGeometry args={[0.055, 0.16, 24]} />
+          <meshStandardMaterial
+            color="#dbeafe"
+            emissive="#93c5fd"
+            emissiveIntensity={2.0}
+          />
+        </mesh>
+      </group>
     </group>
+  );
+}
+
+function ViewingSurfaceIndicator({
+  matrix,
+  targetRoot,
+}: {
+  matrix: THREE.Matrix4;
+  targetRoot: React.RefObject<THREE.Object3D | null>;
+}) {
+  const raycasterRef = useRef(new THREE.Raycaster());
+  const lightRef = useRef<THREE.PointLight | null>(null);
+
+  const [paths, setPaths] = useState<{
+    top: THREE.Vector3[];
+    bottom: THREE.Vector3[];
+    left: THREE.Vector3[];
+    right: THREE.Vector3[];
+  }>({
+    top: [],
+    bottom: [],
+    left: [],
+    right: [],
+  });
+
+  const viewWidth = 1.1;
+  const viewHeight = 0.75;
+  const imagePlaneDistance = 0.3;
+  const samplesPerSide = 24;
+
+  useFrame(() => {
+    const root = targetRoot.current;
+    const light = lightRef.current;
+    if (!root) return;
+
+    const origin = new THREE.Vector3().setFromMatrixPosition(matrix);
+    const rotation = new THREE.Matrix4().extractRotation(matrix);
+
+    const forwardLocal = VIEW_FORWARD_LOCAL.clone().normalize();
+    const rightLocal = new THREE.Vector3(1, 0, 0);
+
+    // THIS flips the slant from / to \
+    const upLocal = new THREE.Vector3()
+      .crossVectors(forwardLocal, rightLocal)
+      .normalize();
+
+    const worldForward = forwardLocal
+      .clone()
+      .applyMatrix4(rotation)
+      .normalize();
+    const worldRight = rightLocal.clone().applyMatrix4(rotation).normalize();
+    const worldUp = upLocal.clone().applyMatrix4(rotation).normalize();
+
+    const raycaster = raycasterRef.current;
+    raycaster.near = 0.2;
+    raycaster.far = 8;
+
+    const castSample = (x: number, y: number) => {
+      const rayDirection = worldForward
+        .clone()
+        .multiplyScalar(imagePlaneDistance)
+        .add(worldRight.clone().multiplyScalar(x))
+        .add(worldUp.clone().multiplyScalar(y))
+        .normalize();
+
+      raycaster.set(origin, rayDirection);
+
+      const hits = raycaster.intersectObject(root, true);
+      const hit = hits.find((h) => h.face);
+
+      if (!hit || !hit.face) return null;
+
+      const normal = hit.face.normal.clone();
+      const normalMatrix = new THREE.Matrix3().getNormalMatrix(
+        hit.object.matrixWorld,
+      );
+
+      normal.applyMatrix3(normalMatrix).normalize();
+
+      return hit.point.clone().add(normal.clone().multiplyScalar(0.02));
+    };
+
+    const top: THREE.Vector3[] = [];
+    const bottom: THREE.Vector3[] = [];
+    const left: THREE.Vector3[] = [];
+    const right: THREE.Vector3[] = [];
+
+    for (let i = 0; i < samplesPerSide; i++) {
+      const t = i / (samplesPerSide - 1);
+
+      const x = THREE.MathUtils.lerp(-viewWidth / 2, viewWidth / 2, t);
+      const y = THREE.MathUtils.lerp(-viewHeight / 2, viewHeight / 2, t);
+
+      const topHit = castSample(x, viewHeight / 2);
+      if (topHit) top.push(topHit);
+
+      const bottomHit = castSample(x, -viewHeight / 2);
+      if (bottomHit) bottom.push(bottomHit);
+
+      const leftHit = castSample(-viewWidth / 2, y);
+      if (leftHit) left.push(leftHit);
+
+      const rightHit = castSample(viewWidth / 2, y);
+      if (rightHit) right.push(rightHit);
+    }
+
+    setPaths({ top, bottom, left, right });
+
+    const allPoints = [...top, ...bottom, ...left, ...right];
+    if (light && allPoints.length > 0) {
+      const center = new THREE.Vector3();
+      for (const p of allPoints) center.add(p);
+      center.multiplyScalar(1 / allPoints.length);
+
+      light.position.copy(center);
+      light.visible = true;
+    } else if (light) {
+      light.visible = false;
+    }
+  });
+
+  return (
+    <>
+      {paths.top.length >= 2 && (
+        <Line
+          points={paths.top}
+          color="#a5f3fc"
+          lineWidth={2.5}
+          transparent
+          opacity={1}
+        />
+      )}
+
+      {paths.bottom.length >= 2 && (
+        <Line
+          points={paths.bottom}
+          color="#a5f3fc"
+          lineWidth={2.5}
+          transparent
+          opacity={1}
+        />
+      )}
+
+      {paths.left.length >= 2 && (
+        <Line
+          points={paths.left}
+          color="#a5f3fc"
+          lineWidth={2.5}
+          transparent
+          opacity={1}
+        />
+      )}
+
+      {paths.right.length >= 2 && (
+        <Line
+          points={paths.right}
+          color="#a5f3fc"
+          lineWidth={2.5}
+          transparent
+          opacity={1}
+        />
+      )}
+
+      <pointLight
+        ref={lightRef}
+        color="#67e8f9"
+        intensity={0.45}
+        distance={0.8}
+        visible={false}
+      />
+    </>
   );
 }
 
 function SceneContent({
   video,
   tracking,
-  trajectory,
-  currentTimeSec,
-}: KitchenSceneProps) {
+  /*   trajectory,
+   */ currentTimeSec,
+  trackingEnabled,
+}: KitchenSceneProps & { trackingEnabled: boolean }) {
+  const kitchenRef = useRef<THREE.Object3D | null>(null);
   if (!tracking) return null;
 
   const fps = VIDEO_FPS;
@@ -151,9 +338,13 @@ function SceneContent({
     .copy(coordinateCorrection)
     .multiply(M_world_camera_raw);
 
+  const cameraPosition = new THREE.Vector3().setFromMatrixPosition(
+    M_world_camera,
+  );
+
   // Example object points in camera coordinates.
   // Replace later with real object coordinates.
-  const objectPointsCamera: [number, number, number][] = [
+  /*   const objectPointsCamera: [number, number, number][] = [
     [0, 0, -1],
     [0.2, 0.1, -1.4],
     [-0.2, 0.05, -1.8],
@@ -162,33 +353,189 @@ function SceneContent({
   // IMPORTANT: use M_world_camera, not M_world_camera_raw.
   const objectPointsWorld = objectPointsCamera.map((p) =>
     new THREE.Vector3(p[0], p[1], p[2]).applyMatrix4(M_world_camera),
-  );
+  ); */
 
   return (
     <>
       <ambientLight intensity={0.8} />
       <directionalLight position={[3, 5, 3]} intensity={1.5} />
 
-      <KitchenModel videoId={video?.id} />
+      <KitchenModel videoId={video?.id} modelRef={kitchenRef} />
 
       <gridHelper args={[10, 10]} />
       <axesHelper args={[1]} />
 
       <CameraMarker matrix={M_world_camera} />
 
-      {objectPointsWorld.map((position, index) => (
-        <Dot key={index} position={position} color="red" size={0.05} />
-      ))}
+      <ViewingSurfaceIndicator
+        matrix={M_world_camera}
+        targetRoot={kitchenRef}
+      />
 
-      <OrbitControls />
+      <TrackingOrbitControls
+        target={cameraPosition}
+        trackingEnabled={trackingEnabled}
+      />
     </>
   );
 }
 
-export function KitchenScene(props: KitchenSceneProps) {
-  if (!props.tracking) {
-    console.warn("[KitchenScene] No tracking found for video", props.video?.id);
+function TrackingOrbitControls({
+  target,
+  trackingEnabled,
+}: {
+  target: THREE.Vector3;
+  trackingEnabled: boolean;
+}) {
+  const controlsRef = useRef<any>(null);
+  const previousTargetRef = useRef(new THREE.Vector3(0, 0, 0));
+  const [controlsKey, setControlsKey] = useState(0);
 
+  const { camera, gl } = useThree();
+
+  // When controls remount, restore the previous orbit target.
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    controls.target.copy(previousTargetRef.current);
+    controls.update();
+  }, [controlsKey]);
+
+  // Tracking mode: move orbit target with tracked camera position.
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    if (!trackingEnabled) return;
+
+    const previousTarget = previousTargetRef.current;
+    const nextTarget = target.clone();
+
+    const delta = nextTarget.clone().sub(previousTarget);
+
+    camera.position.add(delta);
+    controls.target.copy(nextTarget);
+    controls.update();
+
+    previousTargetRef.current.copy(nextTarget);
+  }, [target.x, target.y, target.z, trackingEnabled, camera]);
+
+  // Fix stuck mouse drag when mouseup happens outside canvas/window.
+  useEffect(() => {
+    const domElement = gl.domElement;
+
+    const softReleaseControls = (event?: Event) => {
+      const maybePointerEvent = event as PointerEvent | undefined;
+
+      if (
+        maybePointerEvent &&
+        typeof maybePointerEvent.pointerId === "number"
+      ) {
+        try {
+          if (domElement.hasPointerCapture(maybePointerEvent.pointerId)) {
+            domElement.releasePointerCapture(maybePointerEvent.pointerId);
+          }
+        } catch {
+          // Ignore pointer capture errors.
+        }
+      }
+    };
+
+    const hardReleaseControls = () => {
+      const controls = controlsRef.current;
+      if (!controls) return;
+
+      previousTargetRef.current.copy(controls.target);
+
+      controls.enabled = false;
+      controls.update();
+
+      requestAnimationFrame(() => {
+        controls.enabled = true;
+        controls.update();
+
+        // Only remount on real lost-focus cases.
+        setControlsKey((key) => key + 1);
+      });
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      try {
+        domElement.setPointerCapture(event.pointerId);
+      } catch {
+        // Ignore pointer capture errors.
+      }
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      softReleaseControls(event);
+    };
+
+    const handleMouseUp = (event: MouseEvent) => {
+      softReleaseControls(event);
+    };
+
+    const handleWindowLeave = () => {
+      hardReleaseControls();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        hardReleaseControls();
+      }
+    };
+
+    domElement.addEventListener("pointerdown", handlePointerDown);
+    domElement.addEventListener("pointerup", handlePointerUp);
+    domElement.addEventListener("pointercancel", handlePointerUp);
+    domElement.addEventListener("lostpointercapture", handlePointerUp);
+
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("blur", hardReleaseControls);
+    window.addEventListener("mouseleave", handleWindowLeave);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      domElement.removeEventListener("pointerdown", handlePointerDown);
+      domElement.removeEventListener("pointerup", handlePointerUp);
+      domElement.removeEventListener("pointercancel", handlePointerUp);
+      domElement.removeEventListener("lostpointercapture", handlePointerUp);
+
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("blur", hardReleaseControls);
+      window.removeEventListener("mouseleave", handleWindowLeave);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [gl]);
+
+  return (
+    <OrbitControls
+      key={controlsKey}
+      ref={controlsRef}
+      makeDefault
+      enablePan={false}
+      enableZoom={true}
+      enableRotate={true}
+      enableDamping={true}
+      dampingFactor={0.08}
+      mouseButtons={{
+        LEFT: THREE.MOUSE.ROTATE,
+        MIDDLE: THREE.MOUSE.DOLLY,
+      }}
+      touches={{
+        ONE: THREE.TOUCH.ROTATE,
+        TWO: THREE.TOUCH.DOLLY_ROTATE,
+      }}
+    />
+  );
+}
+
+export function KitchenScene(props: KitchenSceneProps) {
+  const [trackingEnabled, setTrackingEnabled] = useState(false);
+
+  if (!props.tracking) {
     return (
       <div className="flex h-full items-center justify-center p-4 text-sm text-slate-500 dark:text-slate-400">
         No Camera tracking data found for this video: {props.video?.id}
@@ -197,9 +544,21 @@ export function KitchenScene(props: KitchenSceneProps) {
   }
 
   return (
-    <div className="h-full min-h-100 w-full bg-slate-100 dark:bg-black">
+    <div className="relative h-full min-h-100 w-full bg-slate-100 dark:bg-black">
+      <button
+        type="button"
+        onClick={() => setTrackingEnabled((v) => !v)}
+        className={`absolute left-3 top-3 z-10 rounded-md px-3 py-1.5 text-xs font-medium shadow ${
+          trackingEnabled
+            ? "bg-blue-600 text-white"
+            : "bg-white text-slate-700 dark:bg-slate-900 dark:text-slate-200"
+        }`}
+      >
+        {trackingEnabled ? "Tracking: On" : "Tracking: Off"}
+      </button>
+
       <Canvas camera={{ position: [2, 2, 4], fov: 50 }}>
-        <SceneContent {...props} />
+        <SceneContent {...props} trackingEnabled={trackingEnabled} />
       </Canvas>
     </div>
   );
