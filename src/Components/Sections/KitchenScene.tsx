@@ -325,7 +325,14 @@ function HoveredObjectLabel({ object }: { object: THREE.Object3D | null }) {
     object.name && object.name.trim() !== "" ? object.name : "Unnamed object";
 
   return (
-    <Html position={labelPosition} center distanceFactor={6}>
+    <Html
+      position={labelPosition}
+      center
+      distanceFactor={6}
+      style={{
+        pointerEvents: "none",
+      }}
+    >
       <div
         style={{
           padding: "3px 7px",
