@@ -8,7 +8,8 @@ import {
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
 import { Box, Check, ChevronDown, FileQuestionMark } from "lucide-react";
-import { TRACKING_BY_VIDEO_ID } from "../Components/Camera/TrackingCamera";
+import { loadTrackingForVideo } from "../Components/Camera/TrackingCamera";
+import type { TrackingEntry } from "../Components/Camera/Types";
 import { KitchenScene } from "../Components/Sections/KitchenScene";
 
 const STORAGE_KEYS = {
@@ -185,6 +186,7 @@ function TrajectoryDropdown({
 
 export default function QuestionView() {
   const [initialSelection] = useState(() => getInitialVideoSelection());
+  const [tracking, setTracking] = useState<TrackingEntry | null>(null);
 
   const [selectedUserId, setSelectedUserId] = useState(initialSelection.userId);
   const [selectedVideoId, setSelectedVideoId] = useState(
@@ -202,10 +204,30 @@ export default function QuestionView() {
   const selectedVideo =
     selectedUser?.videos.find((v) => v.id === selectedVideoId) ??
     selectedUser?.videos[0];
+  useEffect(() => {
+    let cancelled = false;
 
-  const tracking = selectedVideo
-    ? TRACKING_BY_VIDEO_ID[selectedVideo.id]
-    : null;
+    async function loadTracking() {
+      if (!selectedVideo?.id) {
+        setTracking(null);
+        return;
+      }
+
+      setTracking(null);
+
+      const loaded = await loadTrackingForVideo(selectedVideo.id);
+
+      if (!cancelled) {
+        setTracking(loaded);
+      }
+    }
+
+    loadTracking();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedVideo?.id]);
   // Get selected trajectory from the trajectory map
   const selectedTrajectory: TrajectoryData | null = selectedVideo?.trajectory
     ? selectedTrajectoryKey && selectedTrajectoryKey in selectedVideo.trajectory
