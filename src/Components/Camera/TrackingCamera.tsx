@@ -1,17 +1,8 @@
-// Components/Camera/TrackingCamera.ts
 import type { DeviceCalibration, FramewiseInfo, TrackingEntry } from "./Types";
 
 const calibrationModules = import.meta.glob<DeviceCalibration>(
   "./P*/P*/device_calibration.json",
   {
-    import: "default",
-  },
-);
-
-const framewiseModules = import.meta.glob<string>(
-  "./P*/P*/framewise_info.jsonl",
-  {
-    query: "?raw",
     import: "default",
   },
 );
@@ -34,10 +25,21 @@ function parseJsonl(raw: string): FramewiseInfo[] {
     .map((line) => JSON.parse(line) as FramewiseInfo);
 }
 
+type FramewiseManifest = {
+  userId: string;
+  videoId: string;
+  source: string;
+  maxPartBytes: number;
+  totalLines: number;
+  parts: {
+    file: string;
+    bytes: number;
+    lines: number;
+  }[];
+};
+
 const calibrationByVideoId: Record<string, () => Promise<DeviceCalibration>> =
   {};
-
-const framewiseByVideoId: Record<string, () => Promise<string>> = {};
 
 for (const [path, loader] of Object.entries(calibrationModules)) {
   const parsed = parseTrackingPath(path);
@@ -47,38 +49,73 @@ for (const [path, loader] of Object.entries(calibrationModules)) {
     loader as () => Promise<DeviceCalibration>;
 }
 
-for (const [path, loader] of Object.entries(framewiseModules)) {
-  const parsed = parseTrackingPath(path);
-  if (!parsed) continue;
+async function fetchText(url: string): Promise<string> {
+  const response = await fetch(url);
 
-  framewiseByVideoId[parsed.videoId] = loader as () => Promise<string>;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+
+  return response.text();
 }
 
-export const TRACKING_VIDEO_IDS = Object.keys(calibrationByVideoId).filter(
-  (videoId) => videoId in framewiseByVideoId,
-);
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+async function loadFramewiseInfo(
+  userId: string,
+  videoId: string,
+): Promise<FramewiseInfo[]> {
+  const baseUrl = `/Camera/${userId}/${videoId}/framewise_info`;
+  const manifestUrl = `${baseUrl}/manifest.json`;
+
+  const manifest = await fetchJson<FramewiseManifest>(manifestUrl);
+
+  const rawParts = await Promise.all(
+    manifest.parts.map((part) => fetchText(`${baseUrl}/${part.file}`)),
+  );
+
+  return rawParts.flatMap(parseJsonl);
+}
+
+export const TRACKING_VIDEO_IDS = Object.keys(calibrationByVideoId);
 
 export async function loadTrackingForVideo(
   videoId: string,
 ): Promise<TrackingEntry | null> {
   const calibrationLoader = calibrationByVideoId[videoId];
-  const framewiseLoader = framewiseByVideoId[videoId];
 
-  if (!calibrationLoader || !framewiseLoader) {
+  if (!calibrationLoader) {
     return null;
   }
 
-  const [deviceCalibration, rawFramewise] = await Promise.all([
-    calibrationLoader(),
-    framewiseLoader(),
-  ]);
-
   const userId = videoId.slice(0, 3);
 
-  return {
-    userId,
-    videoId,
-    deviceCalibration,
-    framewiseInfo: parseJsonl(rawFramewise),
-  };
+  try {
+    const [deviceCalibration, framewiseInfo] = await Promise.all([
+      calibrationLoader(),
+      loadFramewiseInfo(userId, videoId),
+    ]);
+
+    return {
+      userId,
+      videoId,
+      deviceCalibration,
+      framewiseInfo,
+    };
+  } catch (err) {
+    console.error("Failed to load tracking data", {
+      videoId,
+      err,
+    });
+
+    return null;
+  }
 }
