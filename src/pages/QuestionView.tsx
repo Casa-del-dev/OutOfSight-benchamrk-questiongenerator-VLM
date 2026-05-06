@@ -328,7 +328,7 @@ export default function QuestionView() {
             onUserChange={handleUserChange}
             onVideoChange={(vid) => {
               setSelectedVideoId(vid);
-              setCurrentTimeSec(0);
+              setTimeout(() => setCurrentTimeSec(0), 0);
             }}
           />
         </aside>

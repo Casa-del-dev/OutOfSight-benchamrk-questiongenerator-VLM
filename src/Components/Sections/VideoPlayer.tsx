@@ -654,6 +654,7 @@ export function VideoPlayer({
   const scrubberRef = useRef<HTMLDivElement | null>(null);
 
   const targetTimeRef = useRef(currentTimeSec);
+
   const isPlayingRef = useRef(isPlaying);
   const seekingUntilRef = useRef(0);
   const restoringUntilRef = useRef(0);
