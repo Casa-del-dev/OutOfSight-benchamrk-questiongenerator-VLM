@@ -868,12 +868,28 @@ export function KitchenScene(props: KitchenSceneProps) {
         <button
           type="button"
           onClick={() => setTrackingEnabled(!trackingEnabled)}
-          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+          className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-all ${
             trackingEnabled
-              ? // ACTIVE — vibrant blue glow, brighter text
-                "bg-[#0f1e3d] text-[#6ab0ff] border border-[#3a6abf]/80 shadow-[0_0_14px_rgba(59,130,246,0.35)] hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:bg-[#132347] hover:text-[#89c2ff]"
-              : // INACTIVE — dimmed, desaturated, no glow
-                "bg-[#0d1520] text-[#3d5270] border border-[#1e2f45]/60 shadow-none hover:bg-[#101a28] hover:text-[#4e6585] hover:border-[#253a56]/60"
+              ? [
+                  "border-slate-300/40 bg-slate-100/60 text-blue-500",
+                  "shadow-[0_0_12px_rgba(59,130,246,0.22)]",
+                  "border-slate-400/50 hover:bg-slate-200/70 hover:text-blue-600",
+
+                  "dark:border-[#3a6abf]/80 dark:bg-[#0f1e3d] dark:text-[#6ab0ff]",
+                  "dark:shadow-[0_0_14px_rgba(59,130,246,0.35)]",
+                  "dark:hover:bg-[#132347] dark:hover:text-[#89c2ff]",
+                  "dark:hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]",
+                ].join(" ")
+              : [
+                  "border-slate-300/40 bg-slate-100/60 text-slate-400",
+                  "shadow-none",
+                  "border-slate-400/50 hover:bg-slate-200/70 hover:text-slate-500",
+
+                  // Dark mode — like before
+                  "dark:border-[#1e2f45]/60 dark:bg-[#0d1520] dark:text-[#3d5270]",
+                  "dark:hover:bg-[#101a28] dark:hover:text-[#4e6585]",
+                  "dark:hover:border-[#253a56]/60",
+                ].join(" ")
           }`}
         >
           {trackingEnabled ? "Tracking: On" : "Tracking: Off"}
@@ -884,10 +900,20 @@ export function KitchenScene(props: KitchenSceneProps) {
           <button
             type="button"
             onClick={() => props.onSeek!(props.queryTimeSec!)}
-            className="rounded-full px-4 py-1.5 text-xs font-semibold transition-all
-        bg-[#0f1e3d] text-[#6ab0ff] border border-[#2a4a8a]/60
-        shadow-[0_0_12px_rgba(59,130,246,0.15)] hover:shadow-[0_0_16px_rgba(59,130,246,0.25)]
-        hover:bg-[#132347] hover:text-[#89c2ff] hover:border-[#3a5fa0]/70"
+            className={[
+              "rounded-full border px-4 py-1.5 text-xs font-semibold transition-all",
+
+              // Light mode — same as Tracking active
+              "border-slate-300/40 bg-slate-100/60 text-blue-500",
+              "shadow-[0_0_12px_rgba(59,130,246,0.22)]",
+              "border-slate-400/50 hover:bg-slate-200/70 hover:text-blue-600",
+
+              // Dark mode — same as Tracking active
+              "dark:border-[#3a6abf]/80 dark:bg-[#0f1e3d] dark:text-[#6ab0ff]",
+              "dark:shadow-[0_0_14px_rgba(59,130,246,0.35)]",
+              "dark:hover:bg-[#132347] dark:hover:text-[#89c2ff]",
+              "dark:hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]",
+            ].join(" ")}
           >
             {props.queryTimeSec}s
           </button>
