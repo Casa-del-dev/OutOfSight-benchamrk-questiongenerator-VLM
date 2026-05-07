@@ -469,7 +469,7 @@ function VideoPane({
         hidden ? "hidden" : "flex-1"
       }`}
     >
-      <div className="pointer-events-none absolute inset-0 z-10 bg-white/10 dark:bg-transparent" />
+      <div className="pointer-events-auto absolute inset-0 z-10 bg-white/10 dark:bg-transparent" />
 
       <div className="absolute left-2.5 top-2.5 z-10 rounded-md border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-slate-300 backdrop-blur-sm">
         {label}
