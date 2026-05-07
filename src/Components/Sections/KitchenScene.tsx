@@ -681,9 +681,6 @@ function SceneContent({
       />
       <HoveredObjectLabel object={hoveredObject} />
 
-      <gridHelper args={[10, 10]} />
-      <axesHelper args={[1]} />
-
       <CameraMarker matrix={M_world_camera} />
 
       <ViewingSurfaceIndicator
