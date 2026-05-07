@@ -8,244 +8,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       },
     },
     video_id: "P01-20240203-132119",
-    object_a_assoc_id: "4834a5a5778ef81c",
-    object_a_name: "pen",
-    query_time_sec: 89.0,
-    query_time_in_clip_sec: 14.0,
-    clip_start_time_sec: 75.0,
-    clip_end_time_sec: 89.0,
-    clip_duration_sec: 14.0,
-    horizon_sec: 5.0,
-    generation_info: {
-      video_id: "P01-20240203-132119",
-      assoc_id: "4834a5a5778ef81c",
-      object_name: "pen",
-      query_time_sec: 89.0,
-      oos_span_start_sec: 84.0,
-      oos_span_end_sec: 176.0,
-      oos_duration_sec: 92.0,
-      horizon_sec: 5.0,
-      fixture_at_query: "P01_counter.009",
-      relocation_score: 0,
-      clip_start_time_sec: 75.0,
-      clip_end_time_sec: 89.0,
-      clip_duration_sec: 14.0,
-      anchor_assoc_id: "d88474d879d24082",
-      anchor_name: "stock cube",
-      anchor_projected_pixel: [820.812086878443, 904.5736068236472],
-      anchor_world_coordinates: [
-        -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
-      ],
-      anchor_status: "in_view",
-    },
-    question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_0",
-    num_incremental_steps: 4,
-    num_branch_steps: 3,
-    terminated_at_step: 4,
-    stop_reason: "completed_out_of_sight_trajectory",
-    incremental_steps: [
-      {
-        step: 1,
-        question_class: "oos_step1_visibility",
-        question:
-          "At the current time <TIME 00:01:29.0 video 1>, is the previously moved pen visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
-        answer_metadata: {
-          status: "out_of_view",
-          is_visible: false,
-          is_stably_visible: false,
-          projected_pixel: null,
-          camera_coordinates: [
-            -0.18838602707305263, 1.037852597493115, -0.6573420771348925,
-          ],
-          frame_index: 2503,
-        },
-      },
-      {
-        step: 2,
-        question_class: "oos_step2_last_visible",
-        question:
-          "When was the previously moved pen last visible, and where was it located in the image at that moment?",
-        choices: [],
-        correct_idx: null,
-        answer_metadata: {
-          sampled_last_visible_time_sec: 77.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
-          sampled_last_visible_time_token: "<TIME 00:01:17.0 video 1>",
-          projected_pixel: [694.4907800854245, 1045.5947819352498],
-          normalized_projected_pixel: [0.49324629267430714, 0.7426099303517399],
-          camera_coordinates: [
-            -0.004990294010057905, 0.28800340190666784, 0.5131195386718326,
-          ],
-          frame_index: 2316,
-          status: "in_view",
-          fixture: "P01_counter.008",
-          world_coordinates: [
-            -1.5788483507864282, -2.2543328822588995, -0.5793134099439712,
-          ],
-          reference_source: "precomputed_visibility_track",
-          note: "Uses the precomputed visibility track when available and otherwise falls back to live visibility computation over stable-visible states only. If the last visible state is in_motion, the trajectory is skipped.",
-        },
-      },
-      {
-        step: "3",
-        question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved pen stop moving? Where was it located in the image at that moment?",
-        ],
-        choices: [],
-        correct_idx: null,
-        answer_metadata: {
-          last_placement_time_sec: 83.43333333333334,
-          last_placement_time_in_clip_sec: 8.433333333333337,
-          last_placement_time_token: "<TIME 00:01:23.4 video 1>",
-          projected_pixel: [980.0791322432808, 1155.3748954852601],
-          normalized_projected_pixel: [0.6960789291500574, 0.820578760998054],
-          camera_coordinates: [
-            0.21431793397450116, 0.3418479305437464, 0.428872909662251,
-          ],
-          frame_index: 2503,
-          status: "last_past_track_end",
-          fixture: "P01_counter.009",
-          world_coordinates: [
-            -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
-          ],
-          reference_source:
-            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
-          note: "Uses exact past-track end position when last_placement_source=raw_tracks, or a sampled approximation from merged tracks when last_placement_source=merged_tracks.",
-        },
-      },
-      {
-        step: 4,
-        question_class: "oos_step4_fixture",
-        question:
-          "At the current time <TIME 00:01:29.0 video 1>, based on the last known position of the pen that was moved earlier,which fixture is closest to it?",
-        choices: ["cupboard", "drawer", "fridgefreezer", "counter", "bin"],
-        correct_idx: 3,
-        answer_metadata: {
-          reference_time_sec: 77.0,
-          correct_fixture: "counter",
-          raw_correct_fixture: "P01_counter.008",
-          reference_source: "precomputed_visibility_track",
-        },
-      },
-    ],
-    branch_groups: {
-      post_step3: [
-        {
-          step: "5a",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_camera_relative_position",
-          question:
-            "At the current time <TIME 00:01:29.0 video 1>, the pen that was moved earlier is not visible. Based on its last known position, in which direction is the pen from your viewpoint?",
-          choices: ["Front-right", "Back-left", "Front-left", "Back-right"],
-          correct_idx: 1,
-          answer_metadata: {
-            reference_time_sec: 89.0,
-            camera_coordinates: [
-              -0.18838602707305263, 1.037852597493115, -0.6573420771348925,
-            ],
-            world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
-            ],
-            status: "out_of_view",
-            correct_label: "Back-left",
-            debug: {
-              x: -0.18838602707305263,
-              z: -0.6573420771348925,
-            },
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
-          },
-          skipped: false,
-        },
-        {
-          step: "5b",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_object_relation",
-          question:
-            "At the current time <TIME 00:01:29.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen and the position of the marked stock cube in the current frame, where is the pen relative to stock cube from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
-          answer_metadata: {
-            object_x_assoc_id: "4834a5a5778ef81c",
-            object_x_name: "pen",
-            object_x_reference_time_sec: 89.0,
-            object_x_status: "out_of_view",
-            object_x_world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
-            ],
-            object_x_camera_coordinates: [
-              -0.18838602707305263, 1.037852597493115, -0.6573420771348925,
-            ],
-            object_y_assoc_id: "d88474d879d24082",
-            object_y_name: "stock cube",
-            object_y_reference_time_sec: 89.0,
-            object_y_world_coordinates: [
-              -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
-            ],
-            object_y_projected_pixel: [820.812086878443, 904.5736068236472],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.5829631298852578, 0.6424528457554313,
-            ],
-          },
-        },
-        {
-          step: "5c",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_object_distance",
-          question:
-            "At the current time <TIME 00:01:29.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen, and the position of the marked stock cube in the current frame, how far is the pen from thestock cube?",
-          choices: ["close", "medium", "far", "very close"],
-          correct_idx: 1,
-          answer_metadata: {
-            object_x_assoc_id: "4834a5a5778ef81c",
-            object_x_name: "pen",
-            object_x_reference_time_sec: 89.0,
-            object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "d88474d879d24082",
-            object_y_name: "stock cube",
-            object_y_pixel: [820.812086878443, 904.5736068236472],
-            object_y_status: "in_view",
-            vector_object_x_relative_to_object_y: [
-              -0.28541626351144567, 0.880737734093193, -1.1467698029888993,
-            ],
-            distance_m: 1.4738529033725332,
-            distance_bucket: "medium",
-            reference_source: {
-              object_x: null,
-              object_y: "key_frame_generator_selected_anchor",
-            },
-            object_y_normalized_projected_pixel: [
-              0.5829631298852578, 0.6424528457554313,
-            ],
-          },
-        },
-      ],
-    },
-  },
-  oos_staged_h5p0_1: {
-    inputs: {
-      "video 1": {
-        id: "P01-20240203-132119",
-      },
-    },
-    video_id: "P01-20240203-132119",
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 152.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 144.0,
+    query_time_in_clip_sec: 152.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 152.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 152.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -258,9 +27,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 144.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 152.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 152.0,
       anchor_assoc_id: "d88474d879d24082",
       anchor_name: "stock cube",
       anchor_projected_pixel: [860.2436277557388, 918.1496551802431],
@@ -270,7 +39,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_1",
+    trajectory_id: "oos_staged_h5p0_0",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -298,12 +67,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 146.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 146.0,
           sampled_last_visible_time_token: "<TIME 00:02:26.0 video 1>",
           projected_pixel: [700.3218943245719, 1102.2576443404073],
           normalized_projected_pixel: [0.497387709037338, 0.7828534405826756],
@@ -323,14 +92,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -5.599999999999994,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -352,28 +120,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:02:32.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["bin", "hob", "drawer", "counter", "cupboard"],
-        correct_idx: 3,
+          "At the current time <TIME 00:02:32.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "hob",
+          "fridgefreezer",
+          "sink",
+          "counter area close to the microwave",
+          "counter area below the boiler",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 146.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Back-right", "Front-right", "Front-left", "Back-left"],
-          correct_idx: 0,
+            "At the current time <TIME 00:02:32.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Front-left", "Back-left", "Back-right", "Front-right"],
+          correct_idx: 2,
           answer_metadata: {
             reference_time_sec: 152.0,
             camera_coordinates: [
@@ -399,10 +192,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked stock cube in the current frame, where is the empty mug relative to stock cube from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:02:32.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, where is the empty mug relative to stock cube from your viewpoint?",
+          choices: ["Back-left", "Front-right", "Back-right", "Front-left"],
+          correct_idx: 2,
+          acceptable_idxs: [2],
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -421,11 +214,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
             ],
             object_y_projected_pixel: [860.2436277557388, 918.1496551802431],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.6109684856219736, 0.6520949255541499,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -434,9 +227,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked stock cube in the current frame, how far is the empty mug from thestock cube?",
-          choices: ["medium", "far", "close", "very close"],
-          correct_idx: 0,
+            "At the current time <TIME 00:02:32.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, how far is the empty mug from the stock cube: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "far", "medium"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -445,25 +238,25 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "d88474d879d24082",
             object_y_name: "stock cube",
             object_y_pixel: [860.2436277557388, 918.1496551802431],
+            object_y_normalized_projected_pixel: [
+              0.6109684856219736, 0.6520949255541499,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               0.9860187457652017, 1.0251789727888418, -1.1123905858534104,
             ],
             distance_m: 1.8057235969948613,
-            distance_bucket: "medium",
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.6109684856219736, 0.6520949255541499,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_2: {
+  oos_staged_h5p0_1: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -473,10 +266,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 152.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 144.0,
+    query_time_in_clip_sec: 152.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 152.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 152.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -489,9 +282,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 144.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 152.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 152.0,
       anchor_assoc_id: "d88474d879d24082",
       anchor_name: "stock cube",
       anchor_projected_pixel: [860.2436277557388, 918.1496551802431],
@@ -501,7 +294,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_2",
+    trajectory_id: "oos_staged_h5p0_1",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -512,8 +305,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:02:32.0 video 1>, is the previously moved carrot piece visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -529,12 +322,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 146.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 146.0,
           sampled_last_visible_time_token: "<TIME 00:02:26.0 video 1>",
           projected_pixel: [950.6393164817277, 1062.5537299355158],
           normalized_projected_pixel: [0.6751699690921362, 0.7546546377382924],
@@ -554,14 +347,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: 1.6666666666666572,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -583,28 +375,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:02:32.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["sink", "drawer", "hob", "shelf", "counter"],
+          "At the current time <TIME 00:02:32.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "shelf",
+          "counter area close to the microwave",
+          "counter area beside the hob and near the sink",
+          "cupboard",
+          "counter area below the boiler",
+        ],
         correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 146.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
-          correct_idx: 1,
+            "At the current time <TIME 00:02:32.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Front-left", "Front-right", "Back-right", "Back-left"],
+          correct_idx: 2,
           answer_metadata: {
             reference_time_sec: 152.0,
             camera_coordinates: [
@@ -630,10 +447,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked stock cube in the current frame, where is the carrot piece relative to stock cube from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:02:32.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, where is the carrot piece relative to stock cube from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
@@ -652,11 +469,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
             ],
             object_y_projected_pixel: [860.2436277557388, 918.1496551802431],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.6109684856219736, 0.6520949255541499,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -665,9 +482,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:02:32.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked stock cube in the current frame, how far is the carrot piece from thestock cube?",
-          choices: ["far", "medium", "close", "very close"],
-          correct_idx: 1,
+            "At the current time <TIME 00:02:32.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, how far is the carrot piece from the stock cube: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "close", "far"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
@@ -676,25 +493,25 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "d88474d879d24082",
             object_y_name: "stock cube",
             object_y_pixel: [860.2436277557388, 918.1496551802431],
+            object_y_normalized_projected_pixel: [
+              0.6109684856219736, 0.6520949255541499,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               0.8343667686687279, 0.7631956794590113, -1.267536887603025,
             ],
             distance_m: 1.6986127608251271,
-            distance_bucket: "medium",
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.6109684856219736, 0.6520949255541499,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_3: {
+  oos_staged_h5p0_2: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -704,10 +521,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "d5b1a639aef5b172",
     object_a_name: "box of stock cubes",
     query_time_sec: 154.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 146.0,
+    query_time_in_clip_sec: 154.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 154.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 154.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -720,9 +537,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.001",
       relocation_score: 2,
-      clip_start_time_sec: 146.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 154.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 154.0,
       anchor_assoc_id: "d88474d879d24082",
       anchor_name: "stock cube",
       anchor_projected_pixel: [868.3542865567226, 933.2168666910782],
@@ -732,7 +549,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_3",
+    trajectory_id: "oos_staged_h5p0_2",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -760,12 +577,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved box of stock cubes last visible, and where was it located in the image at that moment?",
+          "The box of stock cubes was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 148.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 148.0,
           sampled_last_visible_time_token: "<TIME 00:02:28.0 video 1>",
           projected_pixel: [186.80752594639307, 1001.9261256963684],
           normalized_projected_pixel: [0.132675799677836, 0.7115952597275345],
@@ -785,14 +602,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved box of stock cubes stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The box of stock cubes was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 67.8,
-          last_placement_time_in_clip_sec: -78.2,
+          last_placement_time_in_clip_sec: 67.8,
           last_placement_time_token: "<TIME 00:01:07.8 video 1>",
           projected_pixel: [532.5599086211942, 1098.1872026300302],
           normalized_projected_pixel: [0.3782385714639163, 0.7799625018679192],
@@ -814,28 +630,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:02:34.0 video 1>, based on the last known position of the box of stock cubes that was moved earlier,which fixture is closest to it?",
-        choices: ["shelf", "counter", "sink", "dishwasher", "hob"],
+          "At the current time <TIME 00:02:34.0 video 1>, based on the last known position of the box of stock cubes that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "counter area between the fridge and the hob",
+          "counter area next to the window",
+          "fridgefreezer",
+          "microwave",
+        ],
         correct_idx: 1,
         answer_metadata: {
-          reference_time_sec: 148.0,
+          reference_time_sec: 67.8,
           correct_fixture: "counter",
+          display_correct_answer: "counter area between the fridge and the hob",
           raw_correct_fixture: "P01_counter.001",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:02:34.0 video 1>, the box of stock cubes that was moved earlier is not visible. Based on its last known position, in which direction is the box of stock cubes from your viewpoint?",
-          choices: ["Back-right", "Front-left", "Back-left", "Front-right"],
-          correct_idx: 1,
+            "At the current time <TIME 00:02:34.0 video 1>, consider the box of stock cubes that was moved earlier. Using its last known position to infer its current location, in which direction is the box of stock cubes from your viewpoint?",
+          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 154.0,
             camera_coordinates: [
@@ -861,10 +702,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:02:34.0 video 1>, the box of stock cubes that was moved earlier is not visible. Based on the last known position of the box of stock cubes and the position of the marked stock cube in the current frame, where is the box of stock cubes relative to stock cube from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:02:34.0 video 1>, consider the box of stock cubes that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, where is the box of stock cubes relative to stock cube from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
+          correct_idx: 3,
+          acceptable_idxs: [3],
           answer_metadata: {
             object_x_assoc_id: "d5b1a639aef5b172",
             object_x_name: "box of stock cubes",
@@ -883,11 +724,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
             ],
             object_y_projected_pixel: [868.3542865567226, 933.2168666910782],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.6167288967022178, 0.6627960700930953,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -896,9 +737,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:02:34.0 video 1>, the box of stock cubes that was moved earlier is not visible. Based on the last known position of the box of stock cubes, and the position of the marked stock cube in the current frame, how far is the box of stock cubes from thestock cube?",
-          choices: ["very close", "medium", "far", "close"],
-          correct_idx: 3,
+            "At the current time <TIME 00:02:34.0 video 1>, consider the box of stock cubes that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, how far is the box of stock cubes from the stock cube: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "d5b1a639aef5b172",
             object_x_name: "box of stock cubes",
@@ -907,6 +748,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "d88474d879d24082",
             object_y_name: "stock cube",
             object_y_pixel: [868.3542865567226, 933.2168666910782],
+            object_y_normalized_projected_pixel: [
+              0.6167288967022178, 0.6627960700930953,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               -0.7867846381638433, 0.1460915539838723, -0.2038938630139452,
@@ -917,15 +761,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.6167288967022178, 0.6627960700930953,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_4: {
+  oos_staged_h5p0_3: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -935,10 +776,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 197.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 189.0,
+    query_time_in_clip_sec: 197.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 197.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 197.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -951,19 +792,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 189.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 197.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "011b4b830a9ed325",
-      anchor_name: "lid2",
-      anchor_projected_pixel: [756.0803126799839, 781.48371437533],
+      clip_duration_sec: 197.0,
+      anchor_assoc_id: "122b8c9de3ba9422",
+      anchor_name: "lid",
+      anchor_projected_pixel: [422.0444901538105, 899.6839960817119],
       anchor_world_coordinates: [
-        -0.12528748455059374, -2.2531596031558596, -0.4512985527361294,
+        -0.18637662752830603, -1.9525324449891068, -0.4902346036623136,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_4",
+    trajectory_id: "oos_staged_h5p0_3",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -991,12 +832,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 191.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 191.0,
           sampled_last_visible_time_token: "<TIME 00:03:11.0 video 1>",
           projected_pixel: [767.7604316735907, 289.6344766131932],
           normalized_projected_pixel: [0.5452843974954479, 0.20570630441277926],
@@ -1016,14 +857,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -50.599999999999994,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -1045,28 +885,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:17.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["counter", "fridgefreezer", "drawer", "dishwasher", "hob"],
-        correct_idx: 0,
+          "At the current time <TIME 00:03:17.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "dishwasher",
+          "counter area close to the microwave",
+          "cupboard",
+          "counter area below the boiler",
+          "bin",
+        ],
+        correct_idx: 3,
         answer_metadata: {
-          reference_time_sec: 191.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Back-left", "Front-left", "Front-right", "Back-right"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:17.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Front-left", "Back-right", "Back-left", "Front-right"],
+          correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 197.0,
             camera_coordinates: [
@@ -1092,7 +957,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked lid2 in the current frame, where is the empty mug relative to lid2 from your viewpoint?",
+            "At the current time <TIME 00:03:17.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid (marked in red) in the current frame, where is the empty mug relative to lid from your viewpoint?",
           choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
           correct_idx: 3,
           acceptable_idxs: [3],
@@ -1107,18 +972,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               1.4771711287082914, 0.8289045363411958, -0.2802239702547993,
             ],
-            object_y_assoc_id: "011b4b830a9ed325",
-            object_y_name: "lid2",
+            object_y_assoc_id: "122b8c9de3ba9422",
+            object_y_name: "lid",
             object_y_reference_time_sec: 197.0,
             object_y_world_coordinates: [
-              -0.12528748455059374, -2.2531596031558596, -0.4512985527361294,
+              -0.18637662752830603, -1.9525324449891068, -0.4902346036623136,
             ],
-            object_y_projected_pixel: [756.0803126799839, 781.48371437533],
+            object_y_projected_pixel: [422.0444901538105, 899.6839960817119],
+            object_y_normalized_projected_pixel: [
+              0.29974750721151316, 0.6389801108534886,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.5369888584374886, 0.5550310471415696,
-            ],
           },
         },
         {
@@ -1127,36 +992,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked lid2 in the current frame, how far is the empty mug from thelid2?",
-          choices: ["very close", "far", "medium", "close"],
-          correct_idx: 2,
+            "At the current time <TIME 00:03:17.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid (marked in red) in the current frame, how far is the empty mug from the lid: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
             object_x_reference_time_sec: 197.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "011b4b830a9ed325",
-            object_y_name: "lid2",
-            object_y_pixel: [756.0803126799839, 781.48371437533],
+            object_y_assoc_id: "122b8c9de3ba9422",
+            object_y_name: "lid",
+            object_y_pixel: [422.0444901538105, 899.6839960817119],
+            object_y_normalized_projected_pixel: [
+              0.29974750721151316, 0.6389801108534886,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              1.425358138114953, 0.7620107498962116, -0.8448274925505744,
+              1.7146265968149195, 0.6664932714819396, -0.7916790419840648,
             ],
-            distance_m: 1.8237433199376505,
-            distance_bucket: "medium",
+            distance_m: 2.002726479815109,
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5369888584374886, 0.5550310471415696,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_5: {
+  oos_staged_h5p0_4: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -1166,10 +1031,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 197.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 189.0,
+    query_time_in_clip_sec: 197.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 197.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 197.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -1182,19 +1047,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 189.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 197.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "011b4b830a9ed325",
-      anchor_name: "lid2",
-      anchor_projected_pixel: [756.0803126799839, 781.48371437533],
+      clip_duration_sec: 197.0,
+      anchor_assoc_id: "d88474d879d24082",
+      anchor_name: "stock cube",
+      anchor_projected_pixel: [789.7816115370813, 758.4121973360762],
       anchor_world_coordinates: [
-        -0.12528748455059374, -2.2531596031558596, -0.4512985527361294,
+        -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_5",
+    trajectory_id: "oos_staged_h5p0_4",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -1222,12 +1087,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 191.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 191.0,
           sampled_last_visible_time_token: "<TIME 00:03:11.0 video 1>",
           projected_pixel: [921.8786476012515, 155.5319209984068],
           normalized_projected_pixel: [0.6547433576713434, 0.11046301207273211],
@@ -1247,14 +1112,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: -43.33333333333334,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -1276,28 +1140,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:17.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["hob", "counter", "cupboard", "dishwasher", "bin"],
-        correct_idx: 1,
+          "At the current time <TIME 00:03:17.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "counter area close to the microwave",
+          "shelf",
+          "fridgefreezer",
+          "oven",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 191.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:17.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
+          correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 197.0,
             camera_coordinates: [
@@ -1323,8 +1212,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked lid2 in the current frame, where is the carrot piece relative to lid2 from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+            "At the current time <TIME 00:03:17.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, where is the carrot piece relative to stock cube from your viewpoint?",
+          choices: ["Front-right", "Back-left", "Front-left", "Back-right"],
           correct_idx: 3,
           acceptable_idxs: [3],
           answer_metadata: {
@@ -1338,18 +1227,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               1.2854495581371541, 0.6376322747391, -0.4860435621481649,
             ],
-            object_y_assoc_id: "011b4b830a9ed325",
-            object_y_name: "lid2",
+            object_y_assoc_id: "d88474d879d24082",
+            object_y_name: "stock cube",
             object_y_reference_time_sec: 197.0,
             object_y_world_coordinates: [
-              -0.12528748455059374, -2.2531596031558596, -0.4512985527361294,
+              -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
             ],
-            object_y_projected_pixel: [756.0803126799839, 781.48371437533],
+            object_y_projected_pixel: [789.7816115370813, 758.4121973360762],
+            object_y_normalized_projected_pixel: [
+              0.5609244400121316, 0.5386450265170996,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.5369888584374886, 0.5550310471415696,
-            ],
           },
         },
         {
@@ -1358,36 +1247,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:17.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked lid2 in the current frame, how far is the carrot piece from thelid2?",
-          choices: ["close", "very close", "far", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:17.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, how far is the carrot piece from the stock cube: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
             object_x_reference_time_sec: 197.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "011b4b830a9ed325",
-            object_y_name: "lid2",
-            object_y_pixel: [756.0803126799839, 781.48371437533],
+            object_y_assoc_id: "d88474d879d24082",
+            object_y_name: "stock cube",
+            object_y_pixel: [789.7816115370813, 758.4121973360762],
+            object_y_normalized_projected_pixel: [
+              0.5609244400121316, 0.5386450265170996,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              1.2336365675438157, 0.5707384882941159, -1.05064708444394,
+              1.2037838096823834, 0.5928431954552064, -1.0415021826126856,
             ],
-            distance_m: 1.7179816351905777,
-            distance_bucket: "medium",
+            distance_m: 1.6986127608251271,
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5369888584374886, 0.5550310471415696,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_6: {
+  oos_staged_h5p0_5: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -1397,10 +1286,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "039f7e7efd96f484",
     object_a_name: "spatula",
     query_time_sec: 209.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 201.0,
+    query_time_in_clip_sec: 209.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 209.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 209.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -1413,9 +1302,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.002",
       relocation_score: 0,
-      clip_start_time_sec: 201.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 209.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 209.0,
       anchor_assoc_id: "f9f5c658de80a76c",
       anchor_name: "empty mug",
       anchor_projected_pixel: [351.41645477130265, 745.8740140521832],
@@ -1425,7 +1314,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_6",
+    trajectory_id: "oos_staged_h5p0_5",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -1453,12 +1342,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved spatula last visible, and where was it located in the image at that moment?",
+          "The spatula was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 203.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 203.0,
           sampled_last_visible_time_token: "<TIME 00:03:23.0 video 1>",
           projected_pixel: [894.4949947751072, 823.4555415449477],
           normalized_projected_pixel: [0.6352947406073205, 0.5848405834836276],
@@ -1478,14 +1367,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved spatula stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The spatula was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 166.83333333333334,
-          last_placement_time_in_clip_sec: -34.16666666666666,
+          last_placement_time_in_clip_sec: 166.83333333333334,
           last_placement_time_token: "<TIME 00:02:46.8 video 1>",
           projected_pixel: [1163.0361082101085, 1138.1635864796554],
           normalized_projected_pixel: [0.8260199632174067, 0.808354819942937],
@@ -1507,28 +1395,54 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:29.0 video 1>, based on the last known position of the spatula that was moved earlier,which fixture is closest to it?",
-        choices: ["bin", "shelf", "counter", "hob", "fridgefreezer"],
-        correct_idx: 2,
+          "At the current time <TIME 00:03:29.0 video 1>, based on the last known position of the spatula that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "hob",
+          "microwave",
+          "shelf",
+          "dishwasher",
+          "counter area beside the hob and near the sink",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 203.0,
+          reference_time_sec: 166.83333333333334,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.002",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:29.0 video 1>, the spatula that was moved earlier is not visible. Based on its last known position, in which direction is the spatula from your viewpoint?",
-          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
-          correct_idx: 2,
+            "At the current time <TIME 00:03:29.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, in which direction is the spatula from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-right", "Back-left"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 209.0,
             camera_coordinates: [
@@ -1554,8 +1468,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:29.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula and the position of the marked empty mug in the current frame, where is the spatula relative to empty mug from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+            "At the current time <TIME 00:03:29.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the empty mug (marked in red) in the current frame, where is the spatula relative to empty mug from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
           correct_idx: 2,
           acceptable_idxs: [2],
           answer_metadata: {
@@ -1576,11 +1490,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -1.4392934563851227, -3.5136056562840468, -0.5547574825294332,
             ],
             object_y_projected_pixel: [351.41645477130265, 745.8740140521832],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.24958555026370927, 0.5297400667984256,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -1589,9 +1503,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:29.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula, and the position of the marked empty mug in the current frame, how far is the spatula from theempty mug?",
-          choices: ["far", "very close", "medium", "close"],
-          correct_idx: 2,
+            "At the current time <TIME 00:03:29.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the empty mug (marked in red) in the current frame, how far is the spatula from the empty mug: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "medium", "far"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -1600,6 +1514,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "f9f5c658de80a76c",
             object_y_name: "empty mug",
             object_y_pixel: [351.41645477130265, 745.8740140521832],
+            object_y_normalized_projected_pixel: [
+              0.24958555026370927, 0.5297400667984256,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               -0.11241660973980805, 0.6542298656168877, -1.1909327262367357,
@@ -1610,15 +1527,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.24958555026370927, 0.5297400667984256,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_7: {
+  oos_staged_h5p0_6: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -1628,10 +1542,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "4834a5a5778ef81c",
     object_a_name: "pen",
     query_time_sec: 222.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 214.0,
+    query_time_in_clip_sec: 222.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 222.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 222.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -1644,19 +1558,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.009",
       relocation_score: 0,
-      clip_start_time_sec: 214.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 222.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "f9f5c658de80a76c",
-      anchor_name: "empty mug",
-      anchor_projected_pixel: [980.1396759614086, 747.397221821486],
+      clip_duration_sec: 222.0,
+      anchor_assoc_id: "51668af48d1a7842",
+      anchor_name: "bag of flour",
+      anchor_projected_pixel: [1253.2891405349299, 738.522854667614],
       anchor_world_coordinates: [
-        -1.4392934563851227, -3.5136056562840468, -0.5547574825294332,
+        -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_7",
+    trajectory_id: "oos_staged_h5p0_6",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -1667,8 +1581,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:03:42.0 video 1>, is the previously moved pen visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -1684,12 +1598,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved pen last visible, and where was it located in the image at that moment?",
+          "The pen was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 216.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 216.0,
           sampled_last_visible_time_token: "<TIME 00:03:36.0 video 1>",
           projected_pixel: [1328.3641126145312, 950.148128679781],
           normalized_projected_pixel: [0.9434404208910023, 0.6748211141191627],
@@ -1709,14 +1623,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved pen stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The pen was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 83.43333333333334,
-          last_placement_time_in_clip_sec: -130.56666666666666,
+          last_placement_time_in_clip_sec: 83.43333333333334,
           last_placement_time_token: "<TIME 00:01:23.4 video 1>",
           projected_pixel: [980.0791322432808, 1155.3748954852601],
           normalized_projected_pixel: [0.6960789291500574, 0.820578760998054],
@@ -1738,28 +1651,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:42.0 video 1>, based on the last known position of the pen that was moved earlier,which fixture is closest to it?",
-        choices: ["dishwasher", "oven", "drawer", "counter", "shelf"],
-        correct_idx: 3,
+          "At the current time <TIME 00:03:42.0 video 1>, based on the last known position of the pen that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area next to the window",
+          "drawer",
+          "counter area beside the hob and near the sink",
+          "dishwasher",
+          "counter area close to the microwave",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 216.0,
+          reference_time_sec: 83.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area close to the microwave",
           raw_correct_fixture: "P01_counter.009",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:42.0 video 1>, the pen that was moved earlier is not visible. Based on its last known position, in which direction is the pen from your viewpoint?",
-          choices: ["Front-right", "Back-left", "Front-left", "Back-right"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:42.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, in which direction is the pen from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 222.0,
             camera_coordinates: [
@@ -1785,10 +1723,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:42.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen and the position of the marked empty mug in the current frame, where is the pen relative to empty mug from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:03:42.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, where is the pen relative to bag of flour from your viewpoint?",
+          choices: ["Back-left", "Back-right", "Front-left", "Front-right"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
@@ -1800,18 +1738,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.6299750438837757, 0.5292168671434841, -0.43669079889362905,
             ],
-            object_y_assoc_id: "f9f5c658de80a76c",
-            object_y_name: "empty mug",
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
             object_y_reference_time_sec: 222.0,
             object_y_world_coordinates: [
-              -1.4392934563851227, -3.5136056562840468, -0.5547574825294332,
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
             ],
-            object_y_projected_pixel: [980.1396759614086, 747.397221821486],
+            object_y_projected_pixel: [1253.2891405349299, 738.522854667614],
+            object_y_normalized_projected_pixel: [
+              0.8901201282208309, 0.5245190729173395,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.696121928949864, 0.5308218904982145,
-            ],
           },
         },
         {
@@ -1820,36 +1758,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:42.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen, and the position of the marked empty mug in the current frame, how far is the pen from theempty mug?",
-          choices: ["far", "very close", "close", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:42.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, how far is the pen from the bag of flour: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
             object_x_reference_time_sec: 222.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "f9f5c658de80a76c",
-            object_y_name: "empty mug",
-            object_y_pixel: [980.1396759614086, 747.397221821486],
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
+            object_y_pixel: [1253.2891405349299, 738.522854667614],
+            object_y_normalized_projected_pixel: [
+              0.8901201282208309, 0.5245190729173395,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.22058859048230883, 0.47351314237425857, -1.3207466023448675,
+              0.1538456519066691, 0.504345301999431, -0.9107975771693599,
             ],
-            distance_m: 1.4202977187398522,
+            distance_m: 1.0524185929738517,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.696121928949864, 0.5308218904982145,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_8: {
+  oos_staged_h5p0_7: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -1859,10 +1797,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 228.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 220.0,
+    query_time_in_clip_sec: 228.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 228.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 228.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -1875,9 +1813,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 220.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 228.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 228.0,
       anchor_assoc_id: "d5b1a639aef5b172",
       anchor_name: "box of stock cubes",
       anchor_projected_pixel: [765.7097178498701, 791.4649075602192],
@@ -1887,7 +1825,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_8",
+    trajectory_id: "oos_staged_h5p0_7",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -1898,8 +1836,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:03:48.0 video 1>, is the previously moved empty mug visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -1915,12 +1853,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 222.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 222.0,
           sampled_last_visible_time_token: "<TIME 00:03:42.0 video 1>",
           projected_pixel: [980.1396759614086, 747.397221821486],
           normalized_projected_pixel: [0.696121928949864, 0.5308218904982145],
@@ -1940,14 +1878,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -81.6,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -1969,28 +1906,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["drawer", "hob", "cupboard", "counter", "shelf"],
-        correct_idx: 3,
+          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area beside the hob and near the sink",
+          "cupboard",
+          "counter area below the boiler",
+          "drawer",
+          "bin",
+        ],
+        correct_idx: 2,
         answer_metadata: {
-          reference_time_sec: 222.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Front-left", "Back-right", "Back-left", "Front-right"],
-          correct_idx: 1,
+            "At the current time <TIME 00:03:48.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Back-left", "Front-right", "Back-right", "Front-left"],
+          correct_idx: 2,
           answer_metadata: {
             reference_time_sec: 228.0,
             camera_coordinates: [
@@ -2016,10 +1978,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked box of stock cubes in the current frame, where is the empty mug relative to box of stock cubes from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:03:48.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the box of stock cubes (marked in red) in the current frame, where is the empty mug relative to box of stock cubes from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Back-left", "Front-left"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -2038,11 +2000,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.5027108512379408, -1.561959642955106, -0.5574559334251779,
             ],
             object_y_projected_pixel: [765.7097178498701, 791.4649075602192],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.5438279246092828, 0.5621199627558375,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -2051,9 +2013,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked box of stock cubes in the current frame, how far is the empty mug from thebox of stock cubes?",
-          choices: ["very close", "medium", "far", "close"],
-          correct_idx: 2,
+            "At the current time <TIME 00:03:48.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the box of stock cubes (marked in red) in the current frame, how far is the empty mug from the box of stock cubes: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -2062,6 +2024,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "d5b1a639aef5b172",
             object_y_name: "box of stock cubes",
             object_y_pixel: [765.7097178498701, 791.4649075602192],
+            object_y_normalized_projected_pixel: [
+              0.5438279246092828, 0.5621199627558375,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               1.6372439386389295, 1.0516895909937352, -0.9484185304124885,
@@ -2072,15 +2037,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5438279246092828, 0.5621199627558375,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_9: {
+  oos_staged_h5p0_8: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -2090,10 +2052,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 228.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 220.0,
+    query_time_in_clip_sec: 228.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 228.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 228.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -2106,19 +2068,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 220.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 228.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "d5b1a639aef5b172",
-      anchor_name: "box of stock cubes",
-      anchor_projected_pixel: [765.7097178498701, 791.4649075602192],
+      clip_duration_sec: 228.0,
+      anchor_assoc_id: "122b8c9de3ba9422",
+      anchor_name: "lid",
+      anchor_projected_pixel: [1272.3382109406766, 518.545975401579],
       anchor_world_coordinates: [
-        -0.5027108512379408, -1.561959642955106, -0.5574559334251779,
+        -0.18637662752830603, -1.9525324449891068, -0.4902346036623136,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_9",
+    trajectory_id: "oos_staged_h5p0_8",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -2146,12 +2108,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 222.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 222.0,
           sampled_last_visible_time_token: "<TIME 00:03:42.0 video 1>",
           projected_pixel: [1043.5293802911942, 579.8407114049197],
           normalized_projected_pixel: [0.7411430257749959, 0.41181868707735775],
@@ -2171,14 +2133,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: -74.33333333333334,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -2200,28 +2161,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["counter", "shelf", "sink", "fridgefreezer", "drawer"],
+          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "hob",
+          "fridgefreezer",
+          "dishwasher",
+          "counter area next to the window",
+        ],
         correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 222.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
-          correct_idx: 2,
+            "At the current time <TIME 00:03:48.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 228.0,
             camera_coordinates: [
@@ -2247,7 +2233,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked box of stock cubes in the current frame, where is the carrot piece relative to box of stock cubes from your viewpoint?",
+            "At the current time <TIME 00:03:48.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid (marked in red) in the current frame, where is the carrot piece relative to lid from your viewpoint?",
           choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
           correct_idx: 3,
           acceptable_idxs: [3],
@@ -2262,18 +2248,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               1.4717265290966066, 0.9242463570119847, -0.7199729797981249,
             ],
-            object_y_assoc_id: "d5b1a639aef5b172",
-            object_y_name: "box of stock cubes",
+            object_y_assoc_id: "122b8c9de3ba9422",
+            object_y_name: "lid",
             object_y_reference_time_sec: 228.0,
             object_y_world_coordinates: [
-              -0.5027108512379408, -1.561959642955106, -0.5574559334251779,
+              -0.18637662752830603, -1.9525324449891068, -0.4902346036623136,
             ],
-            object_y_projected_pixel: [765.7097178498701, 791.4649075602192],
+            object_y_projected_pixel: [1272.3382109406766, 518.545975401579],
+            object_y_normalized_projected_pixel: [
+              0.9036492975430942, 0.3682854938931669,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.5438279246092828, 0.5621199627558375,
-            ],
           },
         },
         {
@@ -2282,36 +2268,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked box of stock cubes in the current frame, how far is the carrot piece from thebox of stock cubes?",
-          choices: ["medium", "far", "close", "very close"],
+            "At the current time <TIME 00:03:48.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid (marked in red) in the current frame, how far is the carrot piece from the lid: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
           correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
             object_x_reference_time_sec: 228.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "d5b1a639aef5b172",
-            object_y_name: "box of stock cubes",
-            object_y_pixel: [765.7097178498701, 791.4649075602192],
+            object_y_assoc_id: "122b8c9de3ba9422",
+            object_y_name: "lid",
+            object_y_pixel: [1272.3382109406766, 518.545975401579],
+            object_y_normalized_projected_pixel: [
+              0.9036492975430942, 0.3682854938931669,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              1.4263966754254227, 0.8674140212088377, -1.1415244315745747,
+              0.9732798018444602, 1.0909982834207905, -1.1842835068815374,
             ],
-            distance_m: 2.0223977323306213,
+            distance_m: 1.8815095672829132,
             distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5438279246092828, 0.5621199627558375,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_10: {
+  oos_staged_h5p0_9: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -2321,10 +2307,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "51668af48d1a7842",
     object_a_name: "bag of flour",
     query_time_sec: 228.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 220.0,
+    query_time_in_clip_sec: 228.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 228.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 228.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -2337,9 +2323,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 220.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 228.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 228.0,
       anchor_assoc_id: "d5b1a639aef5b172",
       anchor_name: "box of stock cubes",
       anchor_projected_pixel: [765.7097178498701, 791.4649075602192],
@@ -2349,7 +2335,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_10",
+    trajectory_id: "oos_staged_h5p0_9",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -2377,12 +2363,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved bag of flour last visible, and where was it located in the image at that moment?",
+          "The bag of flour was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 222.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 222.0,
           sampled_last_visible_time_token: "<TIME 00:03:42.0 video 1>",
           projected_pixel: [1253.2891405349299, 738.522854667614],
           normalized_projected_pixel: [0.8901201282208309, 0.5245190729173395],
@@ -2402,14 +2388,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved bag of flour stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The bag of flour was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 210.43333333333334,
-          last_placement_time_in_clip_sec: -9.566666666666663,
+          last_placement_time_in_clip_sec: 210.43333333333334,
           last_placement_time_token: "<TIME 00:03:30.4 video 1>",
           projected_pixel: [916.7160544861033, 1058.0573582464567],
           normalized_projected_pixel: [0.651076743242971, 0.7514611919364039],
@@ -2431,28 +2416,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the bag of flour that was moved earlier,which fixture is closest to it?",
-        choices: ["bin", "drawer", "oven", "sink", "counter"],
-        correct_idx: 4,
+          "At the current time <TIME 00:03:48.0 video 1>, based on the last known position of the bag of flour that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "bin",
+          "counter area below the boiler",
+          "cupboard",
+          "counter area beside the hob and near the sink",
+          "hob",
+        ],
+        correct_idx: 1,
         answer_metadata: {
-          reference_time_sec: 222.0,
+          reference_time_sec: 210.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the bag of flour that was moved earlier is not visible. Based on its last known position, in which direction is the bag of flour from your viewpoint?",
-          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
-          correct_idx: 1,
+            "At the current time <TIME 00:03:48.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, in which direction is the bag of flour from your viewpoint?",
+          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
+          correct_idx: 2,
           answer_metadata: {
             reference_time_sec: 228.0,
             camera_coordinates: [
@@ -2478,10 +2488,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour and the position of the marked box of stock cubes in the current frame, where is the bag of flour relative to box of stock cubes from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:03:48.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the box of stock cubes (marked in red) in the current frame, where is the bag of flour relative to box of stock cubes from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-left", "Front-right"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
@@ -2500,11 +2510,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.5027108512379408, -1.561959642955106, -0.5574559334251779,
             ],
             object_y_projected_pixel: [765.7097178498701, 791.4649075602192],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.5438279246092828, 0.5621199627558375,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -2513,9 +2523,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:03:48.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour, and the position of the marked box of stock cubes in the current frame, how far is the bag of flour from thebox of stock cubes?",
-          choices: ["very close", "close", "far", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:03:48.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the box of stock cubes (marked in red) in the current frame, how far is the bag of flour from the box of stock cubes: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
@@ -2524,25 +2534,25 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "d5b1a639aef5b172",
             object_y_name: "box of stock cubes",
             object_y_pixel: [765.7097178498701, 791.4649075602192],
+            object_y_normalized_projected_pixel: [
+              0.5438279246092828, 0.5621199627558375,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               1.2377309926987805, 0.9772846949703831, -1.0396148167030552,
             ],
             distance_m: 1.8888785965273127,
-            distance_bucket: "medium",
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5438279246092828, 0.5621199627558375,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_11: {
+  oos_staged_h5p0_10: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -2552,10 +2562,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "51668af48d1a7842",
     object_a_name: "bag of flour",
     query_time_sec: 249.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 241.0,
+    query_time_in_clip_sec: 249.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 249.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 249.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -2568,19 +2578,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 241.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 249.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "7b4238cb675c8cc9",
-      anchor_name: "kettle",
-      anchor_projected_pixel: [1074.2097727935375, 894.6760215567192],
+      clip_duration_sec: 249.0,
+      anchor_assoc_id: "039f7e7efd96f484",
+      anchor_name: "spatula",
+      anchor_projected_pixel: [199.7788451437716, 1134.486614398254],
       anchor_world_coordinates: [
-        -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+        -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_11",
+    trajectory_id: "oos_staged_h5p0_10",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -2591,8 +2601,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:04:09.0 video 1>, is the previously moved bag of flour visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -2608,12 +2618,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved bag of flour last visible, and where was it located in the image at that moment?",
+          "The bag of flour was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 243.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 243.0,
           sampled_last_visible_time_token: "<TIME 00:04:03.0 video 1>",
           projected_pixel: [782.5278576266137, 310.0033998792044],
           normalized_projected_pixel: [0.5557726261552655, 0.22017286923238946],
@@ -2633,14 +2643,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved bag of flour stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The bag of flour was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 210.43333333333334,
-          last_placement_time_in_clip_sec: -30.566666666666663,
+          last_placement_time_in_clip_sec: 210.43333333333334,
           last_placement_time_token: "<TIME 00:03:30.4 video 1>",
           projected_pixel: [916.7160544861033, 1058.0573582464567],
           normalized_projected_pixel: [0.651076743242971, 0.7514611919364039],
@@ -2662,28 +2671,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:04:09.0 video 1>, based on the last known position of the bag of flour that was moved earlier,which fixture is closest to it?",
-        choices: ["counter", "bin", "cupboard", "microwave", "shelf"],
-        correct_idx: 0,
+          "At the current time <TIME 00:04:09.0 video 1>, based on the last known position of the bag of flour that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "bin",
+          "oven",
+          "sink",
+          "microwave",
+          "counter area below the boiler",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 243.0,
+          reference_time_sec: 210.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:04:09.0 video 1>, the bag of flour that was moved earlier is not visible. Based on its last known position, in which direction is the bag of flour from your viewpoint?",
-          choices: ["Back-left", "Front-right", "Front-left", "Back-right"],
-          correct_idx: 0,
+            "At the current time <TIME 00:04:09.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, in which direction is the bag of flour from your viewpoint?",
+          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
+          correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 249.0,
             camera_coordinates: [
@@ -2709,10 +2743,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:04:09.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour and the position of the marked kettle in the current frame, where is the bag of flour relative to kettle from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:04:09.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the spatula (marked in red) in the current frame, where is the bag of flour relative to spatula from your viewpoint?",
+          choices: ["Front-left", "Back-right", "Back-left", "Front-right"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
@@ -2724,18 +2758,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               -0.2135904787694134, 0.8819163030830086, -0.6236014148088893,
             ],
-            object_y_assoc_id: "7b4238cb675c8cc9",
-            object_y_name: "kettle",
+            object_y_assoc_id: "039f7e7efd96f484",
+            object_y_name: "spatula",
             object_y_reference_time_sec: 249.0,
             object_y_world_coordinates: [
-              -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+              -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
             ],
-            object_y_projected_pixel: [1074.2097727935375, 894.6760215567192],
+            object_y_projected_pixel: [199.7788451437716, 1134.486614398254],
+            object_y_normalized_projected_pixel: [
+              0.14188838433506507, 0.805743334089669,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.7629330772681374, 0.6354233107647154,
-            ],
           },
         },
         {
@@ -2744,36 +2778,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:04:09.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour, and the position of the marked kettle in the current frame, how far is the bag of flour from thekettle?",
-          choices: ["medium", "close", "far", "very close"],
-          correct_idx: 0,
+            "At the current time <TIME 00:04:09.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the spatula (marked in red) in the current frame, how far is the bag of flour from the spatula: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
             object_x_reference_time_sec: 249.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "7b4238cb675c8cc9",
-            object_y_name: "kettle",
-            object_y_pixel: [1074.2097727935375, 894.6760215567192],
+            object_y_assoc_id: "039f7e7efd96f484",
+            object_y_name: "spatula",
+            object_y_pixel: [199.7788451437716, 1134.486614398254],
+            object_y_normalized_projected_pixel: [
+              0.14188838433506507, 0.805743334089669,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.5238495119825641, 0.7281582564236571, -1.1089301880176134,
+              0.2838405955535075, 0.46042562105755813, -1.1288980600519234,
             ],
-            distance_m: 1.4263095454700885,
+            distance_m: 1.2517859506318978,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.7629330772681374, 0.6354233107647154,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_12: {
+  oos_staged_h5p0_11: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -2783,10 +2817,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "7b4238cb675c8cc9",
     object_a_name: "kettle",
     query_time_sec: 325.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 317.0,
+    query_time_in_clip_sec: 325.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 325.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 325.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -2799,19 +2833,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.003",
       relocation_score: 0,
-      clip_start_time_sec: 317.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 325.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "56a7e30a6aab9f87",
-      anchor_name: "sponge",
-      anchor_projected_pixel: [1015.0053075912047, 883.7351536526782],
+      clip_duration_sec: 325.0,
+      anchor_assoc_id: "7e6ffa234d9992bd",
+      anchor_name: "washing up liquids bottle",
+      anchor_projected_pixel: [1287.667404636275, 1072.9447910216863],
       anchor_world_coordinates: [
-        -0.8897858951455611, -3.9815549040160865, -0.4735239292635788,
+        -1.1427893039962687, -3.887403206660433, -0.48727448000823287,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_12",
+    trajectory_id: "oos_staged_h5p0_11",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -2822,8 +2856,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:05:25.0 video 1>, is the previously moved kettle visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -2839,12 +2873,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved kettle last visible, and where was it located in the image at that moment?",
+          "The kettle was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 319.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 319.0,
           sampled_last_visible_time_token: "<TIME 00:05:19.0 video 1>",
           projected_pixel: [296.36783496358277, 1000.1988676693967],
           normalized_projected_pixel: [0.21048851915027186, 0.710368513969742],
@@ -2864,14 +2898,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved kettle stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The kettle was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 39.46666666666667,
-          last_placement_time_in_clip_sec: -277.5333333333333,
+          last_placement_time_in_clip_sec: 39.46666666666667,
           last_placement_time_token: "<TIME 00:00:39.5 video 1>",
           projected_pixel: [1227.3203241804836, 1128.4446498905281],
           normalized_projected_pixel: [0.8716763666054571, 0.8014521661154319],
@@ -2893,28 +2926,54 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:05:25.0 video 1>, based on the last known position of the kettle that was moved earlier,which fixture is closest to it?",
-        choices: ["fridgefreezer", "bin", "counter", "hob", "shelf"],
-        correct_idx: 2,
+          "At the current time <TIME 00:05:25.0 video 1>, based on the last known position of the kettle that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "sink",
+          "dishwasher",
+          "counter area close to the microwave",
+          "drawer",
+          "counter area beside the hob and near the sink",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 319.0,
+          reference_time_sec: 39.46666666666667,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.003",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:05:25.0 video 1>, the kettle that was moved earlier is not visible. Based on its last known position, in which direction is the kettle from your viewpoint?",
-          choices: ["Back-right", "Back-left", "Front-left", "Front-right"],
-          correct_idx: 2,
+            "At the current time <TIME 00:05:25.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, in which direction is the kettle from your viewpoint?",
+          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
+          correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 325.0,
             camera_coordinates: [
@@ -2940,10 +2999,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:05:25.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle and the position of the marked sponge in the current frame, where is the kettle relative to sponge from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:05:25.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the washing up liquids bottle (marked in red) in the current frame, where is the kettle relative to washing up liquids bottle from your viewpoint?",
+          choices: ["Front-left", "Back-right", "Front-right", "Back-left"],
+          correct_idx: 3,
+          acceptable_idxs: [3],
           answer_metadata: {
             object_x_assoc_id: "7b4238cb675c8cc9",
             object_x_name: "kettle",
@@ -2955,18 +3014,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               -0.6233525719458681, 0.23716756228023628, 0.20859979692654962,
             ],
-            object_y_assoc_id: "56a7e30a6aab9f87",
-            object_y_name: "sponge",
+            object_y_assoc_id: "7e6ffa234d9992bd",
+            object_y_name: "washing up liquids bottle",
             object_y_reference_time_sec: 325.0,
             object_y_world_coordinates: [
-              -0.8897858951455611, -3.9815549040160865, -0.4735239292635788,
+              -1.1427893039962687, -3.887403206660433, -0.48727448000823287,
             ],
-            object_y_projected_pixel: [1015.0053075912047, 883.7351536526782],
+            object_y_projected_pixel: [1287.667404636275, 1072.9447910216863],
+            object_y_normalized_projected_pixel: [
+              0.9145365089746271, 0.7620346527142658,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.7208844514142079, 0.6276528079919589,
-            ],
           },
         },
         {
@@ -2975,36 +3034,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:05:25.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle, and the position of the marked sponge in the current frame, how far is the kettle from thesponge?",
-          choices: ["medium", "very close", "far", "close"],
-          correct_idx: 3,
+            "At the current time <TIME 00:05:25.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the washing up liquids bottle (marked in red) in the current frame, how far is the kettle from the washing up liquids bottle: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "7b4238cb675c8cc9",
             object_x_name: "kettle",
             object_x_reference_time_sec: 325.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "56a7e30a6aab9f87",
-            object_y_name: "sponge",
-            object_y_pixel: [1015.0053075912047, 883.7351536526782],
+            object_y_assoc_id: "7e6ffa234d9992bd",
+            object_y_name: "washing up liquids bottle",
+            object_y_pixel: [1287.667404636275, 1072.9447910216863],
+            object_y_normalized_projected_pixel: [
+              0.9145365089746271, 0.7620346527142658,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.8775491719256743, 0.09631124705286176, -0.2720337857805548,
+              -1.0823628655837676, -0.04675997808240373, -0.16885277939259202,
             ],
-            distance_m: 0.9237807023652392,
-            distance_bucket: "close",
+            distance_m: 1.0964520643665072,
+            distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.7208844514142079, 0.6276528079919589,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_13: {
+  oos_staged_h5p0_12: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -3014,10 +3073,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 326.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 318.0,
+    query_time_in_clip_sec: 326.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 326.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 326.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -3030,9 +3089,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 318.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 326.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 326.0,
       anchor_assoc_id: "56a7e30a6aab9f87",
       anchor_name: "sponge",
       anchor_projected_pixel: [1040.9212387851853, 883.161603397601],
@@ -3042,7 +3101,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_13",
+    trajectory_id: "oos_staged_h5p0_12",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -3053,8 +3112,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:05:26.0 video 1>, is the previously moved empty mug visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -3070,12 +3129,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 320.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 320.0,
           sampled_last_visible_time_token: "<TIME 00:05:20.0 video 1>",
           projected_pixel: [1267.8675001149022, 1058.2679959876177],
           normalized_projected_pixel: [0.9004740767861521, 0.7516107926048421],
@@ -3095,14 +3154,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -179.6,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -3124,28 +3182,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:05:26.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["cupboard", "counter", "sink", "bin", "drawer"],
-        correct_idx: 1,
+          "At the current time <TIME 00:05:26.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area close to the microwave",
+          "hob",
+          "fridgefreezer",
+          "bin",
+          "counter area below the boiler",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 320.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:05:26.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Back-right", "Front-right", "Front-left", "Back-left"],
-          correct_idx: 1,
+            "At the current time <TIME 00:05:26.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
+          correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 326.0,
             camera_coordinates: [
@@ -3171,10 +3254,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:05:26.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked sponge in the current frame, where is the empty mug relative to sponge from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:05:26.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the sponge (marked in red) in the current frame, where is the empty mug relative to sponge from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Back-left", "Front-left"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -3193,11 +3276,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.8897858951455611, -3.9815549040160865, -0.4735239292635788,
             ],
             object_y_projected_pixel: [1040.9212387851853, 883.161603397601],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.7392906525462964, 0.6272454569585234,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -3206,9 +3289,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:05:26.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked sponge in the current frame, how far is the empty mug from thesponge?",
-          choices: ["medium", "close", "very close", "far"],
-          correct_idx: 1,
+            "At the current time <TIME 00:05:26.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the sponge (marked in red) in the current frame, how far is the empty mug from the sponge: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -3217,6 +3300,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "56a7e30a6aab9f87",
             object_y_name: "sponge",
             object_y_pixel: [1040.9212387851853, 883.161603397601],
+            object_y_normalized_projected_pixel: [
+              0.7392906525462964, 0.6272454569585234,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               0.33729432684978056, 0.4999416685530136, -0.4047527808527205,
@@ -3227,15 +3313,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.7392906525462964, 0.6272454569585234,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_14: {
+  oos_staged_h5p0_13: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -3245,10 +3328,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 358.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 350.0,
+    query_time_in_clip_sec: 358.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 358.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 358.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -3261,19 +3344,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 350.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 358.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "b3814d3e40f4c501",
-      anchor_name: "one cube of stock",
-      anchor_projected_pixel: [649.5882118460195, 788.7263339577311],
+      clip_duration_sec: 358.0,
+      anchor_assoc_id: "d88474d879d24082",
+      anchor_name: "stock cube",
+      anchor_projected_pixel: [926.7291545002837, 360.4739496090276],
       anchor_world_coordinates: [
-        -0.6496338461252711, -2.5297159762943187, -0.6535088773193375,
+        -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_14",
+    trajectory_id: "oos_staged_h5p0_13",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -3284,8 +3367,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:05:58.0 video 1>, is the previously moved empty mug visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -3301,12 +3384,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 352.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 352.0,
           sampled_last_visible_time_token: "<TIME 00:05:52.0 video 1>",
           projected_pixel: [1110.8308632323847, 988.1777408684521],
           normalized_projected_pixel: [0.7889423744548186, 0.7018307818667984],
@@ -3326,14 +3409,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -211.6,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -3355,28 +3437,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:05:58.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["hob", "cupboard", "bin", "counter", "drawer"],
-        correct_idx: 3,
+          "At the current time <TIME 00:05:58.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "dishwasher",
+          "counter area below the boiler",
+          "counter area close to the microwave",
+          "microwave",
+          "counter area beside the hob and near the sink",
+        ],
+        correct_idx: 1,
         answer_metadata: {
-          reference_time_sec: 352.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:05:58.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Back-right", "Front-right", "Front-left", "Back-left"],
-          correct_idx: 3,
+            "At the current time <TIME 00:05:58.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-right", "Front-left"],
+          correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 358.0,
             camera_coordinates: [
@@ -3402,10 +3509,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:05:58.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked one cube of stock in the current frame, where is the empty mug relative to one cube of stock from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:05:58.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, where is the empty mug relative to stock cube from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Front-left", "Back-left"],
+          correct_idx: 3,
+          acceptable_idxs: [3],
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -3417,18 +3524,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               -0.17762769499003317, 1.0202682116025477, -0.24019719043471022,
             ],
-            object_y_assoc_id: "b3814d3e40f4c501",
-            object_y_name: "one cube of stock",
+            object_y_assoc_id: "d88474d879d24082",
+            object_y_name: "stock cube",
             object_y_reference_time_sec: 358.0,
             object_y_world_coordinates: [
-              -0.6496338461252711, -2.5297159762943187, -0.6535088773193375,
+              -0.12303030437640194, -2.283897273339636, -0.42863723703185447,
             ],
-            object_y_projected_pixel: [649.5882118460195, 788.7263339577311],
+            object_y_projected_pixel: [926.7291545002837, 360.4739496090276],
+            object_y_normalized_projected_pixel: [
+              0.6581883199575879, 0.25601843012004805,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.4613552640951843, 0.5601749530949794,
-            ],
           },
         },
         {
@@ -3437,36 +3544,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:05:58.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked one cube of stock in the current frame, how far is the empty mug from theone cube of stock?",
-          choices: ["medium", "close", "far", "very close"],
+            "At the current time <TIME 00:05:58.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the stock cube (marked in red) in the current frame, how far is the empty mug from the stock cube: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
           correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
             object_x_reference_time_sec: 358.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "b3814d3e40f4c501",
-            object_y_name: "one cube of stock",
-            object_y_pixel: [649.5882118460195, 788.7263339577311],
+            object_y_assoc_id: "d88474d879d24082",
+            object_y_name: "stock cube",
+            object_y_pixel: [926.7291545002837, 360.4739496090276],
+            object_y_normalized_projected_pixel: [
+              0.6581883199575879, 0.25601843012004805,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.12841650241164304, 0.9428663326024567, -0.8341854237471039,
+              -0.45895243631994775, 1.4540717860431187, -0.9673032673228285,
             ],
-            distance_m: 1.265445787238229,
-            distance_bucket: "medium",
+            distance_m: 1.8057235969948613,
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.4613552640951843, 0.5601749530949794,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_15: {
+  oos_staged_h5p0_14: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -3476,10 +3583,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "4834a5a5778ef81c",
     object_a_name: "pen",
     query_time_sec: 361.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 353.0,
+    query_time_in_clip_sec: 361.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 361.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 361.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -3492,19 +3599,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.009",
       relocation_score: 0,
-      clip_start_time_sec: 353.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 361.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "9df836d37764b630",
-      anchor_name: "tupperware",
-      anchor_projected_pixel: [632.0536735863957, 702.1775837740475],
+      clip_duration_sec: 361.0,
+      anchor_assoc_id: "e8e38966bc68fb94",
+      anchor_name: "bowl",
+      anchor_projected_pixel: [557.1748993191446, 656.4601668432794],
       anchor_world_coordinates: [
-        -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+        -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_15",
+    trajectory_id: "oos_staged_h5p0_14",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -3532,12 +3639,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved pen last visible, and where was it located in the image at that moment?",
+          "The pen was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 355.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 355.0,
           sampled_last_visible_time_token: "<TIME 00:05:55.0 video 1>",
           projected_pixel: [576.7973585637262, 1003.0095788703552],
           normalized_projected_pixel: [0.4096572148890101, 0.7123647577204227],
@@ -3557,14 +3664,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved pen stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The pen was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 83.43333333333334,
-          last_placement_time_in_clip_sec: -269.56666666666666,
+          last_placement_time_in_clip_sec: 83.43333333333334,
           last_placement_time_token: "<TIME 00:01:23.4 video 1>",
           projected_pixel: [980.0791322432808, 1155.3748954852601],
           normalized_projected_pixel: [0.6960789291500574, 0.820578760998054],
@@ -3586,28 +3692,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:06:01.0 video 1>, based on the last known position of the pen that was moved earlier,which fixture is closest to it?",
-        choices: ["fridgefreezer", "dishwasher", "oven", "counter", "shelf"],
-        correct_idx: 3,
+          "At the current time <TIME 00:06:01.0 video 1>, based on the last known position of the pen that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area beside the hob and near the sink",
+          "counter area next to the window",
+          "counter area close to the microwave",
+          "microwave",
+          "shelf",
+        ],
+        correct_idx: 2,
         answer_metadata: {
-          reference_time_sec: 355.0,
+          reference_time_sec: 83.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area close to the microwave",
           raw_correct_fixture: "P01_counter.009",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:06:01.0 video 1>, the pen that was moved earlier is not visible. Based on its last known position, in which direction is the pen from your viewpoint?",
-          choices: ["Back-left", "Front-right", "Back-right", "Front-left"],
-          correct_idx: 2,
+            "At the current time <TIME 00:06:01.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, in which direction is the pen from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 361.0,
             camera_coordinates: [
@@ -3633,10 +3764,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:06:01.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen and the position of the marked tupperware in the current frame, where is the pen relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:06:01.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, where is the pen relative to bowl from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Back-left", "Front-left"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
@@ -3648,18 +3779,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.08901522034654663, 1.271893718648058, -0.8130744453559575,
             ],
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
             object_y_reference_time_sec: 361.0,
             object_y_world_coordinates: [
-              -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+              -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
             ],
-            object_y_projected_pixel: [632.0536735863957, 702.1775837740475],
+            object_y_projected_pixel: [557.1748993191446, 656.4601668432794],
+            object_y_normalized_projected_pixel: [
+              0.3957208091755289, 0.46623591395119274,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.4489017568085197, 0.49870567029406787,
-            ],
           },
         },
         {
@@ -3668,36 +3799,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:06:01.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen, and the position of the marked tupperware in the current frame, how far is the pen from thetupperware?",
-          choices: ["close", "medium", "far", "very close"],
+            "At the current time <TIME 00:06:01.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, how far is the pen from the bowl: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "medium", "far"],
           correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
             object_x_reference_time_sec: 361.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
-            object_y_pixel: [632.0536735863957, 702.1775837740475],
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_pixel: [557.1748993191446, 656.4601668432794],
+            object_y_normalized_projected_pixel: [
+              0.3957208091755289, 0.46623591395119274,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.17598749143462333, 1.2809137870452256, -1.5921606733190818,
+              0.287155081662382, 1.3450567476023247, -1.6589534110211235,
             ],
-            distance_m: 2.051021047343948,
+            distance_m: 2.1549390049682833,
             distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.4489017568085197, 0.49870567029406787,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_16: {
+  oos_staged_h5p0_15: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -3707,10 +3838,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "039f7e7efd96f484",
     object_a_name: "spatula",
     query_time_sec: 399.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 391.0,
+    query_time_in_clip_sec: 399.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 399.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 399.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -3723,9 +3854,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.002",
       relocation_score: 0,
-      clip_start_time_sec: 391.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 399.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 399.0,
       anchor_assoc_id: "9df836d37764b630",
       anchor_name: "tupperware",
       anchor_projected_pixel: [385.96453190327674, 967.7939038516829],
@@ -3735,7 +3866,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_16",
+    trajectory_id: "oos_staged_h5p0_15",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -3746,8 +3877,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:06:39.0 video 1>, is the previously moved spatula visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -3763,12 +3894,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved spatula last visible, and where was it located in the image at that moment?",
+          "The spatula was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 393.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 393.0,
           sampled_last_visible_time_token: "<TIME 00:06:33.0 video 1>",
           projected_pixel: [20.934812278537493, 689.246840976771],
           normalized_projected_pixel: [
@@ -3790,14 +3921,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved spatula stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The spatula was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 166.83333333333334,
-          last_placement_time_in_clip_sec: -224.16666666666666,
+          last_placement_time_in_clip_sec: 166.83333333333334,
           last_placement_time_token: "<TIME 00:02:46.8 video 1>",
           projected_pixel: [1163.0361082101085, 1138.1635864796554],
           normalized_projected_pixel: [0.8260199632174067, 0.808354819942937],
@@ -3819,26 +3949,52 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:06:39.0 video 1>, based on the last known position of the spatula that was moved earlier,which fixture is closest to it?",
-        choices: ["cupboard", "counter", "fridgefreezer", "hob", "drawer"],
-        correct_idx: 1,
+          "At the current time <TIME 00:06:39.0 video 1>, based on the last known position of the spatula that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area beside the hob and near the sink",
+          "sink",
+          "counter area close to the microwave",
+          "cupboard",
+          "counter area below the boiler",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 393.0,
+          reference_time_sec: 166.83333333333334,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.002",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:06:39.0 video 1>, the spatula that was moved earlier is not visible. Based on its last known position, in which direction is the spatula from your viewpoint?",
+            "At the current time <TIME 00:06:39.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, in which direction is the spatula from your viewpoint?",
           choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
           correct_idx: 2,
           answer_metadata: {
@@ -3866,10 +4022,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:06:39.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula and the position of the marked tupperware in the current frame, where is the spatula relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:06:39.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, where is the spatula relative to tupperware from your viewpoint?",
+          choices: ["Back-left", "Front-right", "Back-right", "Front-left"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -3888,11 +4044,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
             ],
             object_y_projected_pixel: [385.96453190327674, 967.7939038516829],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.27412253686312266, 0.6873536248946611,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -3901,9 +4057,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:06:39.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula, and the position of the marked tupperware in the current frame, how far is the spatula from thetupperware?",
-          choices: ["close", "far", "very close", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:06:39.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, how far is the spatula from the tupperware: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "far", "close"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -3912,6 +4068,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "9df836d37764b630",
             object_y_name: "tupperware",
             object_y_pixel: [385.96453190327674, 967.7939038516829],
+            object_y_normalized_projected_pixel: [
+              0.27412253686312266, 0.6873536248946611,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               -0.48112783673731396, 0.5821710810129882, -0.8986379233922803,
@@ -3922,15 +4081,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.27412253686312266, 0.6873536248946611,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_17: {
+  oos_staged_h5p0_16: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -3940,10 +4096,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 414.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 406.0,
+    query_time_in_clip_sec: 414.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 414.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 414.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -3956,19 +4112,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 406.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 414.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "039f7e7efd96f484",
-      anchor_name: "spatula",
-      anchor_projected_pixel: [528.7388771859488, 706.3620098955579],
+      clip_duration_sec: 414.0,
+      anchor_assoc_id: "011b4b830a9ed325",
+      anchor_name: "lid2",
+      anchor_projected_pixel: [426.89379933281583, 570.1416444480944],
       anchor_world_coordinates: [
-        -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
+        -0.17474289158590056, -2.2418246883294715, -0.4428802854578126,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_17",
+    trajectory_id: "oos_staged_h5p0_16",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -3979,8 +4135,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:06:54.0 video 1>, is the previously moved empty mug visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -3996,12 +4152,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 408.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 408.0,
           sampled_last_visible_time_token: "<TIME 00:06:48.0 video 1>",
           projected_pixel: [1098.047150858583, 1049.5901879867251],
           normalized_projected_pixel: [0.7798630332802436, 0.7454475766951173],
@@ -4021,14 +4177,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -267.6,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -4050,28 +4205,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:06:54.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["dishwasher", "counter", "fridgefreezer", "hob", "sink"],
-        correct_idx: 1,
+          "At the current time <TIME 00:06:54.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "hob",
+          "counter area close to the microwave",
+          "counter area next to the window",
+          "sink",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 408.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:06:54.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
-          correct_idx: 2,
+            "At the current time <TIME 00:06:54.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Back-left", "Front-left", "Front-right", "Back-right"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 414.0,
             camera_coordinates: [
@@ -4097,10 +4277,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:06:54.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked spatula in the current frame, where is the empty mug relative to spatula from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:06:54.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid2 (marked in red) in the current frame, where is the empty mug relative to lid2 from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
@@ -4112,18 +4292,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.08150161826693392, 0.7704193270175573, -0.16178466976434835,
             ],
-            object_y_assoc_id: "039f7e7efd96f484",
-            object_y_name: "spatula",
+            object_y_assoc_id: "011b4b830a9ed325",
+            object_y_name: "lid2",
             object_y_reference_time_sec: 414.0,
             object_y_world_coordinates: [
-              -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
+              -0.17474289158590056, -2.2418246883294715, -0.4428802854578126,
             ],
-            object_y_projected_pixel: [528.7388771859488, 706.3620098955579],
+            object_y_projected_pixel: [426.89379933281583, 570.1416444480944],
+            object_y_normalized_projected_pixel: [
+              0.30319161884432944, 0.4049301452046125,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.3755247707286568, 0.5016775638462769,
-            ],
           },
         },
         {
@@ -4132,36 +4312,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:06:54.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked spatula in the current frame, how far is the empty mug from thespatula?",
-          choices: ["medium", "far", "close", "very close"],
+            "At the current time <TIME 00:06:54.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the lid2 (marked in red) in the current frame, how far is the empty mug from the lid2: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
           correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
             object_x_reference_time_sec: 414.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "039f7e7efd96f484",
-            object_y_name: "spatula",
-            object_y_pixel: [528.7388771859488, 706.3620098955579],
+            object_y_assoc_id: "011b4b830a9ed325",
+            object_y_name: "lid2",
+            object_y_pixel: [426.89379933281583, 570.1416444480944],
+            object_y_normalized_projected_pixel: [
+              0.30319161884432944, 0.4049301452046125,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.33665811853306193, 0.7747331702744875, -1.070245203555881,
+              0.6118101407451211, 1.040413641887273, -1.3312622859776382,
             ],
-            distance_m: 1.3634423235443984,
-            distance_bucket: "medium",
+            distance_m: 1.796950602718425,
+            distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.3755247707286568, 0.5016775638462769,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_18: {
+  oos_staged_h5p0_17: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -4171,10 +4351,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "7b4238cb675c8cc9",
     object_a_name: "kettle",
     query_time_sec: 420.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 412.0,
+    query_time_in_clip_sec: 420.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 420.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 420.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -4187,19 +4367,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.003",
       relocation_score: 0,
-      clip_start_time_sec: 412.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 420.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "4834a5a5778ef81c",
-      anchor_name: "pen",
-      anchor_projected_pixel: [933.1268221380568, 938.5273438537157],
+      clip_duration_sec: 420.0,
+      anchor_assoc_id: "51668af48d1a7842",
+      anchor_name: "bag of flour",
+      anchor_projected_pixel: [261.9684721423073, 1143.4595606084636],
       anchor_world_coordinates: [
-        -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+        -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_18",
+    trajectory_id: "oos_staged_h5p0_17",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -4210,8 +4390,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:00.0 video 1>, is the previously moved kettle visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -4227,12 +4407,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved kettle last visible, and where was it located in the image at that moment?",
+          "The kettle was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 414.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 414.0,
           sampled_last_visible_time_token: "<TIME 00:06:54.0 video 1>",
           projected_pixel: [1181.691958799419, 551.5585814702794],
           normalized_projected_pixel: [0.83926985710186, 0.3917319470669598],
@@ -4252,14 +4432,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved kettle stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The kettle was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 39.46666666666667,
-          last_placement_time_in_clip_sec: -372.5333333333333,
+          last_placement_time_in_clip_sec: 39.46666666666667,
           last_placement_time_token: "<TIME 00:00:39.5 video 1>",
           projected_pixel: [1227.3203241804836, 1128.4446498905281],
           normalized_projected_pixel: [0.8716763666054571, 0.8014521661154319],
@@ -4281,28 +4460,54 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:00.0 video 1>, based on the last known position of the kettle that was moved earlier,which fixture is closest to it?",
-        choices: ["dishwasher", "fridgefreezer", "sink", "bin", "counter"],
-        correct_idx: 4,
+          "At the current time <TIME 00:07:00.0 video 1>, based on the last known position of the kettle that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area beside the hob and near the sink",
+          "counter area between the fridge and the hob",
+          "microwave",
+          "cupboard",
+          "shelf",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 414.0,
+          reference_time_sec: 39.46666666666667,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.003",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:00.0 video 1>, the kettle that was moved earlier is not visible. Based on its last known position, in which direction is the kettle from your viewpoint?",
-          choices: ["Back-right", "Back-left", "Front-right", "Front-left"],
-          correct_idx: 0,
+            "At the current time <TIME 00:07:00.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, in which direction is the kettle from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 420.0,
             camera_coordinates: [
@@ -4328,8 +4533,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:00.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle and the position of the marked pen in the current frame, where is the kettle relative to pen from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+            "At the current time <TIME 00:07:00.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, where is the kettle relative to bag of flour from your viewpoint?",
+          choices: ["Front-right", "Back-left", "Back-right", "Front-left"],
           correct_idx: 2,
           acceptable_idxs: [2],
           answer_metadata: {
@@ -4343,18 +4548,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.21241551548014437, 0.5492316940242394, -0.8265859647358751,
             ],
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
             object_y_reference_time_sec: 420.0,
             object_y_world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
             ],
-            object_y_projected_pixel: [933.1268221380568, 938.5273438537157],
+            object_y_projected_pixel: [261.9684721423073, 1143.4595606084636],
+            object_y_normalized_projected_pixel: [
+              0.18605715351016142, 0.8121161652048747,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.662732117995779, 0.6665677158051958,
-            ],
           },
         },
         {
@@ -4363,36 +4568,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:00.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle, and the position of the marked pen in the current frame, how far is the kettle from thepen?",
-          choices: ["far", "medium", "very close", "close"],
-          correct_idx: 1,
+            "At the current time <TIME 00:07:00.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, how far is the kettle from the bag of flour: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "close", "far"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "7b4238cb675c8cc9",
             object_x_name: "kettle",
             object_x_reference_time_sec: 420.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
-            object_y_pixel: [933.1268221380568, 938.5273438537157],
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
+            object_y_pixel: [261.9684721423073, 1143.4595606084636],
+            object_y_normalized_projected_pixel: [
+              0.18605715351016142, 0.8121161652048747,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.22294578551524014, 0.12067784206772803, -1.9481891291444462,
+              0.5930159810031217, 0.1730937707971646, -1.2855852800515475,
             ],
-            distance_m: 1.9646141727478519,
+            distance_m: 1.4263095454700891,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.662732117995779, 0.6665677158051958,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_19: {
+  oos_staged_h5p0_18: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -4402,10 +4607,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "039f7e7efd96f484",
     object_a_name: "spatula",
     query_time_sec: 421.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 413.0,
+    query_time_in_clip_sec: 421.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 421.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 421.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -4418,9 +4623,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.002",
       relocation_score: 0,
-      clip_start_time_sec: 413.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 421.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 421.0,
       anchor_assoc_id: "4834a5a5778ef81c",
       anchor_name: "pen",
       anchor_projected_pixel: [1065.5665665569597, 1094.954194888079],
@@ -4430,7 +4635,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_19",
+    trajectory_id: "oos_staged_h5p0_18",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -4441,8 +4646,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:01.0 video 1>, is the previously moved spatula visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -4458,12 +4663,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved spatula last visible, and where was it located in the image at that moment?",
+          "The spatula was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 415.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 415.0,
           sampled_last_visible_time_token: "<TIME 00:06:55.0 video 1>",
           projected_pixel: [1032.126493759071, 679.0402611656058],
           normalized_projected_pixel: [0.7330443847720676, 0.4822729127596632],
@@ -4483,14 +4688,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved spatula stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The spatula was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 166.83333333333334,
-          last_placement_time_in_clip_sec: -246.16666666666666,
+          last_placement_time_in_clip_sec: 166.83333333333334,
           last_placement_time_token: "<TIME 00:02:46.8 video 1>",
           projected_pixel: [1163.0361082101085, 1138.1635864796554],
           normalized_projected_pixel: [0.8260199632174067, 0.808354819942937],
@@ -4512,27 +4716,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:01.0 video 1>, based on the last known position of the spatula that was moved earlier,which fixture is closest to it?",
-        choices: ["microwave", "counter", "hob", "dishwasher", "bin"],
-        correct_idx: 1,
+          "At the current time <TIME 00:07:01.0 video 1>, based on the last known position of the spatula that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area between the fridge and the hob",
+          "fridgefreezer",
+          "dishwasher",
+          "counter area beside the hob and near the sink",
+          "hob",
+        ],
+        correct_idx: 3,
         answer_metadata: {
-          reference_time_sec: 415.0,
+          reference_time_sec: 166.83333333333334,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.002",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:01.0 video 1>, the spatula that was moved earlier is not visible. Based on its last known position, in which direction is the spatula from your viewpoint?",
-          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
+            "At the current time <TIME 00:07:01.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, in which direction is the spatula from your viewpoint?",
+          choices: ["Back-left", "Back-right", "Front-right", "Front-left"],
           correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 421.0,
@@ -4559,10 +4789,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:01.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula and the position of the marked pen in the current frame, where is the spatula relative to pen from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:07:01.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the pen (marked in red) in the current frame, where is the spatula relative to pen from your viewpoint?",
+          choices: ["Back-right", "Front-left", "Back-left", "Front-right"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -4581,11 +4811,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
             ],
             object_y_projected_pixel: [1065.5665665569597, 1094.954194888079],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.7567944364751135, 0.777666331596647,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -4594,9 +4824,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:01.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula, and the position of the marked pen in the current frame, how far is the spatula from thepen?",
-          choices: ["medium", "close", "very close", "far"],
-          correct_idx: 0,
+            "At the current time <TIME 00:07:01.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the pen (marked in red) in the current frame, how far is the spatula from the pen: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "far", "medium"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -4605,6 +4835,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "4834a5a5778ef81c",
             object_y_name: "pen",
             object_y_pixel: [1065.5665665569597, 1094.954194888079],
+            object_y_normalized_projected_pixel: [
+              0.7567944364751135, 0.777666331596647,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               0.33101642697207234, 0.07656940931065737, -1.2460129888369134,
@@ -4615,15 +4848,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.7567944364751135, 0.777666331596647,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_20: {
+  oos_staged_h5p0_19: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -4633,10 +4863,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "56a7e30a6aab9f87",
     object_a_name: "sponge",
     query_time_sec: 432.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 424.0,
+    query_time_in_clip_sec: 432.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 432.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 432.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -4649,19 +4879,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.005",
       relocation_score: 1,
-      clip_start_time_sec: 424.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 432.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "f91c00bbec7fc1e7",
-      anchor_name: "plate",
-      anchor_projected_pixel: [727.8446194525067, 771.9950524321322],
+      clip_duration_sec: 432.0,
+      anchor_assoc_id: "039f7e7efd96f484",
+      anchor_name: "spatula",
+      anchor_projected_pixel: [1143.9823736597873, 485.0506436382609],
       anchor_world_coordinates: [
-        -0.5283502902464706, -2.595038770897233, -1.1587629641009936,
+        -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
       ],
-      anchor_status: "observed_visible_in_open_fixture",
+      anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_20",
+    trajectory_id: "oos_staged_h5p0_19",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -4689,12 +4919,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved sponge last visible, and where was it located in the image at that moment?",
+          "The sponge was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 426.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 426.0,
           sampled_last_visible_time_token: "<TIME 00:07:06.0 video 1>",
           projected_pixel: [1237.5738920529611, 975.4154013914017],
           normalized_projected_pixel: [0.8789587301512508, 0.6927666203063932],
@@ -4714,14 +4944,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved sponge stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The sponge was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 412.4,
-          last_placement_time_in_clip_sec: -11.600000000000023,
+          last_placement_time_in_clip_sec: 412.4,
           last_placement_time_token: "<TIME 00:06:52.4 video 1>",
           projected_pixel: [1008.1187436806374, 920.1036501935856],
           normalized_projected_pixel: [0.7159934259095436, 0.6534827061033989],
@@ -4743,27 +4972,52 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:12.0 video 1>, based on the last known position of the sponge that was moved earlier,which fixture is closest to it?",
-        choices: ["hob", "oven", "counter", "dishwasher", "drawer"],
-        correct_idx: 2,
+          "At the current time <TIME 00:07:12.0 video 1>, based on the last known position of the sponge that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "dishwasher",
+          "shelf",
+          "counter area beside the hob and near the sink",
+          "counter area between the fridge and the hob",
+          "counter area next to the window",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 426.0,
+          reference_time_sec: 412.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area next to the window",
           raw_correct_fixture: "P01_counter.005",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:12.0 video 1>, the sponge that was moved earlier is not visible. Based on its last known position, in which direction is the sponge from your viewpoint?",
-          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
+            "At the current time <TIME 00:07:12.0 video 1>, consider the sponge that was moved earlier. Using its last known position to infer its current location, in which direction is the sponge from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
           correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 432.0,
@@ -4790,8 +5044,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:12.0 video 1>, the sponge that was moved earlier is not visible. Based on the last known position of the sponge and the position of the marked plate in the current frame, where is the sponge relative to plate from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+            "At the current time <TIME 00:07:12.0 video 1>, consider the sponge that was moved earlier. Using its last known position to infer its current location, and using the current position of the spatula (marked in red) in the current frame, where is the sponge relative to spatula from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
           correct_idx: 3,
           acceptable_idxs: [3],
           answer_metadata: {
@@ -4805,18 +5059,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.1857018335018057, 1.190328849332181, -0.26583156802964747,
             ],
-            object_y_assoc_id: "f91c00bbec7fc1e7",
-            object_y_name: "plate",
+            object_y_assoc_id: "039f7e7efd96f484",
+            object_y_name: "spatula",
             object_y_reference_time_sec: 432.0,
             object_y_world_coordinates: [
-              -0.5283502902464706, -2.595038770897233, -1.1587629641009936,
+              -0.3996929235133511, -2.6314488801133136, -0.5524938701650501,
             ],
-            object_y_projected_pixel: [727.8446194525067, 771.9950524321322],
+            object_y_projected_pixel: [1143.9823736597873, 485.0506436382609],
+            object_y_normalized_projected_pixel: [
+              0.8124874812924626, 0.3444961957658103,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.5169350990429735, 0.5482919406478212,
-            ],
           },
         },
         {
@@ -4825,36 +5079,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:12.0 video 1>, the sponge that was moved earlier is not visible. Based on the last known position of the sponge, and the position of the marked plate in the current frame, how far is the sponge from theplate?",
-          choices: ["far", "medium", "close", "very close"],
-          correct_idx: 1,
+            "At the current time <TIME 00:07:12.0 video 1>, consider the sponge that was moved earlier. Using its last known position to infer its current location, and using the current position of the spatula (marked in red) in the current frame, how far is the sponge from the spatula: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "56a7e30a6aab9f87",
             object_x_name: "sponge",
             object_x_reference_time_sec: 432.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "f91c00bbec7fc1e7",
-            object_y_name: "plate",
-            object_y_pixel: [727.8446194525067, 771.9950524321322],
-            object_y_status: "observed_visible_in_open_fixture",
-            vector_object_x_relative_to_object_y: [
-              0.14641650015357352, 1.1014120281261408, -1.129474113845237,
+            object_y_assoc_id: "039f7e7efd96f484",
+            object_y_name: "spatula",
+            object_y_pixel: [1143.9823736597873, 485.0506436382609],
+            object_y_normalized_projected_pixel: [
+              0.8124874812924626, 0.3444961957658103,
             ],
-            distance_m: 1.5843793804088222,
+            object_y_status: "in_view",
+            vector_object_x_relative_to_object_y: [
+              -0.06663554408227029, 1.3180833414506203, -0.588084238839331,
+            ],
+            distance_m: 1.444862298876958,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.5169350990429735, 0.5482919406478212,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_21: {
+  oos_staged_h5p0_20: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -4864,10 +5118,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "f9f5c658de80a76c",
     object_a_name: "empty mug",
     query_time_sec: 435.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 427.0,
+    query_time_in_clip_sec: 435.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 435.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 435.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -4880,19 +5134,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 2,
-      clip_start_time_sec: 427.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 435.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "4834a5a5778ef81c",
-      anchor_name: "pen",
-      anchor_projected_pixel: [898.9350946708885, 761.4278167975951],
+      clip_duration_sec: 435.0,
+      anchor_assoc_id: "51668af48d1a7842",
+      anchor_name: "bag of flour",
+      anchor_projected_pixel: [130.1264462457939, 1117.5675585881067],
       anchor_world_coordinates: [
-        -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+        -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_21",
+    trajectory_id: "oos_staged_h5p0_20",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -4920,12 +5174,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved empty mug last visible, and where was it located in the image at that moment?",
+          "The empty mug was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 429.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 429.0,
           sampled_last_visible_time_token: "<TIME 00:07:09.0 video 1>",
           projected_pixel: [159.042539575285, 1141.0594308099585],
           normalized_projected_pixel: [0.112956349130174, 0.810411527563891],
@@ -4945,14 +5199,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved empty mug stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The empty mug was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 138.4,
-          last_placement_time_in_clip_sec: -288.6,
+          last_placement_time_in_clip_sec: 138.4,
           last_placement_time_token: "<TIME 00:02:18.4 video 1>",
           projected_pixel: [930.990367957302, 1045.6902180318134],
           normalized_projected_pixel: [0.6612147499696748, 0.742677711670322],
@@ -4974,28 +5227,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:15.0 video 1>, based on the last known position of the empty mug that was moved earlier,which fixture is closest to it?",
-        choices: ["sink", "bin", "drawer", "counter", "fridgefreezer"],
-        correct_idx: 3,
+          "At the current time <TIME 00:07:15.0 video 1>, based on the last known position of the empty mug that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "bin",
+          "counter area next to the window",
+          "counter area below the boiler",
+          "counter area beside the hob and near the sink",
+          "counter area between the fridge and the hob",
+        ],
+        correct_idx: 2,
         answer_metadata: {
-          reference_time_sec: 429.0,
+          reference_time_sec: 138.4,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the empty mug that was moved earlier is not visible. Based on its last known position, in which direction is the empty mug from your viewpoint?",
-          choices: ["Back-right", "Front-left", "Front-right", "Back-left"],
-          correct_idx: 1,
+            "At the current time <TIME 00:07:15.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, in which direction is the empty mug from your viewpoint?",
+          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
+          correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 435.0,
             camera_coordinates: [
@@ -5021,8 +5299,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug and the position of the marked pen in the current frame, where is the empty mug relative to pen from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
+            "At the current time <TIME 00:07:15.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, where is the empty mug relative to bag of flour from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
           correct_idx: 2,
           acceptable_idxs: [2],
           answer_metadata: {
@@ -5036,18 +5314,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               -0.5957885472256348, 0.5739512331073459, 0.10121457259290001,
             ],
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
             object_y_reference_time_sec: 435.0,
             object_y_world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
             ],
-            object_y_projected_pixel: [898.9350946708885, 761.4278167975951],
+            object_y_projected_pixel: [130.1264462457939, 1117.5675585881067],
+            object_y_normalized_projected_pixel: [
+              0.09241935102684225, 0.7937269592245076,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.6384482206469378, 0.5407868017028374,
-            ],
           },
         },
         {
@@ -5056,36 +5334,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the empty mug that was moved earlier is not visible. Based on the last known position of the empty mug, and the position of the marked pen in the current frame, how far is the empty mug from thepen?",
-          choices: ["very close", "close", "far", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:07:15.0 video 1>, consider the empty mug that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, how far is the empty mug from the bag of flour: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "f9f5c658de80a76c",
             object_x_name: "empty mug",
             object_x_reference_time_sec: 435.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
-            object_y_pixel: [898.9350946708885, 761.4278167975951],
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
+            object_y_pixel: [130.1264462457939, 1117.5675585881067],
+            object_y_normalized_projected_pixel: [
+              0.09241935102684225, 0.7937269592245076,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.9387201779193299, 0.4839608802447468, -0.9496483053306948,
+              -0.19075275532008806, 0.28478876702980727, -0.23658442398148216,
             ],
-            distance_m: 1.4202977187398524,
-            distance_bucket: "medium",
+            distance_m: 0.41648942982891285,
+            distance_bucket: "close",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.6384482206469378, 0.5407868017028374,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_22: {
+  oos_staged_h5p0_21: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -5095,10 +5373,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 435.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 427.0,
+    query_time_in_clip_sec: 435.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 435.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 435.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -5111,19 +5389,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 427.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 435.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "4834a5a5778ef81c",
-      anchor_name: "pen",
-      anchor_projected_pixel: [898.9350946708885, 761.4278167975951],
+      clip_duration_sec: 435.0,
+      anchor_assoc_id: "51668af48d1a7842",
+      anchor_name: "bag of flour",
+      anchor_projected_pixel: [130.1264462457939, 1117.5675585881067],
       anchor_world_coordinates: [
-        -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+        -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_22",
+    trajectory_id: "oos_staged_h5p0_21",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -5134,8 +5412,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:15.0 video 1>, is the previously moved carrot piece visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -5151,12 +5429,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 429.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 429.0,
           sampled_last_visible_time_token: "<TIME 00:07:09.0 video 1>",
           projected_pixel: [185.5399186380107, 855.6191096175138],
           normalized_projected_pixel: [0.1317755103963144, 0.6076840267169842],
@@ -5176,14 +5454,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: -281.33333333333337,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -5205,28 +5482,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:15.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["counter", "hob", "fridgefreezer", "shelf", "sink"],
+          "At the current time <TIME 00:07:15.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "oven",
+          "dishwasher",
+          "bin",
+          "sink",
+        ],
         correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 429.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Back-left", "Back-right", "Front-left", "Front-right"],
-          correct_idx: 2,
+            "At the current time <TIME 00:07:15.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 435.0,
             camera_coordinates: [
@@ -5252,10 +5554,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked pen in the current frame, where is the carrot piece relative to pen from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:07:15.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, where is the carrot piece relative to bag of flour from your viewpoint?",
+          choices: ["Front-right", "Front-left", "Back-right", "Back-left"],
+          correct_idx: 3,
+          acceptable_idxs: [3],
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
@@ -5267,18 +5569,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               -0.5041923577559495, 0.24704137139878857, 0.12228643724985955,
             ],
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
             object_y_reference_time_sec: 435.0,
             object_y_world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
             ],
-            object_y_projected_pixel: [898.9350946708885, 761.4278167975951],
+            object_y_projected_pixel: [130.1264462457939, 1117.5675585881067],
+            object_y_normalized_projected_pixel: [
+              0.09241935102684225, 0.7937269592245076,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.6384482206469378, 0.5407868017028374,
-            ],
           },
         },
         {
@@ -5287,267 +5589,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:15.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked pen in the current frame, how far is the carrot piece from thepen?",
-          choices: ["close", "very close", "medium", "far"],
-          correct_idx: 2,
+            "At the current time <TIME 00:07:15.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the bag of flour (marked in red) in the current frame, how far is the carrot piece from the bag of flour: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "medium", "far"],
+          correct_idx: 0,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
             object_x_reference_time_sec: 435.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
-            object_y_pixel: [898.9350946708885, 761.4278167975951],
+            object_y_assoc_id: "51668af48d1a7842",
+            object_y_name: "bag of flour",
+            object_y_pixel: [130.1264462457939, 1117.5675585881067],
+            object_y_normalized_projected_pixel: [
+              0.09241935102684225, 0.7937269592245076,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              -0.8471239884496446, 0.15705101853618952, -0.9285764406737352,
+              -0.09915656585040278, -0.042121094678750026, -0.21551255932452262,
             ],
-            distance_m: 1.266703706635609,
-            distance_bucket: "medium",
+            distance_m: 0.24093956585581242,
+            distance_bucket: "close",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.6384482206469378, 0.5407868017028374,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_23: {
-    inputs: {
-      "video 1": {
-        id: "P01-20240203-132119",
-      },
-    },
-    video_id: "P01-20240203-132119",
-    object_a_assoc_id: "23a815929202d3f4",
-    object_a_name: "chopping board",
-    query_time_sec: 446.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 438.0,
-    clip_end_time_sec: 446.0,
-    clip_duration_sec: 8.0,
-    horizon_sec: 5.0,
-    generation_info: {
-      video_id: "P01-20240203-132119",
-      assoc_id: "23a815929202d3f4",
-      object_name: "chopping board",
-      query_time_sec: 446.0,
-      oos_span_start_sec: 441.0,
-      oos_span_end_sec: 1125.0,
-      oos_duration_sec: 684.0,
-      horizon_sec: 5.0,
-      fixture_at_query: "P01_dishwasher.001",
-      relocation_score: 0,
-      clip_start_time_sec: 438.0,
-      clip_end_time_sec: 446.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "4834a5a5778ef81c",
-      anchor_name: "pen",
-      anchor_projected_pixel: [1172.9169818819023, 1144.6910557483438],
-      anchor_world_coordinates: [
-        -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
-      ],
-      anchor_status: "in_view",
-    },
-    question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_23",
-    num_incremental_steps: 4,
-    num_branch_steps: 3,
-    terminated_at_step: 4,
-    stop_reason: "completed_out_of_sight_trajectory",
-    incremental_steps: [
-      {
-        step: 1,
-        question_class: "oos_step1_visibility",
-        question:
-          "At the current time <TIME 00:07:26.0 video 1>, is the previously moved chopping board visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
-        answer_metadata: {
-          status: "out_of_view",
-          is_visible: false,
-          is_stably_visible: false,
-          projected_pixel: [-27898.125383380302, 109453.18929552073],
-          camera_coordinates: [
-            -0.7638903688346521, 1.1761362676746328, 0.10240073767420865,
-          ],
-          frame_index: 13026,
-        },
-      },
-      {
-        step: 2,
-        question_class: "oos_step2_last_visible",
-        question:
-          "When was the previously moved chopping board last visible, and where was it located in the image at that moment?",
-        choices: [],
-        correct_idx: null,
-        answer_metadata: {
-          sampled_last_visible_time_sec: 440.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
-          sampled_last_visible_time_token: "<TIME 00:07:20.0 video 1>",
-          projected_pixel: [1178.9709779282705, 1032.5005568962506],
-          normalized_projected_pixel: [0.8373373422786012, 0.7333100546138144],
-          camera_coordinates: [
-            0.3828834022902202, 0.2584172748874156, 0.4345180686138364,
-          ],
-          frame_index: 13026,
-          status: "observed_visible_in_open_fixture",
-          fixture: "P01_dishwasher.001",
-          world_coordinates: [
-            -0.5608742030226073, -3.0084274197388936, -1.1146101431118212,
-          ],
-          reference_source: "precomputed_visibility_track",
-          note: "Uses the precomputed visibility track when available and otherwise falls back to live visibility computation over stable-visible states only. If the last visible state is in_motion, the trajectory is skipped.",
-        },
-      },
-      {
-        step: "3",
-        question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved chopping board stop moving? Where was it located in the image at that moment?",
-        ],
-        choices: [],
-        correct_idx: null,
-        answer_metadata: {
-          last_placement_time_sec: 434.2,
-          last_placement_time_in_clip_sec: -3.8000000000000114,
-          last_placement_time_token: "<TIME 00:07:14.2 video 1>",
-          projected_pixel: [924.7548068503888, 1061.5288263235923],
-          normalized_projected_pixel: [0.6567860844107876, 0.7539267232411877],
-          camera_coordinates: [
-            0.20059400189517373, 0.3148407314369832, 0.5231343922727388,
-          ],
-          frame_index: 13026,
-          status: "last_past_track_end",
-          fixture: "P01_dishwasher.001",
-          world_coordinates: [
-            -0.5608742030226073, -3.0084274197388936, -1.1146101431118212,
-          ],
-          reference_source:
-            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
-          note: "Uses exact past-track end position when last_placement_source=raw_tracks, or a sampled approximation from merged tracks when last_placement_source=merged_tracks.",
-        },
-      },
-      {
-        step: 4,
-        question_class: "oos_step4_fixture",
-        question:
-          "At the current time <TIME 00:07:26.0 video 1>, based on the last known position of the chopping board that was moved earlier,which fixture is closest to it?",
-        choices: ["dishwasher", "cupboard", "bin", "microwave", "shelf"],
-        correct_idx: 0,
-        answer_metadata: {
-          reference_time_sec: 440.0,
-          correct_fixture: "dishwasher",
-          raw_correct_fixture: "P01_dishwasher.001",
-          reference_source: "precomputed_visibility_track",
-        },
-      },
-    ],
-    branch_groups: {
-      post_step3: [
-        {
-          step: "5a",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_camera_relative_position",
-          question:
-            "At the current time <TIME 00:07:26.0 video 1>, the chopping board that was moved earlier is not visible. Based on its last known position, in which direction is the chopping board from your viewpoint?",
-          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
-          correct_idx: 0,
-          answer_metadata: {
-            reference_time_sec: 446.0,
-            camera_coordinates: [
-              -0.7638903688346521, 1.1761362676746328, 0.10240073767420865,
-            ],
-            world_coordinates: [
-              -0.5608742030226073, -3.0084274197388936, -1.1146101431118212,
-            ],
-            status: "out_of_view",
-            correct_label: "Front-left",
-            debug: {
-              x: -0.7638903688346521,
-              z: 0.10240073767420865,
-            },
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
-          },
-          skipped: false,
-        },
-        {
-          step: "5b",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_object_relation",
-          question:
-            "At the current time <TIME 00:07:26.0 video 1>, the chopping board that was moved earlier is not visible. Based on the last known position of the chopping board and the position of the marked pen in the current frame, where is the chopping board relative to pen from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
-          answer_metadata: {
-            object_x_assoc_id: "23a815929202d3f4",
-            object_x_name: "chopping board",
-            object_x_reference_time_sec: 446.0,
-            object_x_status: "out_of_view",
-            object_x_world_coordinates: [
-              -0.5608742030226073, -3.0084274197388936, -1.1146101431118212,
-            ],
-            object_x_camera_coordinates: [
-              -0.7638903688346521, 1.1761362676746328, 0.10240073767420865,
-            ],
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
-            object_y_reference_time_sec: 446.0,
-            object_y_world_coordinates: [
-              -1.5763250611925403, -2.100410224158189, -0.5914538006028035,
-            ],
-            object_y_projected_pixel: [1172.9169818819023, 1144.6910557483438],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.8330376291774875, 0.8129908066394488,
-            ],
-          },
-        },
-        {
-          step: "5c",
-          depends_on_steps: [1, 2, 3, 4],
-          branch_group: "post_step4",
-          question_class: "oos_branch_object_object_distance",
-          question:
-            "At the current time <TIME 00:07:26.0 video 1>, the chopping board that was moved earlier is not visible. Based on the last known position of the chopping board, and the position of the marked pen in the current frame, how far is the chopping board from thepen?",
-          choices: ["very close", "far", "medium", "close"],
-          correct_idx: 2,
-          answer_metadata: {
-            object_x_assoc_id: "23a815929202d3f4",
-            object_x_name: "chopping board",
-            object_x_reference_time_sec: 446.0,
-            object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "4834a5a5778ef81c",
-            object_y_name: "pen",
-            object_y_pixel: [1172.9169818819023, 1144.6910557483438],
-            object_y_status: "in_view",
-            vector_object_x_relative_to_object_y: [
-              -1.170688229679312, 0.8014463113631782, -0.3413225899766783,
-            ],
-            distance_m: 1.4592217897001516,
-            distance_bucket: "medium",
-            reference_source: {
-              object_x: null,
-              object_y: "key_frame_generator_selected_anchor",
-            },
-            object_y_normalized_projected_pixel: [
-              0.8330376291774875, 0.8129908066394488,
-            ],
-          },
-        },
-      ],
-    },
-  },
-  oos_staged_h5p0_24: {
+  oos_staged_h5p0_22: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -5557,10 +5628,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "4834a5a5778ef81c",
     object_a_name: "pen",
     query_time_sec: 454.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 446.0,
+    query_time_in_clip_sec: 454.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 454.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 454.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -5573,19 +5644,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.009",
       relocation_score: 0,
-      clip_start_time_sec: 446.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 454.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "9df836d37764b630",
-      anchor_name: "tupperware",
-      anchor_projected_pixel: [413.68646392188344, 928.868452001544],
+      clip_duration_sec: 454.0,
+      anchor_assoc_id: "e8e38966bc68fb94",
+      anchor_name: "bowl",
+      anchor_projected_pixel: [323.6450748302051, 843.6508374860357],
       anchor_world_coordinates: [
-        -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+        -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_24",
+    trajectory_id: "oos_staged_h5p0_22",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -5596,8 +5667,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:34.0 video 1>, is the previously moved pen visible in the current frame?",
-        choices: ["No", "Yes"],
-        correct_idx: 0,
+        choices: ["Yes", "No"],
+        correct_idx: 1,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -5613,12 +5684,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved pen last visible, and where was it located in the image at that moment?",
+          "The pen was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 448.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 448.0,
           sampled_last_visible_time_token: "<TIME 00:07:28.0 video 1>",
           projected_pixel: [1259.261583021927, 1042.9663796068812],
           normalized_projected_pixel: [0.8943619197598913, 0.7407431673344327],
@@ -5638,14 +5709,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved pen stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The pen was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 83.43333333333334,
-          last_placement_time_in_clip_sec: -362.56666666666666,
+          last_placement_time_in_clip_sec: 83.43333333333334,
           last_placement_time_token: "<TIME 00:01:23.4 video 1>",
           projected_pixel: [980.0791322432808, 1155.3748954852601],
           normalized_projected_pixel: [0.6960789291500574, 0.820578760998054],
@@ -5667,27 +5737,52 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:34.0 video 1>, based on the last known position of the pen that was moved earlier,which fixture is closest to it?",
-        choices: ["counter", "sink", "cupboard", "oven", "drawer"],
+          "At the current time <TIME 00:07:34.0 video 1>, based on the last known position of the pen that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area close to the microwave",
+          "counter area next to the window",
+          "bin",
+          "dishwasher",
+          "fridgefreezer",
+        ],
         correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 448.0,
+          reference_time_sec: 83.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area close to the microwave",
           raw_correct_fixture: "P01_counter.009",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:34.0 video 1>, the pen that was moved earlier is not visible. Based on its last known position, in which direction is the pen from your viewpoint?",
-          choices: ["Back-left", "Front-left", "Front-right", "Back-right"],
+            "At the current time <TIME 00:07:34.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, in which direction is the pen from your viewpoint?",
+          choices: ["Front-left", "Back-left", "Front-right", "Back-right"],
           correct_idx: 3,
           answer_metadata: {
             reference_time_sec: 454.0,
@@ -5714,10 +5809,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:34.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen and the position of the marked tupperware in the current frame, where is the pen relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:07:34.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, where is the pen relative to bowl from your viewpoint?",
+          choices: ["Front-left", "Back-right", "Back-left", "Front-right"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
@@ -5729,18 +5824,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.09411563147354274, 1.5702187803759955, -0.9790024594865583,
             ],
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
             object_y_reference_time_sec: 454.0,
             object_y_world_coordinates: [
-              -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+              -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
             ],
-            object_y_projected_pixel: [413.68646392188344, 928.868452001544],
+            object_y_projected_pixel: [323.6450748302051, 843.6508374860357],
+            object_y_normalized_projected_pixel: [
+              0.22986155882827067, 0.5991838334417867,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.2938114090354286, 0.6597077073874602,
-            ],
           },
         },
         {
@@ -5749,36 +5844,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:34.0 video 1>, the pen that was moved earlier is not visible. Based on the last known position of the pen, and the position of the marked tupperware in the current frame, how far is the pen from thetupperware?",
-          choices: ["far", "very close", "medium", "close"],
-          correct_idx: 0,
+            "At the current time <TIME 00:07:34.0 video 1>, consider the pen that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, how far is the pen from the bowl: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["medium", "close", "far"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "4834a5a5778ef81c",
             object_x_name: "pen",
             object_x_reference_time_sec: 454.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
-            object_y_pixel: [413.68646392188344, 928.868452001544],
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_pixel: [323.6450748302051, 843.6508374860357],
+            object_y_normalized_projected_pixel: [
+              0.22986155882827067, 0.5991838334417867,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.3316631850419043, 1.3883321317852877, -1.4728274712905922,
+              0.44983231587488937, 1.4434798671229836, -1.5355060650935048,
             ],
-            distance_m: 2.0510210473439474,
+            distance_m: 2.1549390049682824,
             distance_bucket: "far",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.2938114090354286, 0.6597077073874602,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_25: {
+  oos_staged_h5p0_23: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -5788,10 +5883,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "51668af48d1a7842",
     object_a_name: "bag of flour",
     query_time_sec: 455.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 447.0,
+    query_time_in_clip_sec: 455.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 455.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 455.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -5804,19 +5899,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 447.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 455.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "9df836d37764b630",
-      anchor_name: "tupperware",
-      anchor_projected_pixel: [400.55501103982573, 952.8203519046347],
+      clip_duration_sec: 455.0,
+      anchor_assoc_id: "56a7e30a6aab9f87",
+      anchor_name: "sponge",
+      anchor_projected_pixel: [1038.0390193422363, 964.0212742410979],
       anchor_world_coordinates: [
-        -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+        -0.9123208465219563, -3.9810519685392745, -0.4940885709277505,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_25",
+    trajectory_id: "oos_staged_h5p0_23",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -5844,12 +5939,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved bag of flour last visible, and where was it located in the image at that moment?",
+          "The bag of flour was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 449.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 449.0,
           sampled_last_visible_time_token: "<TIME 00:07:29.0 video 1>",
           projected_pixel: [1063.446156471477, 1030.650621883573],
           normalized_projected_pixel: [0.7552884634030377, 0.7319961803150377],
@@ -5869,14 +5964,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved bag of flour stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The bag of flour was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 210.43333333333334,
-          last_placement_time_in_clip_sec: -236.56666666666666,
+          last_placement_time_in_clip_sec: 210.43333333333334,
           last_placement_time_token: "<TIME 00:03:30.4 video 1>",
           projected_pixel: [916.7160544861033, 1058.0573582464567],
           normalized_projected_pixel: [0.651076743242971, 0.7514611919364039],
@@ -5898,27 +5992,52 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:35.0 video 1>, based on the last known position of the bag of flour that was moved earlier,which fixture is closest to it?",
-        choices: ["microwave", "drawer", "counter", "dishwasher", "sink"],
+          "At the current time <TIME 00:07:35.0 video 1>, based on the last known position of the bag of flour that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area next to the window",
+          "microwave",
+          "counter area below the boiler",
+          "fridgefreezer",
+          "oven",
+        ],
         correct_idx: 2,
         answer_metadata: {
-          reference_time_sec: 449.0,
+          reference_time_sec: 210.43333333333334,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:35.0 video 1>, the bag of flour that was moved earlier is not visible. Based on its last known position, in which direction is the bag of flour from your viewpoint?",
-          choices: ["Back-left", "Back-right", "Front-right", "Front-left"],
+            "At the current time <TIME 00:07:35.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, in which direction is the bag of flour from your viewpoint?",
+          choices: ["Front-right", "Back-right", "Front-left", "Back-left"],
           correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 455.0,
@@ -5945,10 +6064,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:35.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour and the position of the marked tupperware in the current frame, where is the bag of flour relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:07:35.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the sponge (marked in red) in the current frame, where is the bag of flour relative to sponge from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-left", "Front-right"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
@@ -5960,18 +6079,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.4930976481788023, 0.7887659408582275, -0.39104257432740086,
             ],
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
+            object_y_assoc_id: "56a7e30a6aab9f87",
+            object_y_name: "sponge",
             object_y_reference_time_sec: 455.0,
             object_y_world_coordinates: [
-              -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+              -0.9123208465219563, -3.9810519685392745, -0.4940885709277505,
             ],
-            object_y_projected_pixel: [400.55501103982573, 952.8203519046347],
+            object_y_projected_pixel: [1038.0390193422363, 964.0212742410979],
+            object_y_normalized_projected_pixel: [
+              0.7372436216919293, 0.6846742004553252,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.284485093068058, 0.6767189999322689,
-            ],
           },
         },
         {
@@ -5980,36 +6099,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:35.0 video 1>, the bag of flour that was moved earlier is not visible. Based on the last known position of the bag of flour, and the position of the marked tupperware in the current frame, how far is the bag of flour from thetupperware?",
-          choices: ["very close", "close", "medium", "far"],
-          correct_idx: 2,
+            "At the current time <TIME 00:07:35.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the sponge (marked in red) in the current frame, how far is the bag of flour from the sponge: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "51668af48d1a7842",
             object_x_name: "bag of flour",
             object_x_reference_time_sec: 455.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
-            object_y_pixel: [400.55501103982573, 952.8203519046347],
+            object_y_assoc_id: "56a7e30a6aab9f87",
+            object_y_name: "sponge",
+            object_y_pixel: [1038.0390193422363, 964.0212742410979],
+            object_y_normalized_projected_pixel: [
+              0.7372436216919293, 0.6846742004553252,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.7435864330889963, 0.585402320083257, -0.8854681146250782,
+              0.2340329246453554, 0.5934124347362404, -0.8389374754790064,
             ],
-            distance_m: 1.2960210036301754,
+            distance_m: 1.0539097756832603,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.284485093068058, 0.6767189999322689,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_26: {
+  oos_staged_h5p0_24: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -6019,10 +6138,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 456.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 448.0,
+    query_time_in_clip_sec: 456.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 456.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 456.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -6035,19 +6154,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 448.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 456.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "9df836d37764b630",
-      anchor_name: "tupperware",
-      anchor_projected_pixel: [576.4703345038911, 861.3538912919744],
+      clip_duration_sec: 456.0,
+      anchor_assoc_id: "5aae373ee1cd43e6",
+      anchor_name: "thermal flask lid",
+      anchor_projected_pixel: [459.59335409740925, 963.9036334854081],
       anchor_world_coordinates: [
-        -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+        -0.45261243601712453, -3.6713152887927327, -0.534184923913966,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_26",
+    trajectory_id: "oos_staged_h5p0_24",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -6058,8 +6177,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:36.0 video 1>, is the previously moved carrot piece visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -6075,12 +6194,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 450.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 450.0,
           sampled_last_visible_time_token: "<TIME 00:07:30.0 video 1>",
           projected_pixel: [997.0124439360258, 1089.1893077902437],
           normalized_projected_pixel: [0.7081054289318365, 0.7735719515555708],
@@ -6100,14 +6219,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: -302.33333333333337,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -6129,28 +6247,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:36.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["shelf", "sink", "counter", "microwave", "oven"],
-        correct_idx: 2,
+          "At the current time <TIME 00:07:36.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area below the boiler",
+          "dishwasher",
+          "hob",
+          "microwave",
+          "drawer",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 450.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:36.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Back-left", "Front-left", "Front-right", "Back-right"],
-          correct_idx: 3,
+            "At the current time <TIME 00:07:36.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-left", "Front-right"],
+          correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 456.0,
             camera_coordinates: [
@@ -6176,10 +6319,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:36.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked tupperware in the current frame, where is the carrot piece relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:07:36.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the thermal flask lid (marked in red) in the current frame, where is the carrot piece relative to thermal flask lid from your viewpoint?",
+          choices: ["Back-left", "Back-right", "Front-right", "Front-left"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
@@ -6191,18 +6334,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.368692233251958, 0.6213296856265913, -0.3829892555965384,
             ],
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
+            object_y_assoc_id: "5aae373ee1cd43e6",
+            object_y_name: "thermal flask lid",
             object_y_reference_time_sec: 456.0,
             object_y_world_coordinates: [
-              -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+              -0.45261243601712453, -3.6713152887927327, -0.534184923913966,
             ],
-            object_y_projected_pixel: [576.4703345038911, 861.3538912919744],
+            object_y_projected_pixel: [459.59335409740925, 963.9036334854081],
+            object_y_normalized_projected_pixel: [
+              0.3264157344441827, 0.6845906487822501,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.40942495348287716, 0.6117570250653227,
-            ],
           },
         },
         {
@@ -6211,36 +6354,36 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:36.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked tupperware in the current frame, how far is the carrot piece from thetupperware?",
-          choices: ["very close", "close", "far", "medium"],
-          correct_idx: 3,
+            "At the current time <TIME 00:07:36.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the thermal flask lid (marked in red) in the current frame, how far is the carrot piece from the thermal flask lid: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
             object_x_reference_time_sec: 456.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
-            object_y_pixel: [576.4703345038911, 861.3538912919744],
+            object_y_assoc_id: "5aae373ee1cd43e6",
+            object_y_name: "thermal flask lid",
+            object_y_pixel: [459.59335409740925, 963.9036334854081],
+            object_y_normalized_projected_pixel: [
+              0.3264157344441827, 0.6845906487822501,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.48292874006654385, 0.48089078464650226, -0.9462094349915324,
+              0.5550586654257059, 0.42428283778941966, -0.8455159838366291,
             ],
-            distance_m: 1.1660996568077633,
+            distance_m: 1.0968150835168302,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.40942495348287716, 0.6117570250653227,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_27: {
+  oos_staged_h5p0_25: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -6250,10 +6393,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "039f7e7efd96f484",
     object_a_name: "spatula",
     query_time_sec: 465.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 457.0,
+    query_time_in_clip_sec: 465.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 465.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 465.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -6266,9 +6409,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.002",
       relocation_score: 0,
-      clip_start_time_sec: 457.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 465.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 465.0,
       anchor_assoc_id: "9df836d37764b630",
       anchor_name: "tupperware",
       anchor_projected_pixel: [534.2794825093663, 864.4072423989955],
@@ -6278,7 +6421,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_27",
+    trajectory_id: "oos_staged_h5p0_25",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -6289,8 +6432,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         question_class: "oos_step1_visibility",
         question:
           "At the current time <TIME 00:07:45.0 video 1>, is the previously moved spatula visible in the current frame?",
-        choices: ["Yes", "No"],
-        correct_idx: 1,
+        choices: ["No", "Yes"],
+        correct_idx: 0,
         answer_metadata: {
           status: "out_of_view",
           is_visible: false,
@@ -6306,12 +6449,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved spatula last visible, and where was it located in the image at that moment?",
+          "The spatula was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 459.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 459.0,
           sampled_last_visible_time_token: "<TIME 00:07:39.0 video 1>",
           projected_pixel: [1372.5412120298668, 722.452746150431],
           normalized_projected_pixel: [0.9748162017257577, 0.5131056435727493],
@@ -6331,14 +6474,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved spatula stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The spatula was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 166.83333333333334,
-          last_placement_time_in_clip_sec: -290.16666666666663,
+          last_placement_time_in_clip_sec: 166.83333333333334,
           last_placement_time_token: "<TIME 00:02:46.8 video 1>",
           projected_pixel: [1163.0361082101085, 1138.1635864796554],
           normalized_projected_pixel: [0.8260199632174067, 0.808354819942937],
@@ -6360,27 +6502,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:45.0 video 1>, based on the last known position of the spatula that was moved earlier,which fixture is closest to it?",
-        choices: ["sink", "counter", "cupboard", "dishwasher", "shelf"],
-        correct_idx: 1,
+          "At the current time <TIME 00:07:45.0 video 1>, based on the last known position of the spatula that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area beside the hob and near the sink",
+          "counter area between the fridge and the hob",
+          "sink",
+          "counter area below the boiler",
+          "drawer",
+        ],
+        correct_idx: 0,
         answer_metadata: {
-          reference_time_sec: 459.0,
+          reference_time_sec: 166.83333333333334,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.002",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:45.0 video 1>, the spatula that was moved earlier is not visible. Based on its last known position, in which direction is the spatula from your viewpoint?",
-          choices: ["Back-left", "Back-right", "Front-left", "Front-right"],
+            "At the current time <TIME 00:07:45.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, in which direction is the spatula from your viewpoint?",
+          choices: ["Back-left", "Front-right", "Front-left", "Back-right"],
           correct_idx: 0,
           answer_metadata: {
             reference_time_sec: 465.0,
@@ -6407,10 +6575,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:45.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula and the position of the marked tupperware in the current frame, where is the spatula relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:07:45.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, where is the spatula relative to tupperware from your viewpoint?",
+          choices: ["Back-left", "Front-left", "Front-right", "Back-right"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
             object_x_name: "spatula",
@@ -6429,11 +6597,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
             ],
             object_y_projected_pixel: [534.2794825093663, 864.4072423989955],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.3794598597367658, 0.6139255982947411,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -6442,8 +6610,8 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:45.0 video 1>, the spatula that was moved earlier is not visible. Based on the last known position of the spatula, and the position of the marked tupperware in the current frame, how far is the spatula from thetupperware?",
-          choices: ["very close", "medium", "close", "far"],
+            "At the current time <TIME 00:07:45.0 video 1>, consider the spatula that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, how far is the spatula from the tupperware: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "medium", "far"],
           correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "039f7e7efd96f484",
@@ -6453,6 +6621,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "9df836d37764b630",
             object_y_name: "tupperware",
             object_y_pixel: [534.2794825093663, 864.4072423989955],
+            object_y_normalized_projected_pixel: [
+              0.3794598597367658, 0.6139255982947411,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               -0.6950523063597267, 0.5662241663917761, -0.7577926926462883,
@@ -6463,15 +6634,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.3794598597367658, 0.6139255982947411,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_28: {
+  oos_staged_h5p0_26: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -6481,10 +6649,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "7b4238cb675c8cc9",
     object_a_name: "kettle",
     query_time_sec: 472.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 464.0,
+    query_time_in_clip_sec: 472.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 472.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 472.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -6497,9 +6665,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.003",
       relocation_score: 0,
-      clip_start_time_sec: 464.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 472.0,
-      clip_duration_sec: 8.0,
+      clip_duration_sec: 472.0,
       anchor_assoc_id: "9df836d37764b630",
       anchor_name: "tupperware",
       anchor_projected_pixel: [654.1525250130915, 675.5877106385158],
@@ -6509,7 +6677,7 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_28",
+    trajectory_id: "oos_staged_h5p0_26",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -6537,12 +6705,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved kettle last visible, and where was it located in the image at that moment?",
+          "The kettle was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 466.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 466.0,
           sampled_last_visible_time_token: "<TIME 00:07:46.0 video 1>",
           projected_pixel: [494.51552464087047, 810.9864211952068],
           normalized_projected_pixel: [0.35121841238698187, 0.5759846741443231],
@@ -6562,14 +6730,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved kettle stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The kettle was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 39.46666666666667,
-          last_placement_time_in_clip_sec: -424.5333333333333,
+          last_placement_time_in_clip_sec: 39.46666666666667,
           last_placement_time_token: "<TIME 00:00:39.5 video 1>",
           projected_pixel: [1227.3203241804836, 1128.4446498905281],
           normalized_projected_pixel: [0.8716763666054571, 0.8014521661154319],
@@ -6591,28 +6758,54 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:07:52.0 video 1>, based on the last known position of the kettle that was moved earlier,which fixture is closest to it?",
-        choices: ["microwave", "bin", "drawer", "counter", "shelf"],
-        correct_idx: 3,
+          "At the current time <TIME 00:07:52.0 video 1>, based on the last known position of the kettle that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "counter area next to the window",
+          "microwave",
+          "drawer",
+          "counter area close to the microwave",
+          "counter area beside the hob and near the sink",
+        ],
+        correct_idx: 4,
         answer_metadata: {
-          reference_time_sec: 466.0,
+          reference_time_sec: 39.46666666666667,
           correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
           raw_correct_fixture: "P01_counter.003",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:07:52.0 video 1>, the kettle that was moved earlier is not visible. Based on its last known position, in which direction is the kettle from your viewpoint?",
-          choices: ["Back-left", "Front-right", "Front-left", "Back-right"],
-          correct_idx: 2,
+            "At the current time <TIME 00:07:52.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, in which direction is the kettle from your viewpoint?",
+          choices: ["Back-right", "Front-left", "Front-right", "Back-left"],
+          correct_idx: 1,
           answer_metadata: {
             reference_time_sec: 472.0,
             camera_coordinates: [
@@ -6638,10 +6831,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:07:52.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle and the position of the marked tupperware in the current frame, where is the kettle relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 2,
-          acceptable_idxs: [2],
+            "At the current time <TIME 00:07:52.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, where is the kettle relative to tupperware from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-left", "Front-right"],
+          correct_idx: 1,
+          acceptable_idxs: [1],
           answer_metadata: {
             object_x_assoc_id: "7b4238cb675c8cc9",
             object_x_name: "kettle",
@@ -6660,11 +6853,11 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
               -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
             ],
             object_y_projected_pixel: [654.1525250130915, 675.5877106385158],
-            reference_source:
-              "query_time_state_from_merged_tracks_or_live_state",
             object_y_normalized_projected_pixel: [
               0.464596963787707, 0.479820817214855,
             ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
           },
         },
         {
@@ -6673,9 +6866,9 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:07:52.0 video 1>, the kettle that was moved earlier is not visible. Based on the last known position of the kettle, and the position of the marked tupperware in the current frame, how far is the kettle from thetupperware?",
-          choices: ["very close", "far", "close", "medium"],
-          correct_idx: 0,
+            "At the current time <TIME 00:07:52.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the tupperware (marked in red) in the current frame, how far is the kettle from the tupperware: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
+          correct_idx: 1,
           answer_metadata: {
             object_x_assoc_id: "7b4238cb675c8cc9",
             object_x_name: "kettle",
@@ -6684,26 +6877,26 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_y_assoc_id: "9df836d37764b630",
             object_y_name: "tupperware",
             object_y_pixel: [654.1525250130915, 675.5877106385158],
+            object_y_normalized_projected_pixel: [
+              0.464596963787707, 0.479820817214855,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
               -0.46028108886246466, -0.0031788610856287036,
               -0.13262619454342217,
             ],
             distance_m: 0.4790182599873281,
-            distance_bucket: "very close",
+            distance_bucket: "close",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.464596963787707, 0.479820817214855,
-            ],
           },
         },
       ],
     },
   },
-  oos_staged_h5p0_29: {
+  oos_staged_h5p0_27: {
     inputs: {
       "video 1": {
         id: "P01-20240203-132119",
@@ -6713,10 +6906,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
     object_a_assoc_id: "3ca360d7506fd255",
     object_a_name: "carrot piece",
     query_time_sec: 508.0,
-    query_time_in_clip_sec: 8.0,
-    clip_start_time_sec: 500.0,
+    query_time_in_clip_sec: 508.0,
+    clip_start_time_sec: 0,
     clip_end_time_sec: 508.0,
-    clip_duration_sec: 8.0,
+    clip_duration_sec: 508.0,
     horizon_sec: 5.0,
     generation_info: {
       video_id: "P01-20240203-132119",
@@ -6729,19 +6922,19 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       horizon_sec: 5.0,
       fixture_at_query: "P01_counter.007",
       relocation_score: 0,
-      clip_start_time_sec: 500.0,
+      clip_start_time_sec: 0,
       clip_end_time_sec: 508.0,
-      clip_duration_sec: 8.0,
-      anchor_assoc_id: "9df836d37764b630",
-      anchor_name: "tupperware",
-      anchor_projected_pixel: [651.837234810129, 672.0373776400841],
+      clip_duration_sec: 508.0,
+      anchor_assoc_id: "5aae373ee1cd43e6",
+      anchor_name: "thermal flask lid",
+      anchor_projected_pixel: [537.8632076745645, 774.0185200043848],
       anchor_world_coordinates: [
-        -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+        -0.45261243601712453, -3.6713152887927327, -0.534184923913966,
       ],
       anchor_status: "in_view",
     },
     question_class: "oos_staged_trajectory",
-    trajectory_id: "oos_staged_h5p0_29",
+    trajectory_id: "oos_staged_h5p0_27",
     num_incremental_steps: 4,
     num_branch_steps: 3,
     terminated_at_step: 4,
@@ -6769,12 +6962,12 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 2,
         question_class: "oos_step2_last_visible",
         question:
-          "When was the previously moved carrot piece last visible, and where was it located in the image at that moment?",
+          "The carrot piece was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           sampled_last_visible_time_sec: 502.0,
-          sampled_last_visible_time_in_clip_sec: 2.0,
+          sampled_last_visible_time_in_clip_sec: 502.0,
           sampled_last_visible_time_token: "<TIME 00:08:22.0 video 1>",
           projected_pixel: [1017.4311170849779, 1076.051354750668],
           normalized_projected_pixel: [0.7226073274751263, 0.764241018999054],
@@ -6794,14 +6987,13 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
       {
         step: "3",
         question_class: "oos_step3_last_placement",
-        question: [
-          "At what time did the previously moved carrot piece stop moving? Where was it located in the image at that moment?",
-        ],
+        question:
+          "The carrot piece was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
         choices: [],
         correct_idx: null,
         answer_metadata: {
           last_placement_time_sec: 145.66666666666666,
-          last_placement_time_in_clip_sec: -354.33333333333337,
+          last_placement_time_in_clip_sec: 145.66666666666666,
           last_placement_time_token: "<TIME 00:02:25.7 video 1>",
           projected_pixel: [923.8953100923059, 1056.0664264266118],
           normalized_projected_pixel: [0.6561756463723764, 0.7500471778598095],
@@ -6823,28 +7015,53 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
         step: 4,
         question_class: "oos_step4_fixture",
         question:
-          "At the current time <TIME 00:08:28.0 video 1>, based on the last known position of the carrot piece that was moved earlier,which fixture is closest to it?",
-        choices: ["shelf", "drawer", "oven", "counter", "fridgefreezer"],
-        correct_idx: 3,
+          "At the current time <TIME 00:08:28.0 video 1>, based on the last known position of the carrot piece that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "dishwasher",
+          "counter area below the boiler",
+          "counter area beside the hob and near the sink",
+          "shelf",
+          "cupboard",
+        ],
+        correct_idx: 1,
         answer_metadata: {
-          reference_time_sec: 502.0,
+          reference_time_sec: 145.66666666666666,
           correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
           raw_correct_fixture: "P01_counter.007",
-          reference_source: "precomputed_visibility_track",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
         },
       },
     ],
     branch_groups: {
-      post_step3: [
+      post_step4: [
         {
           step: "5a",
           depends_on_steps: [1, 2, 3, 4],
           branch_group: "post_step4",
           question_class: "oos_branch_object_camera_relative_position",
           question:
-            "At the current time <TIME 00:08:28.0 video 1>, the carrot piece that was moved earlier is not visible. Based on its last known position, in which direction is the carrot piece from your viewpoint?",
-          choices: ["Front-right", "Front-left", "Back-left", "Back-right"],
-          correct_idx: 3,
+            "At the current time <TIME 00:08:28.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, in which direction is the carrot piece from your viewpoint?",
+          choices: ["Front-left", "Back-left", "Back-right", "Front-right"],
+          correct_idx: 2,
           answer_metadata: {
             reference_time_sec: 508.0,
             camera_coordinates: [
@@ -6870,10 +7087,10 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_relation",
           question:
-            "At the current time <TIME 00:08:28.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece and the position of the marked tupperware in the current frame, where is the carrot piece relative to tupperware from your viewpoint?",
-          choices: ["Front-left", "Front-right", "Back-left", "Back-right"],
-          correct_idx: 3,
-          acceptable_idxs: [3],
+            "At the current time <TIME 00:08:28.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the thermal flask lid (marked in red) in the current frame, where is the carrot piece relative to thermal flask lid from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
@@ -6885,18 +7102,18 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
             object_x_camera_coordinates: [
               0.411499736618647, 0.7008175258006442, -0.2654275223709832,
             ],
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
+            object_y_assoc_id: "5aae373ee1cd43e6",
+            object_y_name: "thermal flask lid",
             object_y_reference_time_sec: 508.0,
             object_y_world_coordinates: [
-              -0.4358742692297094, -3.8047511356191013, -0.5556573583242533,
+              -0.45261243601712453, -3.6713152887927327, -0.534184923913966,
             ],
-            object_y_projected_pixel: [651.837234810129, 672.0373776400841],
+            object_y_projected_pixel: [537.8632076745645, 774.0185200043848],
+            object_y_normalized_projected_pixel: [
+              0.38200511908704865, 0.5497290625031142,
+            ],
             reference_source:
               "query_time_state_from_merged_tracks_or_live_state",
-            object_y_normalized_projected_pixel: [
-              0.46295258154128477, 0.47729927389210514,
-            ],
           },
         },
         {
@@ -6905,30 +7122,543 @@ const TRAJECTORY: Record<string, TrajectoryData> = {
           branch_group: "post_step4",
           question_class: "oos_branch_object_object_distance",
           question:
-            "At the current time <TIME 00:08:28.0 video 1>, the carrot piece that was moved earlier is not visible. Based on the last known position of the carrot piece, and the position of the marked tupperware in the current frame, how far is the carrot piece from thetupperware?",
-          choices: ["close", "medium", "very close", "far"],
-          correct_idx: 1,
+            "At the current time <TIME 00:08:28.0 video 1>, consider the carrot piece that was moved earlier. Using its last known position to infer its current location, and using the current position of the thermal flask lid (marked in red) in the current frame, how far is the carrot piece from the thermal flask lid: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "close", "medium"],
+          correct_idx: 2,
           answer_metadata: {
             object_x_assoc_id: "3ca360d7506fd255",
             object_x_name: "carrot piece",
             object_x_reference_time_sec: 508.0,
             object_x_status_from_track: "out_of_view",
-            object_y_assoc_id: "9df836d37764b630",
-            object_y_name: "tupperware",
-            object_y_pixel: [651.837234810129, 672.0373776400841],
+            object_y_assoc_id: "5aae373ee1cd43e6",
+            object_y_name: "thermal flask lid",
+            object_y_pixel: [537.8632076745645, 774.0185200043848],
+            object_y_normalized_projected_pixel: [
+              0.38200511908704865, 0.5497290625031142,
+            ],
             object_y_status: "in_view",
             vector_object_x_relative_to_object_y: [
-              0.4527444697034899, 0.7325969833071837, -0.7862013195163837,
+              0.5281935410158276, 0.654257588289135, -0.7042456381301037,
             ],
-            distance_m: 1.1660996568077633,
+            distance_m: 1.09681508351683,
             distance_bucket: "medium",
             reference_source: {
               object_x: null,
               object_y: "key_frame_generator_selected_anchor",
             },
-            object_y_normalized_projected_pixel: [
-              0.46295258154128477, 0.47729927389210514,
+          },
+        },
+      ],
+    },
+  },
+  oos_staged_h5p0_28: {
+    inputs: {
+      "video 1": {
+        id: "P01-20240203-132119",
+      },
+    },
+    video_id: "P01-20240203-132119",
+    object_a_assoc_id: "51668af48d1a7842",
+    object_a_name: "bag of flour",
+    query_time_sec: 508.0,
+    query_time_in_clip_sec: 508.0,
+    clip_start_time_sec: 0,
+    clip_end_time_sec: 508.0,
+    clip_duration_sec: 508.0,
+    horizon_sec: 5.0,
+    generation_info: {
+      video_id: "P01-20240203-132119",
+      assoc_id: "51668af48d1a7842",
+      object_name: "bag of flour",
+      query_time_sec: 508.0,
+      oos_span_start_sec: 503.0,
+      oos_span_end_sec: 526.0,
+      oos_duration_sec: 23.0,
+      horizon_sec: 5.0,
+      fixture_at_query: "P01_counter.007",
+      relocation_score: 0,
+      clip_start_time_sec: 0,
+      clip_end_time_sec: 508.0,
+      clip_duration_sec: 508.0,
+      anchor_assoc_id: "e8e38966bc68fb94",
+      anchor_name: "bowl",
+      anchor_projected_pixel: [565.7309057572954, 576.154565612122],
+      anchor_world_coordinates: [
+        -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
+      ],
+      anchor_status: "in_view",
+    },
+    question_class: "oos_staged_trajectory",
+    trajectory_id: "oos_staged_h5p0_28",
+    num_incremental_steps: 4,
+    num_branch_steps: 3,
+    terminated_at_step: 4,
+    stop_reason: "completed_out_of_sight_trajectory",
+    incremental_steps: [
+      {
+        step: 1,
+        question_class: "oos_step1_visibility",
+        question:
+          "At the current time <TIME 00:08:28.0 video 1>, is the previously moved bag of flour visible in the current frame?",
+        choices: ["Yes", "No"],
+        correct_idx: 1,
+        answer_metadata: {
+          status: "out_of_view",
+          is_visible: false,
+          is_stably_visible: false,
+          projected_pixel: null,
+          camera_coordinates: [
+            0.33765507470339795, 0.9301152874238505, -0.26080401547718157,
+          ],
+          frame_index: 6313,
+        },
+      },
+      {
+        step: 2,
+        question_class: "oos_step2_last_visible",
+        question:
+          "The bag of flour was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
+        choices: [],
+        correct_idx: null,
+        answer_metadata: {
+          sampled_last_visible_time_sec: 502.0,
+          sampled_last_visible_time_in_clip_sec: 502.0,
+          sampled_last_visible_time_token: "<TIME 00:08:22.0 video 1>",
+          projected_pixel: [1243.3269110840208, 1152.5978841343249],
+          normalized_projected_pixel: [0.8830446811676285, 0.8186064517999466],
+          camera_coordinates: [
+            0.35737851315732927, 0.29160631848326724, 0.31212734893432126,
+          ],
+          frame_index: 6313,
+          status: "in_view",
+          fixture: "P01_counter.007",
+          world_coordinates: [
+            -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
+          ],
+          reference_source: "precomputed_visibility_track",
+          note: "Uses the precomputed visibility track when available and otherwise falls back to live visibility computation over stable-visible states only. If the last visible state is in_motion, the trajectory is skipped.",
+        },
+      },
+      {
+        step: "3",
+        question_class: "oos_step3_last_placement",
+        question:
+          "The bag of flour was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
+        choices: [],
+        correct_idx: null,
+        answer_metadata: {
+          last_placement_time_sec: 210.43333333333334,
+          last_placement_time_in_clip_sec: 210.43333333333334,
+          last_placement_time_token: "<TIME 00:03:30.4 video 1>",
+          projected_pixel: [916.7160544861033, 1058.0573582464567],
+          normalized_projected_pixel: [0.651076743242971, 0.7514611919364039],
+          camera_coordinates: [
+            0.1535411332968899, 0.247475619869006, 0.41629383668745445,
+          ],
+          frame_index: 6313,
+          status: "last_past_track_end",
+          fixture: "P01_counter.007",
+          world_coordinates: [
+            -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
+          note: "Uses exact past-track end position when last_placement_source=raw_tracks, or a sampled approximation from merged tracks when last_placement_source=merged_tracks.",
+        },
+      },
+      {
+        step: 4,
+        question_class: "oos_step4_fixture",
+        question:
+          "At the current time <TIME 00:08:28.0 video 1>, based on the last known position of the bag of flour that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "shelf",
+          "counter area below the boiler",
+          "dishwasher",
+          "counter area next to the window",
+          "oven",
+        ],
+        correct_idx: 1,
+        answer_metadata: {
+          reference_time_sec: 210.43333333333334,
+          correct_fixture: "counter",
+          display_correct_answer: "counter area below the boiler",
+          raw_correct_fixture: "P01_counter.007",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
+        },
+      },
+    ],
+    branch_groups: {
+      post_step4: [
+        {
+          step: "5a",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_camera_relative_position",
+          question:
+            "At the current time <TIME 00:08:28.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, in which direction is the bag of flour from your viewpoint?",
+          choices: ["Front-left", "Back-right", "Front-right", "Back-left"],
+          correct_idx: 1,
+          answer_metadata: {
+            reference_time_sec: 508.0,
+            camera_coordinates: [
+              0.33765507470339795, 0.9301152874238505, -0.26080401547718157,
             ],
+            world_coordinates: [
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
+            ],
+            status: "out_of_view",
+            correct_label: "Back-right",
+            debug: {
+              x: 0.33765507470339795,
+              z: -0.26080401547718157,
+            },
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
+          },
+          skipped: false,
+        },
+        {
+          step: "5b",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_object_relation",
+          question:
+            "At the current time <TIME 00:08:28.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, where is the bag of flour relative to bowl from your viewpoint?",
+          choices: ["Back-right", "Back-left", "Front-right", "Front-left"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
+          answer_metadata: {
+            object_x_assoc_id: "51668af48d1a7842",
+            object_x_name: "bag of flour",
+            object_x_reference_time_sec: 508.0,
+            object_x_status: "out_of_view",
+            object_x_world_coordinates: [
+              -1.5361807101323421, -3.13597718783123, -0.4082206440398749,
+            ],
+            object_x_camera_coordinates: [
+              0.33765507470339795, 0.9301152874238505, -0.26080401547718157,
+            ],
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_reference_time_sec: 508.0,
+            object_y_world_coordinates: [
+              -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
+            ],
+            object_y_projected_pixel: [565.7309057572954, 576.154565612122],
+            object_y_normalized_projected_pixel: [
+              0.40179751829353366, 0.40920068580406393,
+            ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
+          },
+        },
+        {
+          step: "5c",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_object_distance",
+          question:
+            "At the current time <TIME 00:08:28.0 video 1>, consider the bag of flour that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, how far is the bag of flour from the bowl: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["close", "medium", "far"],
+          correct_idx: 1,
+          answer_metadata: {
+            object_x_assoc_id: "51668af48d1a7842",
+            object_x_name: "bag of flour",
+            object_x_reference_time_sec: 508.0,
+            object_x_status_from_track: "out_of_view",
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_pixel: [565.7309057572954, 576.154565612122],
+            object_y_normalized_projected_pixel: [
+              0.40179751829353366, 0.40920068580406393,
+            ],
+            object_y_status: "in_view",
+            vector_object_x_relative_to_object_y: [
+              0.466520775212087, 1.0577044445929227, -0.8454283399038407,
+            ],
+            distance_m: 1.4321764569104862,
+            distance_bucket: "medium",
+            reference_source: {
+              object_x: null,
+              object_y: "key_frame_generator_selected_anchor",
+            },
+          },
+        },
+      ],
+    },
+  },
+  oos_staged_h5p0_29: {
+    inputs: {
+      "video 1": {
+        id: "P01-20240203-132119",
+      },
+    },
+    video_id: "P01-20240203-132119",
+    object_a_assoc_id: "7b4238cb675c8cc9",
+    object_a_name: "kettle",
+    query_time_sec: 520.0,
+    query_time_in_clip_sec: 520.0,
+    clip_start_time_sec: 0,
+    clip_end_time_sec: 520.0,
+    clip_duration_sec: 520.0,
+    horizon_sec: 5.0,
+    generation_info: {
+      video_id: "P01-20240203-132119",
+      assoc_id: "7b4238cb675c8cc9",
+      object_name: "kettle",
+      query_time_sec: 520.0,
+      oos_span_start_sec: 515.0,
+      oos_span_end_sec: 533.0,
+      oos_duration_sec: 18.0,
+      horizon_sec: 5.0,
+      fixture_at_query: "P01_counter.003",
+      relocation_score: 0,
+      clip_start_time_sec: 0,
+      clip_end_time_sec: 520.0,
+      clip_duration_sec: 520.0,
+      anchor_assoc_id: "e8e38966bc68fb94",
+      anchor_name: "bowl",
+      anchor_projected_pixel: [521.2586826297661, 555.7964568733663],
+      anchor_world_coordinates: [
+        -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
+      ],
+      anchor_status: "in_view",
+    },
+    question_class: "oos_staged_trajectory",
+    trajectory_id: "oos_staged_h5p0_29",
+    num_incremental_steps: 4,
+    num_branch_steps: 3,
+    terminated_at_step: 4,
+    stop_reason: "completed_out_of_sight_trajectory",
+    incremental_steps: [
+      {
+        step: 1,
+        question_class: "oos_step1_visibility",
+        question:
+          "At the current time <TIME 00:08:40.0 video 1>, is the previously moved kettle visible in the current frame?",
+        choices: ["No", "Yes"],
+        correct_idx: 0,
+        answer_metadata: {
+          status: "out_of_view",
+          is_visible: false,
+          is_stably_visible: false,
+          projected_pixel: [-57.08339955186864, 718.4588079487854],
+          camera_coordinates: [
+            -0.4997495294925649, 0.005410189366692908, 0.26577415533244286,
+          ],
+          frame_index: 1184,
+        },
+      },
+      {
+        step: 2,
+        question_class: "oos_step2_last_visible",
+        question:
+          "The kettle was moved earlier in the video. When was it last visible, and where was it located in the image at that moment?",
+        choices: [],
+        correct_idx: null,
+        answer_metadata: {
+          sampled_last_visible_time_sec: 514.0,
+          sampled_last_visible_time_in_clip_sec: 514.0,
+          sampled_last_visible_time_token: "<TIME 00:08:34.0 video 1>",
+          projected_pixel: [18.387515122694367, 649.9430698057105],
+          normalized_projected_pixel: [
+            0.013059314717822705, 0.46160729389610117,
+          ],
+          camera_coordinates: [
+            -0.47855090208539597, -0.042101406771866134, 0.34340631305924485,
+          ],
+          frame_index: 1184,
+          status: "in_view",
+          fixture: "P01_counter.003",
+          world_coordinates: [
+            -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+          ],
+          reference_source: "precomputed_visibility_track",
+          note: "Uses the precomputed visibility track when available and otherwise falls back to live visibility computation over stable-visible states only. If the last visible state is in_motion, the trajectory is skipped.",
+        },
+      },
+      {
+        step: "3",
+        question_class: "oos_step3_last_placement",
+        question:
+          "The kettle was moved earlier in the video. At what time did it stop moving? Where was it located in the image at that moment?",
+        choices: [],
+        correct_idx: null,
+        answer_metadata: {
+          last_placement_time_sec: 39.46666666666667,
+          last_placement_time_in_clip_sec: 39.46666666666667,
+          last_placement_time_token: "<TIME 00:00:39.5 video 1>",
+          projected_pixel: [1227.3203241804836, 1128.4446498905281],
+          normalized_projected_pixel: [0.8716763666054571, 0.8014521661154319],
+          camera_coordinates: [
+            0.3911065755843901, 0.31091558976300093, 0.36855201176318797,
+          ],
+          frame_index: 1184,
+          status: "last_past_track_end",
+          fixture: "P01_counter.003",
+          world_coordinates: [
+            -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
+          note: "Uses exact past-track end position when last_placement_source=raw_tracks, or a sampled approximation from merged tracks when last_placement_source=merged_tracks.",
+        },
+      },
+      {
+        step: 4,
+        question_class: "oos_step4_fixture",
+        question:
+          "At the current time <TIME 00:08:40.0 video 1>, based on the last known position of the kettle that was moved earlier, which fixture or fixture area is closest to it?",
+        choices: [
+          "drawer",
+          "counter area between the fridge and the hob",
+          "sink",
+          "counter area beside the hob and near the sink",
+          "hob",
+        ],
+        correct_idx: 3,
+        answer_metadata: {
+          reference_time_sec: 39.46666666666667,
+          correct_fixture: "counter",
+          display_correct_answer:
+            "counter area beside the hob and near the sink",
+          raw_correct_fixture: "P01_counter.003",
+          expanded_choice_pool: [
+            "bin",
+            "counter area below the boiler",
+            "counter area beside the hob and near the sink",
+            "counter area between the fridge and the hob",
+            "counter area close to the microwave",
+            "counter area next to the window",
+            "cupboard",
+            "dishwasher",
+            "drawer",
+            "fridgefreezer",
+            "hob",
+            "microwave",
+            "oven",
+            "shelf",
+            "sink",
+          ],
+          reference_source:
+            "raw_assoc_info_mask_info_latest_mask_of_last_past_track",
+        },
+      },
+    ],
+    branch_groups: {
+      post_step4: [
+        {
+          step: "5a",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_camera_relative_position",
+          question:
+            "At the current time <TIME 00:08:40.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, in which direction is the kettle from your viewpoint?",
+          choices: ["Back-right", "Front-right", "Back-left", "Front-left"],
+          correct_idx: 3,
+          answer_metadata: {
+            reference_time_sec: 520.0,
+            camera_coordinates: [
+              -0.4997495294925649, 0.005410189366692908, 0.26577415533244286,
+            ],
+            world_coordinates: [
+              -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+            ],
+            status: "out_of_view",
+            correct_label: "Front-left",
+            debug: {
+              x: -0.4997495294925649,
+              z: 0.26577415533244286,
+            },
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
+          },
+          skipped: false,
+        },
+        {
+          step: "5b",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_object_relation",
+          question:
+            "At the current time <TIME 00:08:40.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, where is the kettle relative to bowl from your viewpoint?",
+          choices: ["Back-left", "Front-left", "Back-right", "Front-right"],
+          correct_idx: 0,
+          acceptable_idxs: [0],
+          answer_metadata: {
+            object_x_assoc_id: "7b4238cb675c8cc9",
+            object_x_name: "kettle",
+            object_x_reference_time_sec: 520.0,
+            object_x_status: "out_of_view",
+            object_x_world_coordinates: [
+              -0.14313805794458712, -3.437758360301628, -0.4603667141428952,
+            ],
+            object_x_camera_coordinates: [
+              -0.4997495294925649, 0.005410189366692908, 0.26577415533244286,
+            ],
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_reference_time_sec: 520.0,
+            object_y_world_coordinates: [
+              -0.29388207950296763, -3.831940698180997, -0.5613816975968576,
+            ],
+            object_y_projected_pixel: [521.2586826297661, 555.7964568733663],
+            object_y_normalized_projected_pixel: [
+              0.37021213254954977, 0.3947418017566522,
+            ],
+            reference_source:
+              "query_time_state_from_merged_tracks_or_live_state",
+          },
+        },
+        {
+          step: "5c",
+          depends_on_steps: [1, 2, 3, 4],
+          branch_group: "post_step4",
+          question_class: "oos_branch_object_object_distance",
+          question:
+            "At the current time <TIME 00:08:40.0 video 1>, consider the kettle that was moved earlier. Using its last known position to infer its current location, and using the current position of the bowl (marked in red) in the current frame, how far is the kettle from the bowl: close, less than 1 meter; medium, at least 1 meter but less than 1.5 meters; or far, 1.5 meters or more?",
+          choices: ["far", "medium", "close"],
+          correct_idx: 2,
+          answer_metadata: {
+            object_x_assoc_id: "7b4238cb675c8cc9",
+            object_x_name: "kettle",
+            object_x_reference_time_sec: 520.0,
+            object_x_status_from_track: "out_of_view",
+            object_y_assoc_id: "e8e38966bc68fb94",
+            object_y_name: "bowl",
+            object_y_pixel: [521.2586826297661, 555.7964568733663],
+            object_y_normalized_projected_pixel: [
+              0.37021213254954977, 0.3947418017566522,
+            ],
+            object_y_status: "in_view",
+            vector_object_x_relative_to_object_y: [
+              -0.3608890419876829, 0.12451319742297917, -0.20630818077468738,
+            ],
+            distance_m: 0.4339441236079162,
+            distance_bucket: "close",
+            reference_source: {
+              object_x: null,
+              object_y: "key_frame_generator_selected_anchor",
+            },
           },
         },
       ],
