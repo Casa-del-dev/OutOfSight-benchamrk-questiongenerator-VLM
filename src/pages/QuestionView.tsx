@@ -227,6 +227,8 @@ function getSavedPanelWidth(
 export default function QuestionView() {
   const [initialSelection] = useState(() => getInitialVideoSelection());
   const [tracking, setTracking] = useState<TrackingEntry | null>(null);
+  type ResizeSide = "left" | "right" | null;
+  const [resizingSide, setResizingSide] = useState<ResizeSide>(null);
   const [leftPanel, setLeftPanel] = useState<LeftPanel>("selector");
   const [leftWidth, setLeftWidth] = useState(() =>
     getSavedPanelWidth(STORAGE_KEYS.leftPanelWidth, 360, 260, 620),
@@ -238,6 +240,8 @@ export default function QuestionView() {
 
   const startResizeLeft = (event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
+
+    setResizingSide("left");
 
     const startX = event.clientX;
     const startWidth = leftWidth;
@@ -251,6 +255,8 @@ export default function QuestionView() {
 
     const handlePointerUp = () => {
       localStorage.setItem(STORAGE_KEYS.leftPanelWidth, String(latestWidth));
+
+      setResizingSide(null);
 
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerup", handlePointerUp);
@@ -268,6 +274,8 @@ export default function QuestionView() {
   const startResizeRight = (event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
 
+    setResizingSide("right");
+
     const startX = event.clientX;
     const startWidth = rightWidth;
     let latestWidth = rightWidth;
@@ -280,6 +288,8 @@ export default function QuestionView() {
 
     const handlePointerUp = () => {
       localStorage.setItem(STORAGE_KEYS.rightPanelWidth, String(latestWidth));
+
+      setResizingSide(null);
 
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerup", handlePointerUp);
@@ -403,7 +413,11 @@ export default function QuestionView() {
       {/* LEFT: video selector / 3D scene */}
       <aside
         style={{ width: leftWidth }}
-        className="flex min-h-0 shrink-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80"
+        className={`flex min-h-0 shrink-0 flex-col overflow-hidden bg-white transition-[box-shadow,background-color] duration-150 dark:bg-slate-950/80 ${
+          resizingSide === "left"
+            ? "shadow-[inset_-3px_0_0_rgba(37,99,235,0.75)] bg-blue-50/40 dark:bg-blue-950/20"
+            : ""
+        }`}
       >
         {/* Left tabs */}
         <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">
@@ -462,9 +476,13 @@ export default function QuestionView() {
         role="separator"
         aria-orientation="vertical"
         onPointerDown={startResizeLeft}
-        className="group relative z-20 w-1 shrink-0 cursor-col-resize bg-slate-200 transition hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+        className={`group relative z-20 w-1 shrink-0 cursor-col-resize transition ${
+          resizingSide === "left"
+            ? "bg-blue-500"
+            : "bg-slate-200 hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+        }`}
       >
-        <div className="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2" />
+        <div className="absolute left-1/2 top-0 h-full w-4 -translate-x-1/2" />
       </div>
       {/* MIDDLE: video always visible */}
       <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-100 dark:bg-black">
@@ -487,13 +505,21 @@ export default function QuestionView() {
         role="separator"
         aria-orientation="vertical"
         onPointerDown={startResizeRight}
-        className="group relative z-20 w-1 shrink-0 cursor-col-resize bg-slate-200 transition hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+        className={`group relative z-20 w-1 shrink-0 cursor-col-resize transition ${
+          resizingSide === "right"
+            ? "bg-blue-500"
+            : "bg-slate-200 hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+        }`}
       >
-        <div className="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2" />
+        <div className="absolute left-1/2 top-0 h-full w-4 -translate-x-1/2" />
       </div>
       <aside
         style={{ width: rightWidth }}
-        className="flex min-h-0 shrink-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80"
+        className={`flex min-h-0 shrink-0 flex-col overflow-hidden bg-white transition-[box-shadow,background-color] duration-150 dark:bg-slate-950/80 ${
+          resizingSide === "right"
+            ? "shadow-[inset_3px_0_0_rgba(37,99,235,0.75)] bg-blue-50/40 dark:bg-blue-950/20"
+            : ""
+        }`}
       >
         {/* Right tabs */}
         <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">

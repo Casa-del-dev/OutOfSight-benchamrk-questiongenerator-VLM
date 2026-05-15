@@ -772,8 +772,11 @@ function TrackingOrbitControls({
         saved.position[1],
         saved.position[2],
       );
-      camera.zoom = saved.zoom;
-      camera.updateProjectionMatrix();
+
+      if (isZoomCamera(camera)) {
+        camera.zoom = saved.zoom;
+        camera.updateProjectionMatrix();
+      }
 
       controls.target.set(saved.target[0], saved.target[1], saved.target[2]);
       previousTargetRef.current.copy(controls.target);
