@@ -17,6 +17,8 @@ const STORAGE_KEYS = {
   selectedTrajectoryByVideo: "questionView.selectedTrajectoryByVideo",
   activePanel: "questionView.activePanel",
   trackingEnabled3d: "questionView.trackingEnabled3d",
+  leftPanelWidth: "questionView.leftPanelWidth",
+  rightPanelWidth: "questionView.rightPanelWidth",
 } as const;
 
 function getSavedTrajectoryByVideo(): Record<string, string> {
@@ -185,17 +187,18 @@ function TrajectoryDropdown({
     </div>
   );
 }
-
-type ActivePanel = "questions" | "json" | "3d";
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+type ActivePanel = "questions" | "json";
+type LeftPanel = "selector" | "3d";
 
 function getInitialActivePanel(): ActivePanel {
   if (typeof window === "undefined") return "questions";
 
   const saved = localStorage.getItem(STORAGE_KEYS.activePanel);
 
-  return saved === "questions" || saved === "json" || saved === "3d"
-    ? saved
-    : "questions";
+  return saved === "questions" || saved === "json" ? saved : "questions";
 }
 
 function getInitialTrackingEnabled3d(): boolean {
@@ -204,9 +207,92 @@ function getInitialTrackingEnabled3d(): boolean {
   return localStorage.getItem(STORAGE_KEYS.trackingEnabled3d) === "true";
 }
 
+function getSavedPanelWidth(
+  key: string,
+  fallback: number,
+  min: number,
+  max: number,
+) {
+  if (typeof window === "undefined") return fallback;
+
+  const raw = localStorage.getItem(key);
+  if (!raw) return fallback;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return fallback;
+
+  return clamp(parsed, min, max);
+}
+
 export default function QuestionView() {
   const [initialSelection] = useState(() => getInitialVideoSelection());
   const [tracking, setTracking] = useState<TrackingEntry | null>(null);
+  const [leftPanel, setLeftPanel] = useState<LeftPanel>("selector");
+  const [leftWidth, setLeftWidth] = useState(() =>
+    getSavedPanelWidth(STORAGE_KEYS.leftPanelWidth, 360, 260, 620),
+  );
+
+  const [rightWidth, setRightWidth] = useState(() =>
+    getSavedPanelWidth(STORAGE_KEYS.rightPanelWidth, 420, 300, 720),
+  );
+
+  const startResizeLeft = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startWidth = leftWidth;
+    let latestWidth = leftWidth;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const delta = moveEvent.clientX - startX;
+      latestWidth = clamp(startWidth + delta, 260, 620);
+      setLeftWidth(latestWidth);
+    };
+
+    const handlePointerUp = () => {
+      localStorage.setItem(STORAGE_KEYS.leftPanelWidth, String(latestWidth));
+
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+  };
+
+  const startResizeRight = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    const startX = event.clientX;
+    const startWidth = rightWidth;
+    let latestWidth = rightWidth;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const delta = startX - moveEvent.clientX;
+      latestWidth = clamp(startWidth + delta, 300, 720);
+      setRightWidth(latestWidth);
+    };
+
+    const handlePointerUp = () => {
+      localStorage.setItem(STORAGE_KEYS.rightPanelWidth, String(latestWidth));
+
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+  };
 
   const [selectedUserId, setSelectedUserId] = useState(initialSelection.userId);
   const [selectedVideoId, setSelectedVideoId] = useState(
@@ -313,122 +399,164 @@ export default function QuestionView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-77px)] flex-col overflow-hidden bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
-      {/* 3-column layout */}
-      <div
-        className="grid min-h-0 flex-1"
-        style={{ gridTemplateColumns: "260px 1fr 420px" }}
+    <div className="flex h-[calc(100vh-77px)] overflow-hidden bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+      {/* LEFT: video selector / 3D scene */}
+      <aside
+        style={{ width: leftWidth }}
+        className="flex min-h-0 shrink-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80"
       >
-        {/* Sidebar */}
-        <aside className="overflow-y-auto border-r border-slate-200 bg-white dark:border-white/[0.07] dark:bg-slate-950/60">
-          <UserVideoSelector
-            users={USERS}
-            selectedUserId={selectedUserId}
-            selectedVideoId={selectedVideoId}
-            onUserChange={handleUserChange}
-            onVideoChange={(vid) => {
-              setSelectedVideoId(vid);
-              setTimeout(() => setCurrentTimeSec(0), 0);
-            }}
-          />
-        </aside>
+        {/* Left tabs */}
+        <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">
+          {(["selector", "3d"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setLeftPanel(tab)}
+              className={`border-b-2 px-4 py-3.5 text-[13px] font-medium transition-all ${
+                leftPanel === tab
+                  ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400"
+                  : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300"
+              }`}
+            >
+              {tab === "selector" ? (
+                "Videos"
+              ) : (
+                <div className="flex items-center gap-1">
+                  <Box className="h-4 w-4" />
+                  3D Scene
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
 
-        {/* Video center */}
-        <main className="flex min-h-0 flex-col overflow-hidden border-r border-slate-200 bg-slate-100 dark:border-white/[0.07] dark:bg-black">
-          {selectedVideo ? (
-            <VideoPlayer
-              key={selectedVideo.id}
+        {/* Left content */}
+        <div className="min-h-0 flex-1 overflow-hidden">
+          {leftPanel === "selector" ? (
+            <div className="h-full overflow-y-auto">
+              <UserVideoSelector
+                users={USERS}
+                selectedUserId={selectedUserId}
+                selectedVideoId={selectedVideoId}
+                onUserChange={handleUserChange}
+                onVideoChange={(vid) => {
+                  setSelectedVideoId(vid);
+                  setTimeout(() => setCurrentTimeSec(0), 0);
+                }}
+              />
+            </div>
+          ) : (
+            <KitchenScene
               video={selectedVideo}
+              tracking={tracking}
               trajectory={selectedTrajectory}
               currentTimeSec={currentTimeSec}
-              onTimeChange={setCurrentTimeSec}
+              trackingEnabled={trackingEnabled3d}
+              onTrackingEnabledChange={setTrackingEnabled3d}
+              queryTimeSec={selectedTrajectory?.query_time_sec ?? 0}
+              onSeek={(t: number) => setCurrentTimeSec(t)}
             />
-          ) : (
-            <div className="flex flex-1 items-center justify-center text-sm text-slate-500 dark:text-slate-600">
-              No video selected
+          )}
+        </div>
+      </aside>
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        onPointerDown={startResizeLeft}
+        className="group relative z-20 w-1 shrink-0 cursor-col-resize bg-slate-200 transition hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+      >
+        <div className="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2" />
+      </div>
+      {/* MIDDLE: video always visible */}
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-slate-100 dark:bg-black">
+        {" "}
+        {selectedVideo ? (
+          <VideoPlayer
+            key={selectedVideo.id}
+            video={selectedVideo}
+            trajectory={selectedTrajectory}
+            currentTimeSec={currentTimeSec}
+            onTimeChange={setCurrentTimeSec}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-slate-500 dark:text-slate-600">
+            No video selected
+          </div>
+        )}
+      </main>
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        onPointerDown={startResizeRight}
+        className="group relative z-20 w-1 shrink-0 cursor-col-resize bg-slate-200 transition hover:bg-blue-500 dark:bg-white/[0.07] dark:hover:bg-blue-500"
+      >
+        <div className="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2" />
+      </div>
+      <aside
+        style={{ width: rightWidth }}
+        className="flex min-h-0 shrink-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80"
+      >
+        {/* Right tabs */}
+        <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">
+          {(["questions", "json"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActivePanel(tab)}
+              className={`border-b-2 px-4 py-3.5 text-[13px] font-medium transition-all ${
+                activePanel === tab
+                  ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400"
+                  : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300"
+              }`}
+            >
+              {tab === "questions" ? (
+                <div className="flex items-center gap-1">
+                  <FileQuestionMark className="h-4 w-4" />
+                  Questions
+                </div>
+              ) : (
+                "{ } JSON"
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Trajectory selector */}
+        {activePanel === "questions" &&
+          selectedVideo?.trajectory &&
+          Object.keys(selectedVideo.trajectory).length > 1 && (
+            <div className="shrink-0 border-b border-slate-200 px-4 py-3 dark:border-white/[0.07]">
+              <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                Trajectory
+              </label>
+              <TrajectoryDropdown
+                value={selectedTrajectoryKey}
+                options={Object.keys(selectedVideo.trajectory)}
+                onChange={setSelectedTrajectoryKey}
+              />
             </div>
           )}
-        </main>
 
-        {/* Right panel */}
-        <aside className="flex min-h-0 flex-col overflow-hidden bg-white dark:bg-slate-950/80">
-          {/* Tabs */}
-          <div className="flex shrink-0 gap-1 border-b border-slate-200 px-4 dark:border-white/[0.07]">
-            {(["questions", "3d", "json"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActivePanel(tab)}
-                className={`border-b-2 px-4 py-3.5 text-[13px] font-medium capitalize transition-all ${
-                  activePanel === tab
-                    ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400"
-                    : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-500 dark:hover:text-slate-300"
-                }`}
-              >
-                {tab === "questions" ? (
-                  <div className="flex flex-row items-center text-center gap-1">
-                    <FileQuestionMark className="h-4 w-4" /> Questions
-                  </div>
-                ) : tab === "3d" ? (
-                  <div className="flex items-center gap-1">
-                    <Box className="h-4 w-4" />
-                    3D Scene
-                  </div>
-                ) : (
-                  "{ } JSON"
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Trajectory selector */}
-          {activePanel === "questions" &&
-            selectedVideo?.trajectory &&
-            Object.keys(selectedVideo.trajectory).length > 1 && (
-              <div className="shrink-0 border-b border-slate-200 px-4 py-3 dark:border-white/[0.07]">
-                <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                  Trajectory
-                </label>
-                <TrajectoryDropdown
-                  value={selectedTrajectoryKey}
-                  options={Object.keys(selectedVideo.trajectory)}
-                  onChange={setSelectedTrajectoryKey}
-                />
-              </div>
-            )}
-
-          <div className="flex-1 overflow-y-auto">
-            {activePanel === "questions" ? (
-              <div className="h-full overflow-y-auto">
-                <QuestionPanel
-                  trajectory={selectedTrajectory}
-                  currentTimeSec={currentTimeSec}
-                  onSeek={setCurrentTimeSec}
-                />
-              </div>
-            ) : activePanel === "json" ? (
-              <div className="h-full overflow-y-auto">
-                <JsonViewer
-                  data={
-                    selectedVideo?.rawJson ??
-                    (selectedTrajectory ? selectedTrajectory : null)
-                  }
-                />
-              </div>
-            ) : (
-              <KitchenScene
-                video={selectedVideo}
-                tracking={tracking}
+        {/* Right content */}
+        <div className="min-h-0 flex-1 overflow-hidden">
+          {activePanel === "questions" ? (
+            <div className="h-full overflow-y-auto">
+              <QuestionPanel
                 trajectory={selectedTrajectory}
                 currentTimeSec={currentTimeSec}
-                trackingEnabled={trackingEnabled3d}
-                onTrackingEnabledChange={setTrackingEnabled3d}
-                queryTimeSec={selectedTrajectory?.query_time_sec ?? 0}
-                onSeek={(t: number) => setCurrentTimeSec(t)}
+                onSeek={setCurrentTimeSec}
               />
-            )}
-          </div>
-        </aside>
-      </div>
+            </div>
+          ) : (
+            <div className="h-full overflow-y-auto">
+              <JsonViewer
+                data={
+                  selectedVideo?.rawJson ??
+                  (selectedTrajectory ? selectedTrajectory : null)
+                }
+              />
+            </div>
+          )}
+        </div>
+      </aside>
     </div>
   );
 }
