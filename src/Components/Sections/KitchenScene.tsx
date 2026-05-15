@@ -18,6 +18,7 @@ type KitchenSceneProps = {
 
 const VIDEO_FPS = 30;
 const VIEW_FORWARD_LOCAL = new THREE.Vector3(0, -Math.SQRT1_2, Math.SQRT1_2);
+const CAMERA_VIEW_STORAGE_KEY = "kitchenScene.cameraView";
 
 function matrix3x4ToMatrix4(m: Matrix3x4): THREE.Matrix4 {
   const mat = new THREE.Matrix4();
@@ -76,6 +77,55 @@ function KitchenModel({
   const gltf = useGLTF(modelUrl);
 
   return <primitive ref={modelRef} object={gltf.scene} />;
+}
+
+type SavedCameraView = {
+  position: [number, number, number];
+  target: [number, number, number];
+  zoom: number;
+};
+
+function readSavedCameraView(): SavedCameraView | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = localStorage.getItem(CAMERA_VIEW_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as SavedCameraView;
+
+    if (
+      !Array.isArray(parsed.position) ||
+      !Array.isArray(parsed.target) ||
+      parsed.position.length !== 3 ||
+      parsed.target.length !== 3 ||
+      typeof parsed.zoom !== "number"
+    ) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isZoomCamera(
+  camera: THREE.Camera,
+): camera is THREE.PerspectiveCamera | THREE.OrthographicCamera {
+  return "zoom" in camera && typeof camera.zoom === "number";
+}
+
+function writeSavedCameraView(camera: THREE.Camera, target: THREE.Vector3) {
+  if (typeof window === "undefined") return;
+
+  const saved: SavedCameraView = {
+    position: [camera.position.x, camera.position.y, camera.position.z],
+    target: [target.x, target.y, target.z],
+    zoom: isZoomCamera(camera) ? camera.zoom : 1,
+  };
+
+  localStorage.setItem(CAMERA_VIEW_STORAGE_KEY, JSON.stringify(saved));
 }
 
 function CameraMarker({ matrix }: { matrix: THREE.Matrix4 }) {
@@ -709,14 +759,55 @@ function TrackingOrbitControls({
 
   const { camera, gl } = useThree();
 
-  // When controls remount, restore the previous orbit target.
+  // Restore saved camera viewpoint once controls exist.
   useEffect(() => {
     const controls = controlsRef.current;
     if (!controls) return;
 
+    const saved = readSavedCameraView();
+
+    if (saved) {
+      camera.position.set(
+        saved.position[0],
+        saved.position[1],
+        saved.position[2],
+      );
+      camera.zoom = saved.zoom;
+      camera.updateProjectionMatrix();
+
+      controls.target.set(saved.target[0], saved.target[1], saved.target[2]);
+      previousTargetRef.current.copy(controls.target);
+      controls.update();
+      return;
+    }
+
     controls.target.copy(previousTargetRef.current);
     controls.update();
-  }, [controlsKey]);
+  }, [controlsKey, camera]);
+
+  const saveCurrentView = () => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    previousTargetRef.current.copy(controls.target);
+    writeSavedCameraView(camera, controls.target);
+  };
+
+  // Save when OrbitControls finishes a user interaction.
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    const handleEnd = () => {
+      saveCurrentView();
+    };
+
+    controls.addEventListener("end", handleEnd);
+
+    return () => {
+      controls.removeEventListener("end", handleEnd);
+    };
+  }, [controlsKey, camera]);
 
   // Tracking mode: move orbit target with tracked camera position.
   useEffect(() => {
@@ -755,13 +846,15 @@ function TrackingOrbitControls({
           // Ignore pointer capture errors.
         }
       }
+
+      saveCurrentView();
     };
 
     const hardReleaseControls = () => {
       const controls = controlsRef.current;
       if (!controls) return;
 
-      previousTargetRef.current.copy(controls.target);
+      saveCurrentView();
 
       controls.enabled = false;
       controls.update();
@@ -770,7 +863,6 @@ function TrackingOrbitControls({
         controls.enabled = true;
         controls.update();
 
-        // Only remount on real lost-focus cases.
         setControlsKey((key) => key + 1);
       });
     };
@@ -824,7 +916,7 @@ function TrackingOrbitControls({
       window.removeEventListener("mouseleave", handleWindowLeave);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [gl]);
+  }, [gl, camera, controlsKey]);
 
   return (
     <OrbitControls
