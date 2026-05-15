@@ -7,7 +7,7 @@ import {
 } from "../Components/Sections/JsonViewer";
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
-import { Box, Check, ChevronDown, FileQuestionMark } from "lucide-react";
+import { Box, Check, ChevronDown, FileQuestionMark, Video } from "lucide-react";
 import { loadTrackingForVideo } from "../Components/Camera/TrackingCamera";
 import type { TrackingEntry } from "../Components/Camera/Types";
 import { KitchenScene } from "../Components/Sections/KitchenScene";
@@ -432,7 +432,9 @@ export default function QuestionView() {
               }`}
             >
               {tab === "selector" ? (
-                "Videos"
+                <div className="flex items-center gap-1">
+                  <Video className="h-4 w-4" /> Videos
+                </div>
               ) : (
                 <div className="flex items-center gap-1">
                   <Box className="h-4 w-4" />
