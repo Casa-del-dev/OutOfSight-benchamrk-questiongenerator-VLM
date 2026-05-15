@@ -43,6 +43,12 @@ export default function Header() {
           >
             Results
           </Link>
+          <Link
+            to="/team"
+            className="text-gray-900 transition-colors duration-300 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
+          >
+            Team
+          </Link>
         </div>
 
         <div className="flex justify-end items-center gap-4">

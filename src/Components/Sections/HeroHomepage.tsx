@@ -110,11 +110,21 @@ export default function Hero({ ref, visible, stats }: HeroProps) {
           </p>
 
           <p
-            className={`fade-up d4 ${visible ? "in" : ""} mb-10 max-w-125 text-[15px] leading-7 text-slate-600 dark:text-[#5a6a88]`}
+            className={`fade-up d4 ${
+              visible ? "in" : ""
+            } mb-10 max-w-125 text-[15px] leading-7 text-slate-600 dark:text-[#5a6a88]`}
           >
             OutOfSight benchmarks spatial memory, object permanence, and
-            hidden-state tracking in egocentric cooking video — built on
-            HD-EPIC&apos;s dense 3D object annotations.
+            hidden-state tracking in egocentric cooking video — built on{" "}
+            <a
+              href="https://hd-epic.github.io/site/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-600 transition hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
+            >
+              HD-EPIC&apos;s
+            </a>{" "}
+            dense 3D object annotations.
           </p>
 
           <div

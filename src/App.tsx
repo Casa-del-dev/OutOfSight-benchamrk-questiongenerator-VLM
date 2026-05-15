@@ -3,6 +3,7 @@ import Layout from "./Layout.tsx";
 import Homepage from "./pages/Homepage.tsx";
 import QuetionView from "./pages/QuestionView.tsx";
 import ResultsView from "./pages/ResultsView.tsx";
+import Team from "./pages/Team.tsx";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<Homepage />}></Route>
           <Route path="/questions" element={<QuetionView />}></Route>
           <Route path="/results" element={<ResultsView />}></Route>
+          <Route path="/team" element={<Team />}></Route>
         </Routes>
       </Layout>
     </Router>
