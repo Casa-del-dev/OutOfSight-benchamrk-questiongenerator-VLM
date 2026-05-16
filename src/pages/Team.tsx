@@ -20,14 +20,15 @@ const projectMembers: TeamPerson[] = [
     name: "Ivo Alexander Ban",
     affiliation: "MSc Computer Science, ETH Zürich",
     role: "Project member",
-    focus: "Pipeline development, research, and question generation.",
+    focus:
+      "Backbone visibility development, research, and question generation, formalization.",
   },
   {
     name: "Eren Homburg",
     affiliation: "MSc Computer Science, ETH Zürich",
     role: "Project member",
     focus:
-      "Implementation of all benchmark steps, research, question generation, and website development with visual design.",
+      "Implementation of benchmark steps, research, question generation, and website development with visual design.",
   },
   {
     name: "Xiaoxuan Cheng",

@@ -45,6 +45,17 @@ function matrix3x4ToMatrix4(m: Matrix3x4): THREE.Matrix4 {
   return mat;
 }
 
+const POINT_COLORS = {
+  query: {
+    color: "#d97706",
+    darkColor: "#fbbf24",
+  },
+  lastSeen: {
+    color: "#7c3aed",
+    darkColor: "#a78bfa",
+  },
+};
+
 function getClosestValidPose(
   frames: FramewiseInfo[],
   currentTimeSec: number,
@@ -361,9 +372,9 @@ function HoveredObjectLabel({ object }: { object: THREE.Object3D | null }) {
     <Html
       position={labelPosition}
       center
-      distanceFactor={6}
       style={{
         pointerEvents: "none",
+        userSelect: "none",
       }}
     >
       <div
@@ -383,6 +394,42 @@ function HoveredObjectLabel({ object }: { object: THREE.Object3D | null }) {
       </div>
     </Html>
   );
+}
+
+function FixtureObjectEdges({
+  targetRoot,
+  rawFixture,
+}: {
+  targetRoot: React.RefObject<THREE.Object3D | null>;
+  rawFixture?: unknown;
+}) {
+  const [fixtureObject, setFixtureObject] = useState<THREE.Object3D | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (typeof rawFixture !== "string") {
+      setFixtureObject(null);
+      return;
+    }
+
+    const transformedFixture = transformFixture(rawFixture);
+    const match = findObjectByTransformedName(
+      targetRoot.current,
+      transformedFixture,
+    );
+
+    setFixtureObject(match);
+
+    if (!match) {
+      console.warn("[KitchenScene] fixture mesh not found", {
+        rawFixture,
+        transformedFixture,
+      });
+    }
+  }, [targetRoot, rawFixture]);
+
+  return <HoveredObjectEdges object={fixtureObject} />;
 }
 
 function HoveredObjectEdges({ object }: { object: THREE.Object3D | null }) {
@@ -426,10 +473,12 @@ function HoverObjectHighlighter({
   targetRoot,
   hoveredObject,
   setHoveredObject,
+  blockedRef,
 }: {
   targetRoot: React.RefObject<THREE.Object3D | null>;
   hoveredObject: THREE.Object3D | null;
   setHoveredObject: React.Dispatch<React.SetStateAction<THREE.Object3D | null>>;
+  blockedRef?: React.RefObject<boolean>;
 }) {
   const { camera, gl, pointer } = useThree();
   const raycasterRef = useRef(new THREE.Raycaster());
@@ -459,6 +508,14 @@ function HoverObjectHighlighter({
   }, [gl, setHoveredObject]);
 
   useFrame(() => {
+    if (blockedRef?.current) {
+      if (lastHoveredUuidRef.current !== null) {
+        lastHoveredUuidRef.current = null;
+        setHoveredObject(null);
+      }
+      return;
+    }
+
     const root = targetRoot.current;
 
     if (!root || !pointerInsideRef.current) {
@@ -495,6 +552,70 @@ function HoverObjectHighlighter({
   return <HoveredObjectEdges object={hoveredObject} />;
 }
 
+function transformFixture(fixture: any): string {
+  return fixture.replace(/^.*?_/, "").replace(".", "");
+}
+
+function findObjectByTransformedName(
+  root: THREE.Object3D | null,
+  transformedName: string | null,
+): THREE.Object3D | null {
+  if (!root || !transformedName) return null;
+
+  let found: THREE.Object3D | null = null;
+
+  root.traverse((object) => {
+    if (found) return;
+
+    const objectName = object.name?.trim();
+    if (!objectName) return;
+
+    if (objectName === transformedName) {
+      found = object;
+    }
+  });
+
+  return found;
+}
+
+function PointHoverLabel({
+  label,
+  position,
+}: {
+  label: string;
+  position: THREE.Vector3;
+}) {
+  const labelPosition = position.clone();
+  labelPosition.y += 0.12;
+
+  return (
+    <Html
+      position={labelPosition}
+      center
+      style={{
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      <div
+        style={{
+          padding: "3px 7px",
+          borderRadius: "6px",
+          background: "rgba(15, 23, 42, 0.85)",
+          color: "#e0f2fe",
+          fontSize: "11px",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+          border: "1px solid rgba(125, 211, 252, 0.55)",
+          pointerEvents: "none",
+        }}
+      >
+        {label}
+      </div>
+    </Html>
+  );
+}
+
 function SceneContent({
   video,
   tracking,
@@ -503,10 +624,14 @@ function SceneContent({
   trajectory,
 }: KitchenSceneProps) {
   const kitchenRef = useRef<THREE.Object3D | null>(null);
-
+  const pointHoverBlockRef = useRef(false);
   const [hoveredObject, setHoveredObject] = useState<THREE.Object3D | null>(
     null,
   );
+  const [hoveredPointLabel, setHoveredPointLabel] = useState<{
+    label: string;
+    position: THREE.Vector3;
+  } | null>(null);
 
   if (!tracking) return null;
 
@@ -560,63 +685,65 @@ function SceneContent({
 
   type WorldPoint = {
     worldCoord: THREE.Vector3;
-    fixture?: unknown;
   };
+
+  function makeWorldPoint(rawWorldCoordinates: unknown): WorldPoint | null {
+    if (
+      !Array.isArray(rawWorldCoordinates) ||
+      rawWorldCoordinates.length !== 3
+    ) {
+      return null;
+    }
+
+    const worldCoord = new THREE.Vector3(
+      Number(rawWorldCoordinates[0]),
+      Number(rawWorldCoordinates[1]),
+      Number(rawWorldCoordinates[2]),
+    ).applyMatrix4(coordinateCorrection);
+
+    return {
+      worldCoord,
+    };
+  }
 
   function makeWorldPointFromMeta(
     meta: AnswerMetadata | undefined | null,
+    prefix?: string,
   ): WorldPoint | null {
     if (!meta) return null;
 
-    if (
-      Array.isArray(meta.world_coordinates) &&
-      meta.world_coordinates.length === 3
-    ) {
-      const worldCoord = new THREE.Vector3(
-        meta.world_coordinates[0],
-        meta.world_coordinates[1],
-        meta.world_coordinates[2],
-      ).applyMatrix4(coordinateCorrection);
+    const anyMeta = meta as any;
 
-      return {
-        worldCoord,
-        fixture: meta.fixture ?? meta.correct_fixture ?? meta.correct_label,
-      };
+    const worldCoordinates =
+      prefix != null
+        ? anyMeta[`${prefix}_world_coordinates`]
+        : anyMeta.world_coordinates;
+
+    return makeWorldPoint(worldCoordinates);
+  }
+
+  function getIncrementalSteps(): any[] {
+    if (!trajectory) return [];
+
+    const anyTrajectory = trajectory as any;
+
+    if (Array.isArray(anyTrajectory.incremental_steps)) {
+      return anyTrajectory.incremental_steps;
     }
 
-    if (meta.normalized_projected_pixel || meta.projected_pixel) {
-      const pixel = meta.normalized_projected_pixel
-        ? meta.normalized_projected_pixel
-        : meta.projected_pixel
-          ? [meta.projected_pixel[0], meta.projected_pixel[1]]
-          : null;
-
-      if (!pixel) return null;
-
-      const camX = (pixel[0] - 0.5) * 2;
-      const camY = (0.5 - pixel[1]) * 2;
-      const camZ = 0;
-
-      const worldCoord = new THREE.Vector3(camX, camY, camZ)
-        .applyMatrix4(M_device_camera)
-        .applyMatrix4(M_world_device)
-        .applyMatrix4(coordinateCorrection);
-
-      return {
-        worldCoord,
-        fixture: meta.fixture ?? meta.correct_fixture ?? meta.correct_label,
-      };
+    if (Array.isArray(anyTrajectory.steps)) {
+      return anyTrajectory.steps;
     }
 
-    return null;
+    return [];
+  }
+
+  function getFixture(trajectory: TrajectoryData | null | undefined) {
+    return trajectory?.incremental_steps[3].answer_metadata.raw_correct_fixture;
   }
 
   function getIncrementalStepWorldPoint(stepNumber: number): WorldPoint | null {
-    if (!trajectory) return null;
-
-    const step = trajectory.incremental_steps.find(
-      (s) => s.step === stepNumber,
-    );
+    const step = getIncrementalSteps().find((s) => s.step === stepNumber);
 
     if (!step) return null;
 
@@ -627,50 +754,57 @@ function SceneContent({
     if (!trajectory) return null;
 
     const branchGroups = trajectory.branch_groups as Record<string, any[]>;
-    const postStep4 = branchGroups["post_step4"];
+    const postStep4 = branchGroups?.["post_step4"];
 
     if (!Array.isArray(postStep4) || postStep4.length === 0) {
       return null;
     }
 
-    const anchorStep = postStep4[0];
+    const anchorStep = postStep4[1];
 
     if (!anchorStep?.answer_metadata) {
       return null;
     }
 
-    return makeWorldPointFromMeta(anchorStep.answer_metadata as AnswerMetadata);
+    return makeWorldPointFromMeta(
+      anchorStep.answer_metadata as AnswerMetadata,
+      "object_y",
+    );
   }
 
   const lastSeen = getIncrementalStepWorldPoint(2);
-  const lastPlaced = getIncrementalStepWorldPoint(3);
-  const fixture = getIncrementalStepWorldPoint(4);
+
+  const fixture = getFixture(trajectory);
+  if (fixture) {
+    const transformedFixture = transformFixture(fixture);
+    console.log(transformedFixture);
+  }
   const anchor = getPostStep4AnchorWorldPoint();
 
   /* console.groupCollapsed("[KitchenScene] world points");
-  console.log("lastSeen:", {
-    coord: lastSeen?.worldCoord.toArray(),
-    fixture: lastSeen?.fixture,
-  });
-  console.log("lastPlaced:", {
-    coord: lastPlaced?.worldCoord.toArray(),
-    fixture: lastPlaced?.fixture,
-  });
-  console.log("fixture:", {
-    coord: fixture?.worldCoord.toArray(),
-    fixture: fixture?.fixture,
-  });
-  console.log("anchor post_step4:", {
-    coord: anchor?.worldCoord.toArray(),
-    fixture: anchor?.fixture,
-  });
-  console.log(
-    "raw post_step4:",
-    (trajectory?.branch_groups as Record<string, any[]> | undefined)?.[
-      "post_step4"
-    ],
-  );
-  console.groupEnd(); */
+    console.log("lastSeen:", {
+      coord: lastSeen?.worldCoord.toArray(),
+      fixture: lastSeen?.fixture,
+    });
+    console.log("lastPlaced:", {
+      coord: lastPlaced?.worldCoord.toArray(),
+      fixture: lastPlaced?.fixture,
+    });
+    console.log("fixture:", {
+      coord: fixture?.worldCoord.toArray(),
+      fixture: fixture?.fixture,
+    });
+    console.log("anchor post_step4:", {
+      coord: anchor?.worldCoord.toArray(),
+      fixture: anchor?.fixture,
+    });
+    console.log(
+      "raw post_step4:",
+      (trajectory?.branch_groups as Record<string, any[]> | undefined)?.[
+        "post_step4"
+      ],
+    );
+    console.groupEnd(); */
 
   return (
     <>
@@ -680,57 +814,80 @@ function SceneContent({
       <KitchenModel videoId={video?.id} modelRef={kitchenRef} />
 
       {lastSeen && (
-        <mesh position={lastSeen.worldCoord}>
-          <sphereGeometry args={[0.045, 16, 16]} />
-          <meshStandardMaterial
-            color="#7c3aed"
-            emissive="#7c3aed"
-            emissiveIntensity={1.2}
-          />
-        </mesh>
-      )}
+        <mesh
+          position={lastSeen.worldCoord}
+          onPointerOver={(event) => {
+            event.stopPropagation();
 
-      {lastPlaced && (
-        <mesh position={lastPlaced.worldCoord}>
+            pointHoverBlockRef.current = true;
+            setHoveredObject(null);
+
+            setHoveredPointLabel({
+              label: "target object",
+              position: lastSeen.worldCoord,
+            });
+          }}
+          onPointerOut={(event) => {
+            event.stopPropagation();
+
+            pointHoverBlockRef.current = false;
+            setHoveredPointLabel(null);
+          }}
+        >
           <sphereGeometry args={[0.045, 16, 16]} />
           <meshStandardMaterial
-            color="#22c55e"
-            emissive="#22c55e"
+            color={POINT_COLORS.lastSeen.color}
+            emissive={POINT_COLORS.lastSeen.darkColor}
             emissiveIntensity={1.2}
           />
         </mesh>
       )}
 
       {anchor && (
-        <mesh position={anchor.worldCoord}>
+        <mesh
+          position={anchor.worldCoord}
+          onPointerOver={(event) => {
+            event.stopPropagation();
+
+            pointHoverBlockRef.current = true;
+            setHoveredObject(null);
+
+            setHoveredPointLabel({
+              label: "anchor object",
+              position: anchor.worldCoord,
+            });
+          }}
+          onPointerOut={(event) => {
+            event.stopPropagation();
+
+            pointHoverBlockRef.current = false;
+            setHoveredPointLabel(null);
+          }}
+        >
           <sphereGeometry args={[0.05, 16, 16]} />
           <meshStandardMaterial
-            color="#f59e0b"
-            emissive="#f59e0b"
+            color={POINT_COLORS.query.color}
+            emissive={POINT_COLORS.query.darkColor}
             emissiveIntensity={1.2}
           />
         </mesh>
       )}
 
-      {fixture && (
-        <mesh position={fixture.worldCoord}>
-          {/*           <boxGeometry args={[0.075, 0.075, 0.075]} />
-           */}{" "}
-          <meshStandardMaterial
-            color="#e879f9"
-            emissive="#e879f9"
-            emissiveIntensity={1.2}
-          />
-        </mesh>
-      )}
+      <FixtureObjectEdges targetRoot={kitchenRef} rawFixture={fixture} />
 
       <HoverObjectHighlighter
         targetRoot={kitchenRef}
         hoveredObject={hoveredObject}
         setHoveredObject={setHoveredObject}
+        blockedRef={pointHoverBlockRef}
       />
       <HoveredObjectLabel object={hoveredObject} />
-
+      {hoveredPointLabel && (
+        <PointHoverLabel
+          label={hoveredPointLabel.label}
+          position={hoveredPointLabel.position}
+        />
+      )}
       <CameraMarker matrix={M_world_camera} />
 
       <ViewingSurfaceIndicator
@@ -996,7 +1153,7 @@ export function KitchenScene(props: KitchenSceneProps) {
             type="button"
             onClick={() => props.onSeek!(props.queryTimeSec!)}
             className={[
-              "rounded-full border px-4 py-1.5 text-xs font-semibold transition-all",
+              "rounded-full border px-4 py-1.5 text-xs font-semibold transition-all select-none",
 
               // Light mode — same as Tracking active
               "border-slate-300/40 bg-slate-100/60 text-blue-500",
