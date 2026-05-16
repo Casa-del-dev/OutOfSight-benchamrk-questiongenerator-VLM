@@ -739,7 +739,10 @@ function SceneContent({
   }
 
   function getFixture(trajectory: TrajectoryData | null | undefined) {
-    return trajectory?.incremental_steps[3].answer_metadata.raw_correct_fixture;
+    return (
+      trajectory?.incremental_steps?.[3]?.answer_metadata
+        ?.raw_correct_fixture ?? "ciaociaocioac"
+    );
   }
 
   function getIncrementalStepWorldPoint(stepNumber: number): WorldPoint | null {
@@ -775,36 +778,7 @@ function SceneContent({
   const lastSeen = getIncrementalStepWorldPoint(2);
 
   const fixture = getFixture(trajectory);
-  if (fixture) {
-    const transformedFixture = transformFixture(fixture);
-    console.log(transformedFixture);
-  }
   const anchor = getPostStep4AnchorWorldPoint();
-
-  /* console.groupCollapsed("[KitchenScene] world points");
-    console.log("lastSeen:", {
-      coord: lastSeen?.worldCoord.toArray(),
-      fixture: lastSeen?.fixture,
-    });
-    console.log("lastPlaced:", {
-      coord: lastPlaced?.worldCoord.toArray(),
-      fixture: lastPlaced?.fixture,
-    });
-    console.log("fixture:", {
-      coord: fixture?.worldCoord.toArray(),
-      fixture: fixture?.fixture,
-    });
-    console.log("anchor post_step4:", {
-      coord: anchor?.worldCoord.toArray(),
-      fixture: anchor?.fixture,
-    });
-    console.log(
-      "raw post_step4:",
-      (trajectory?.branch_groups as Record<string, any[]> | undefined)?.[
-        "post_step4"
-      ],
-    );
-    console.groupEnd(); */
 
   return (
     <>

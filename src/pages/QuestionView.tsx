@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { QuestionPanel } from "../Components/Sections/QuestionPanel";
 import { VideoPlayer } from "../Components/Sections/VideoPlayer";
@@ -7,7 +8,14 @@ import {
 } from "../Components/Sections/JsonViewer";
 import { USERS } from "../Components/Json/Users";
 import type { TrajectoryData } from "../Components/Json/Types";
-import { Box, Check, ChevronDown, FileQuestionMark, Video } from "lucide-react";
+import {
+  AlertTriangle,
+  Box,
+  Check,
+  ChevronDown,
+  FileQuestionMark,
+  Video,
+} from "lucide-react";
 import { loadTrackingForVideo } from "../Components/Camera/TrackingCamera";
 import type { TrackingEntry } from "../Components/Camera/Types";
 import { KitchenScene } from "../Components/Sections/KitchenScene";
@@ -20,6 +28,53 @@ const STORAGE_KEYS = {
   leftPanelWidth: "questionView.leftPanelWidth",
   rightPanelWidth: "questionView.rightPanelWidth",
 } as const;
+
+class SceneErrorBoundary extends React.Component<
+  {
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+  },
+  {
+    hasError: boolean;
+    error: Error | null;
+  }
+> {
+  constructor(props: {
+    children: React.ReactNode;
+    fallback?: React.ReactNode;
+  }) {
+    super(props);
+    this.state = {
+      hasError: false,
+      error: null,
+    };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return {
+      hasError: true,
+      error,
+    };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("[KitchenScene] crashed", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        this.props.fallback ?? (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            3D scene failed to load.
+          </div>
+        )
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 function getSavedTrajectoryByVideo(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -461,16 +516,42 @@ export default function QuestionView() {
               />
             </div>
           ) : (
-            <KitchenScene
-              video={selectedVideo}
-              tracking={tracking}
-              trajectory={selectedTrajectory}
-              currentTimeSec={currentTimeSec}
-              trackingEnabled={trackingEnabled3d}
-              onTrackingEnabledChange={setTrackingEnabled3d}
-              queryTimeSec={selectedTrajectory?.query_time_sec ?? 0}
-              onSeek={(t: number) => setCurrentTimeSec(t)}
-            />
+            <SceneErrorBoundary
+              key={
+                selectedTrajectory?.trajectory_id ??
+                selectedVideo?.id ??
+                "scene"
+              }
+              fallback={
+                <div className="flex h-full items-center justify-center bg-white p-4 dark:bg-slate-950/80">
+                  <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center shadow-sm dark:border-white/[0.07] dark:bg-slate-900/70">
+                    <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+                      <AlertTriangle className="h-5 w-5" />
+                    </div>
+
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      3D scene unavailable
+                    </h3>
+
+                    <p className="mt-1 text-[12px] leading-5 text-slate-500 dark:text-slate-400">
+                      The scene could not be rendered for this trajectory. You
+                      can still use the video and question panel.
+                    </p>
+                  </div>
+                </div>
+              }
+            >
+              <KitchenScene
+                video={selectedVideo}
+                tracking={tracking}
+                trajectory={selectedTrajectory}
+                currentTimeSec={currentTimeSec}
+                trackingEnabled={trackingEnabled3d}
+                onTrackingEnabledChange={setTrackingEnabled3d}
+                queryTimeSec={selectedTrajectory?.query_time_sec ?? 0}
+                onSeek={(t: number) => setCurrentTimeSec(t)}
+              />
+            </SceneErrorBoundary>
           )}
         </div>
       </aside>
